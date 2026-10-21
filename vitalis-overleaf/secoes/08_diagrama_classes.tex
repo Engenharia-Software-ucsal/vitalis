@@ -1,0 +1,999 @@
+% ==============================================================================
+% SEÇÃO 8: DIAGRAMA DE CLASSES UML DO SISTEMA VITALIS v2.0
+% ==============================================================================
+
+\section{Diagrama de Classes UML do Sistema Vitalis v2.0}
+\label{sec:diagrama_classes}
+
+A modelagem estrutural de um ambiente de missão crítica como o Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0) exige rigor conceitual e alta fidelidade entre a lógica de negócios assistencial e a persistência relacional. Em hospitais gerais e terciários, falhas na integridade de dados podem ocasionar decisões clínicas equivocadas, atrasos terapêuticos e sanções legais severas \cite{sommerville:2019, pressman:2016}.
+
+Esta seção apresenta o Diagrama de Classes UML do Vitalis v2.0 conforme a especificação OMG UML 2.5.1 \cite{omg_uml:2017}. O modelo organiza as entidades em três grandes pacotes arquiteturais coesos e desacoplados, documentando seus atributos, visibilidades, operações, relacionamentos, multiplicidades e padrões de projeto orientados a objetos \cite{gamma_design_patterns:1994, fowler_patterns:2002}.
+
+\subsection{Visão Geral da Arquitetura Estática e Separação em Pacotes}
+\label{subsec:visao_geral_classes}
+
+Para preservar a separação de responsabilidades (princípio SRP) e viabilizar a evolução modular preconizada pela Arquitetura Limpa, as classes nucleares do Vitalis v2.0 são distribuídas em três pacotes conceituais:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Pacote Clínico-Assistencial (\texttt{vitalis.clinico})}: Agrupa as entidades que governam o percurso do paciente no hospital. Inclui o registro cadastral (\texttt{Paciente}), a instância do episódio de internação ou pronto atendimento (\texttt{Atendimento}), a classificação de risco multiparamétrica (\texttt{TriagemManchester}), o repositório médico perene (\texttt{ProntuarioEletronico}), as anotações médicas estruturadas (\texttt{EvolucaoClinica}), os planos terapêuticos (\texttt{PrescricaoMedica}) e as linhas de dosagem e aprazamento farmacológico (\texttt{ItemPrescricao}).
+    \item \textbf{Pacote de Infraestrutura e Faturamento (\texttt{vitalis.infraestrutura})}: Reúne os elementos físicos e financeiros que sustentam a operação hospitalar. Contempla as unidades de internação (\texttt{AlaHospitalar}), a gestão de estados físicos dos leitos (\texttt{Leito}), a consolidação econômica das contas do atendimento (\texttt{ContaFaturamento}) e a geração de lotes em XML no padrão Troca de Informação em Saúde Suplementar (\texttt{GuiaTISS}), em estrita conformidade com as normas da Agência Nacional de Saúde Suplementar \cite{ans_tiss:2023}.
+    \item \textbf{Pacote de Inteligência Artificial e Auditoria (\texttt{vitalis.ia.auditoria})}: Centraliza os serviços de inferência preditiva, sumarização clínica por RAG e governança ética. Contém as predições de instabilidade hemodinâmica e sepse (\texttt{PredicaoRiscoClinico}), a rastreabilidade detalhada de inferências (\texttt{LogInferenciaIA}), o armazenamento de representações semânticas de diretrizes médicas (\texttt{VetorEmbeddingClinico}) e a trilha de auditoria criptograficamente encadeada (\texttt{TrilhaAuditoria}), projetada para conformidade com a LGPD \cite{brasil_lgpd:2018}.
+\end{enumerate}
+
+A Figura \ref{fig:diagrama_classes_geral} ilustra o diagrama de classes completo do Vitalis v2.0, com seus compartimentos padronizados (nome da classe, atributos privados com visibilidade \texttt{-} e métodos públicos com \texttt{+}), multiplicidades em todas as terminações e semântica rigorosa de relacionamentos (composição forte, agregação, associação dirigida e dependência).
+
+% ==============================================================================
+% 8.2 DIAGRAMA DE CLASSES ESTRUTURAL COMPLETO EM TIKZ
+% ==============================================================================
+\subsection{Diagrama Estrutural do Sistema Vitalis v2.0}
+\label{subsec:diagrama_geral_tikz}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[x=1cm, y=1cm, >=Latex]
+
+% --- DEFINICAO DE ESTILOS LOCAIS DE CLASSES UML ---
+\tikzset{
+  umlClassClinico/.style={
+    draw=vitalisblue!90!black,
+    fill=white,
+    rectangle split,
+    rectangle split parts=3,
+    rectangle split draw splits=true,
+    rounded corners=1.5pt,
+    text width=4.5cm,
+    font=\scriptsize\sffamily,
+    align=left,
+    inner sep=3.5pt,
+    line width=0.8pt
+  },
+  umlClassInfra/.style={
+    draw=vitalisgreen!80!black,
+    fill=white,
+    rectangle split,
+    rectangle split parts=3,
+    rectangle split draw splits=true,
+    rounded corners=1.5pt,
+    text width=4.5cm,
+    font=\scriptsize\sffamily,
+    align=left,
+    inner sep=3.5pt,
+    line width=0.8pt
+  },
+  umlClassIA/.style={
+    draw=purple!85!black,
+    fill=white,
+    rectangle split,
+    rectangle split parts=3,
+    rectangle split draw splits=true,
+    rounded corners=1.5pt,
+    text width=4.5cm,
+    font=\scriptsize\sffamily,
+    align=left,
+    inner sep=3.5pt,
+    line width=0.8pt
+  },
+  umlComposition/.style={
+    {Diamond[fill=vitalisdark, length=3.0mm]}-Latex,
+    draw=vitalisdark,
+    line width=0.8pt
+  },
+  umlAggregation/.style={
+    {Diamond[open, length=3.0mm]}-Latex,
+    draw=vitalisdark,
+    line width=0.8pt
+  },
+  umlAssociation/.style={
+    -Latex,
+    draw=vitalisdark,
+    line width=0.8pt
+  },
+  umlDependency/.style={
+    -Latex,
+    dashed,
+    draw=vitalisgray,
+    line width=0.75pt
+  }
+}
+
+% ==============================================================================
+% LINHA 1: PACOTE DE INFRAESTRUTURA E FATURAMENTO (Y = 14.5)
+% ==============================================================================
+\node[umlClassInfra] at (0, 14.5) (AlaHospitalar) {
+  \textbf{\centerline{\textcolor{vitalisgreen!80!black}{AlaHospitalar}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - nomeAla : String \\
+  - tipoComplexidade : TipoComplexidade \\
+  - capacidadeTotal : Integer
+  \nodepart{third}
+  + adicionarLeito(leito : Leito) : void \\
+  + calcularTaxaOcupacao() : Decimal \\
+  + obterLeitosDisponiveis() : Leito[]
+};
+
+\node[umlClassInfra] at (5.8, 14.5) (Leito) {
+  \textbf{\centerline{\textcolor{vitalisgreen!80!black}{Leito}}}
+  \nodepart{second}
+  - numero : String [1] \\
+  - statusLeito : StatusLeitoEnum \\
+  - alaId : UUID [1]
+  \nodepart{third}
+  + ocupar(atendimentoId : UUID) : void \\
+  + desocupar() : void \\
+  + solicitarHigienizacao() : void \\
+  + liberarHigienizacao() : void \\
+  + interditarManutencao(mot : String) : void
+};
+
+\node[umlClassInfra] at (11.6, 14.5) (ContaFaturamento) {
+  \textbf{\centerline{\textcolor{vitalisgreen!80!black}{ContaFaturamento}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - valorTotal : Decimal \\
+  - statusAuditoria : StatusAuditoriaEnum \\
+  - dataFechamento : DateTime [0..1]
+  \nodepart{third}
+  + consolidarItensConsumo() : void \\
+  + executarAuditoriaPrevia() : void \\
+  + gerarFaturaConvenio() : void \\
+  + fecharConta() : void
+};
+
+\node[umlClassInfra] at (17.4, 14.5) (GuiaTISS) {
+  \textbf{\centerline{\textcolor{vitalisgreen!80!black}{GuiaTISS}}}
+  \nodepart{second}
+  - numeroGuia : String [1] \\
+  - padraoANS : String \\
+  - xmlPayload : XMLDocument \\
+  - statusEnvio : StatusEnvioTISSEnum
+  \nodepart{third}
+  + gerarXMLTISS() : String \\
+  + validarSchemaXSD() : Boolean \\
+  + transmitirOperadora() : void \\
+  + processarRetornoGlosa(xml : XML) : void
+};
+
+% ==============================================================================
+% PACOTE CLINICO-ASSISTENCIAL: LINHA SUPERIOR (Y = 9.0)
+% ==============================================================================
+\node[umlClassClinico] at (0, 9.0) (Paciente) {
+  \textbf{\centerline{\textcolor{vitalisblue}{Paciente}}}
+  \nodepart{second}
+  - cpf : String [1] \\
+  - cns : String [1] \\
+  - nomeCivil : String \\
+  - dataNascimento : Date \\
+  - sexo : Char \\
+  - contato : String \\
+  - alergias : String[]
+  \nodepart{third}
+  + cadastrar() : void \\
+  + atualizarDados(contato : String) : void \\
+  + adicionarAlergia(alergia : String) : void \\
+  + validarDocumento() : Boolean
+};
+
+\node[umlClassClinico] at (5.8, 9.0) (Atendimento) {
+  \textbf{\centerline{\textcolor{vitalisblue}{Atendimento}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - dataHoraEntrada : DateTime \\
+  - tipoAdmissao : TipoAdmissaoEnum \\
+  - statusAtendimento : StatusAtendEnum \\
+  - medicoId : UUID \\
+  - leitoId : UUID [0..1]
+  \nodepart{third}
+  + iniciarAtendimento() : void \\
+  + alocarLeito(leitoId : UUID) : void \\
+  + transferirLeito(novoId : UUID) : void \\
+  + encerrarAltaMedica() : void \\
+  + registrarObito() : void
+};
+
+\node[umlClassClinico] at (11.6, 9.0) (ProntuarioEletronico) {
+  \textbf{\centerline{\textcolor{vitalisblue}{ProntuarioEletronico}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - dataCriacao : DateTime \\
+  - statusImutavel : Boolean \\
+  - historico : RegistroHistorico[]
+  \nodepart{third}
+  + adicionarEvolucao(ev : Evolucao) : void \\
+  + anexarPrescricao(pr : Prescricao) : void \\
+  + gerarHashIntegridade() : String \\
+  + exportarFHIR() : FHIRBundle
+};
+
+\node[umlClassClinico] at (17.4, 9.0) (EvolucaoClinica) {
+  \textbf{\centerline{\textcolor{vitalisblue}{EvolucaoClinica}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - dataHora : DateTime \\
+  - sistemaOrganico : SistemaOrganicoEnum \\
+  - descricaoEvolucao : Text \\
+  - assinaturaDigital : AssinaturaVO
+  \nodepart{third}
+  + registrarExameFisico(exame) : void \\
+  + assinarDigitalmente(cert) : void \\
+  + validarConformidadeCFM() : Boolean
+};
+
+% ==============================================================================
+% PACOTE CLINICO-ASSISTENCIAL: LINHA INFERIOR (Y = 3.0)
+% ==============================================================================
+\node[umlClassClinico] at (5.8, 3.0) (TriagemManchester) {
+  \textbf{\centerline{\textcolor{vitalisblue}{TriagemManchester}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - pressaoArterial : String \\
+  - freqCardiaca : Integer \\
+  - freqRespiratoria : Integer \\
+  - satO2 : Decimal \\
+  - temperatura : Decimal \\
+  - glasgow : Integer \\
+  - corManchester : CorManchesterEnum \\
+  - statusRisco : StatusRiscoEnum
+  \nodepart{third}
+  + calcularEscoreManchester() : Cor \\
+  + identificarSinaisAlerta() : String[] \\
+  + avaliarElegibilidadeFastTrack() : Boolean
+};
+
+\node[umlClassClinico] at (11.6, 3.0) (PrescricaoMedica) {
+  \textbf{\centerline{\textcolor{vitalisblue}{PrescricaoMedica}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - dataEmissao : DateTime \\
+  - validadeHoras : Integer \\
+  - assinaturaDigital : AssinaturaVO \\
+  - status : StatusPrescricaoEnum
+  \nodepart{third}
+  + adicionarItem(item : ItemPresc) : void \\
+  + cancelarPrescricao(mot : String) : void \\
+  + suspenderItem(id : UUID, j : String) : void \\
+  + verificarVencimento() : Boolean
+};
+
+\node[umlClassClinico] at (17.4, 3.0) (ItemPrescricao) {
+  \textbf{\centerline{\textcolor{vitalisblue}{ItemPrescricao}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - principioAtivo : String \\
+  - dosagem : String \\
+  - viaAdministracao : ViaAdminEnum \\
+  - aprazamento : String \\
+  - statusChecagem : StatusChecagemEnum
+  \nodepart{third}
+  + checarAdministracao(enfId, dt) : void \\
+  + registrarRecusa(mot : String) : void \\
+  + validarDoseMaxima() : Boolean
+};
+
+% ==============================================================================
+% LINHA 4: PACOTE DE INTELIGENCIA ARTIFICIAL E AUDITORIA (Y = -3.5)
+% ==============================================================================
+\node[umlClassIA] at (0, -3.5) (VetorEmbeddingClinico) {
+  \textbf{\centerline{\textcolor{purple!85!black}{VetorEmbeddingClinico}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - fonteDiretriz : String \\
+  - vetorEmbedding : Vector[1536] \\
+  - metadadosJSON : JSON
+  \nodepart{third}
+  + gerarEmbedding(texto : String) : void \\
+  + calcularSimilaridade(v : Vector) : Decimal \\
+  + atualizarIndiceHNSW() : void
+};
+
+\node[umlClassIA] at (5.8, -3.5) (LogInferenciaIA) {
+  \textbf{\centerline{\textcolor{purple!85!black}{LogInferenciaIA}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - modeloVersao : String \\
+  - latencyMs : Integer \\
+  - promptSanitizadoHash : String \\
+  - respostaIA : Text \\
+  - decisaoMedica : DecisaoMedicaEnum \\
+  - feedbackHumano : String
+  \nodepart{third}
+  + registrarInferencia() : void \\
+  + capturarFeedbackClinico(dec, n) : void \\
+  + verificarDerivaModelo() : Boolean
+};
+
+\node[umlClassIA] at (11.6, -3.5) (PredicaoRiscoClinico) {
+  \textbf{\centerline{\textcolor{purple!85!black}{PredicaoRiscoClinico}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - scoreQSOFA : Integer \\
+  - scoreNEWS2 : Integer \\
+  - probabilidadeSepse : Decimal \\
+  - scoreDeterioracao : Decimal \\
+  - explicabilidadeJSON : JSON
+  \nodepart{third}
+  + processarPredicao(dados) : void \\
+  + dispararAlertaDeterioracao() : void \\
+  + gerarExplicabilidadeSHAP() : JSON
+};
+
+\node[umlClassIA] at (17.4, -3.5) (TrilhaAuditoria) {
+  \textbf{\centerline{\textcolor{purple!85!black}{TrilhaAuditoria}}}
+  \nodepart{second}
+  - id : UUID [1] \\
+  - timestampUTC : DateTime \\
+  - operadorId : UUID \\
+  - operacao : TipoOperacaoEnum \\
+  - tabelaAfetada : String \\
+  - hashAnterior : String [1]
+  \nodepart{third}
+  + registrarEventoAuditoria(ev) : void \\
+  + gerarHashSHA256() : String \\
+  + verificarCadeiaCustodia() : Boolean
+};
+
+% ==============================================================================
+% CAIXAS DE PACOTE (BACKGROUND LAYER)
+% ==============================================================================
+\begin{scope}[on background layer]
+  % Pacote Infraestrutura
+  \node[draw=vitalisgreen!60!black, fill=vitalisgreen!4, rounded corners=4pt, line width=0.9pt, dashed,
+        fit=(AlaHospitalar) (GuiaTISS)] (boxInfra) {};
+  \node[anchor=south west, font=\small\bfseries\color{vitalisgreen!70!black}, xshift=4pt, yshift=2pt] 
+        at (boxInfra.north west) {Pacote: Infraestrutura e Faturamento (\texttt{vitalis.infraestrutura})};
+
+  % Pacote Clinico
+  \node[draw=vitalisblue!70!black, fill=vitalisblue!3, rounded corners=4pt, line width=0.9pt, dashed,
+        fit=(Paciente) (EvolucaoClinica) (TriagemManchester) (ItemPrescricao)] (boxClinico) {};
+  \node[anchor=south west, font=\small\bfseries\color{vitalisblue}, xshift=4pt, yshift=2pt] 
+        at (boxClinico.north west) {Pacote Clínico-Assistencial (\texttt{vitalis.clinico})};
+
+  % Pacote IA e Auditoria
+  \node[draw=purple!70!black, fill=purple!3, rounded corners=4pt, line width=0.9pt, dashed,
+        fit=(VetorEmbeddingClinico) (TrilhaAuditoria)] (boxIA) {};
+  \node[anchor=south west, font=\small\bfseries\color{purple!80!black}, xshift=4pt, yshift=2pt] 
+        at (boxIA.north west) {Pacote: Inteligência Artificial e Auditoria (\texttt{vitalis.ia.auditoria})};
+\end{scope}
+
+% ==============================================================================
+% CONEXOES E RELACIONAMENTOS ARQUITETURAIS
+% ==============================================================================
+
+% 1. AlaHospitalar agrega Leito (1 para 1..*)
+\draw[umlAggregation] (AlaHospitalar) -- node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 1..*} (Leito);
+
+% 2. ContaFaturamento compõe GuiaTISS (1 para 1..*)
+\draw[umlComposition] (ContaFaturamento) -- node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 1..*} (GuiaTISS);
+
+% 3. Paciente associado a Atendimento (1 para 0..*)
+\draw[umlAssociation] (Paciente) -- node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 0..*} (Atendimento);
+
+% 4. Atendimento e Leito (0..* para 0..1)
+\draw[umlAssociation] (Atendimento) -- node[left, near start]{\scriptsize 0..*} node[left, near end]{\scriptsize 0..1} (Leito);
+
+% 5. Atendimento compõe ContaFaturamento (1 para 1)
+\draw[umlComposition] (Atendimento.north) -- ++(0,1.0) -| node[above, near end]{\scriptsize 1} (ContaFaturamento.south);
+
+% 6. Atendimento compõe TriagemManchester (1 para 1)
+\draw[umlComposition] (Atendimento) -- node[left, near start]{\scriptsize 1} node[left, near end]{\scriptsize 1} (TriagemManchester);
+
+% 7. Atendimento compõe ProntuarioEletronico (1 para 1)
+\draw[umlComposition] (Atendimento) -- node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 1} (ProntuarioEletronico);
+
+% 8. ProntuarioEletronico compõe EvolucaoClinica (1 para 0..*)
+\draw[umlComposition] (ProntuarioEletronico) -- node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 0..*} (EvolucaoClinica);
+
+% 9. ProntuarioEletronico compõe PrescricaoMedica (1 para 0..*)
+\draw[umlComposition] (ProntuarioEletronico) -- node[left, near start]{\scriptsize 1} node[left, near end]{\scriptsize 0..*} (PrescricaoMedica);
+
+% 10. PrescricaoMedica compõe ItemPrescricao (1 para 1..*)
+\draw[umlComposition] (PrescricaoMedica) -- node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 1..*} (ItemPrescricao);
+
+% 11. TriagemManchester gera PredicaoRiscoClinico (1 para 0..*)
+\draw[umlAssociation] (TriagemManchester.south) -- ++(0,-0.6) -| node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 0..*} (PredicaoRiscoClinico.north);
+
+% 12. PredicaoRiscoClinico depende de LogInferenciaIA (1 para 1)
+\draw[umlDependency] (PredicaoRiscoClinico) -- node[above, near start]{\scriptsize 1} node[above, near end]{\scriptsize 1} (LogInferenciaIA);
+
+% 13. LogInferenciaIA consulta VetorEmbeddingClinico (0..* para 1)
+\draw[umlDependency] (LogInferenciaIA) -- node[above, near start]{\scriptsize 0..*} node[above, near end]{\scriptsize 1} (VetorEmbeddingClinico);
+
+% 14. TrilhaAuditoria intercepta registros sensíveis
+\draw[umlDependency] (ItemPrescricao.south) -- (TrilhaAuditoria.north);
+\draw[umlDependency] (EvolucaoClinica.east) -- ++(0.7,0) |- (TrilhaAuditoria.east);
+
+\end{tikzpicture}
+}
+\caption{Diagrama Estrutural de Classes UML do Sistema Vitalis v2.0}
+\label{fig:diagrama_classes_geral}
+\end{figure}
+
+% ==============================================================================
+% 8.3 ANALISE DETALHADA DAS CLASSES DO DOMINIO CLINICO-ASSISTENCIAL
+% ==============================================================================
+\subsection{Detalhamento do Pacote Clínico-Assistencial}
+\label{subsec:detalhe_clinico}
+
+O pacote clínico concentra os registros de saúde gerados durante a passagem do paciente pela instituição. As classes que o integram foram desenhadas segundo as normas de guarda e autenticidade do Conselho Federal de Medicina (CFM) \cite{cfm_prontuario:2007, cfm_digital:2021} e as recomendações internacionais de interoperabilidade do padrão HL7 FHIR Release 4 \cite{hl7_fhir:2019}.
+
+\subsubsection{Classe Paciente}
+A classe \texttt{Paciente} mantém os dados cadastrais primários e os antecedentes imunoalérgicos do indivíduo. A integridade cadastral é aferida mediante validação dos dígitos verificadores do CPF e do identificador unificado do Cartão Nacional de Saúde (CNS). Para mitigar riscos iatrogênicos em prescrições, a coleção \texttt{alergias} armazena princípios ativos e alérgenos declarados.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- cpf : String [1]} & Chave natural de 11 dígitos; validada na base da Receita Federal. \\
+Atributo & \texttt{- cns : String [1]} & Identificador do Cartão Nacional de Saúde (15 dígitos). \\
+Atributo & \texttt{- nomeCivil : String} & Nome oficial de registro civil do paciente. \\
+Atributo & \texttt{- dataNascimento : Date} & Utilizada no cálculo dinâmico da idade para escores clínicos. \\
+Atributo & \texttt{- sexo : Char} & Sexo biológico ('M', 'F', 'I') para parametrização laboratorial. \\
+Atributo & \texttt{- contato : String} & Telefone, e-mail e dados de contato do responsável de emergência. \\
+Atributo & \texttt{- alergias : String[*]} & Coleção de substâncias e fármacos contraindicados. \\
+\midrule
+Método & \texttt{+ cadastrar() : void} & Efetua a persistência inicial no banco relacional via repositório. \\
+Método & \texttt{+ atualizarDados(c : String) : void} & Altera dados de contato com registro obrigatório de auditoria. \\
+Método & \texttt{+ adicionarAlergia(a : String) : void} & Inclui novo alérgeno com validação de unicidade na lista. \\
+Método & \texttt{+ validarDocumento() : Boolean} & Executa algoritmo de módulo 11 para verificação do CPF e CNS. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe Atendimento}
+A classe \texttt{Atendimento} materializa a estadia do paciente na unidade hospitalar, servindo como ponto focal de agregação para triagens, prontuários, alocações de leito e faturamento. Seu ciclo de vida obedece à máquina de estados descrita no requisito RF-002, transitando entre \texttt{AguardandoTriagem}, \texttt{EmTriagem}, \texttt{AguardandoConsulta}, \texttt{EmAtendimento}, \texttt{Internado}, \texttt{AltaMedica}, \texttt{Transferido} e \texttt{Obito}.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Chave substituta universalmente única (RFC 4122). \\
+Atributo & \texttt{- dataHoraEntrada : DateTime} & Carimbo de data/hora (UTC) do acolhimento na recepção. \\
+Atributo & \texttt{- tipoAdmissao : TipoAdmissao} & Enumerador: \texttt{Eletivo}, \texttt{Urgencia}, \texttt{Emergencia}. \\
+Atributo & \texttt{- statusAtendimento : Status} & Estado operacional corrente do fluxo assistencial. \\
+Atributo & \texttt{- medicoId : UUID} & Identificador do profissional médico responsável pela admissão. \\
+Atributo & \texttt{- leitoId : UUID [0..1]} & Referência opcional ao leito ocupado em caso de internação. \\
+\midrule
+Método & \texttt{+ iniciarAtendimento() : void} & Dispara o início da sessão assistencial e posiciona na fila. \\
+Método & \texttt{+ alocarLeito(id : UUID) : void} & Vincula o atendimento a um leito disponível, alterando seu estado. \\
+Método & \texttt{+ transferirLeito(novoId : UUID)} & Executa a realocação física com rastreamento de histórico. \\
+Método & \texttt{+ encerrarAltaMedica() : void} & Formaliza a alta, liberando o leito para higienização predial. \\
+Método & \texttt{+ registrarObito() : void} & Bloqueia novos lançamentos clínicos e encaminha declaração. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe TriagemManchester}
+A classe \texttt{TriagemManchester} registra a avaliação de gravidade conduzida pela equipe de enfermagem, parametrizada segundo os descritores do Protocolo de Manchester \cite{manchester:2014}. A aferição reúne cinco sinais vitais quantitativos e o nível de consciência pela Escala de Coma de Glasgow, computando a cor correspondente e o tempo-alvo máximo para o primeiro atendimento médico.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador primário imutável da triagem. \\
+Atributo & \texttt{- pressaoArterial : String} & Pressão arterial sistólica/diastólica em mmHg (ex.: "120/80"). \\
+Atributo & \texttt{- freqCardiaca : Integer} & Frequência cardíaca em batimentos por minuto (bpm). \\
+Atributo & \texttt{- freqRespiratoria : Integer} & Frequência respiratória em incursões por minuto (irpm). \\
+Atributo & \texttt{- satO2 : Decimal} & Saturação periférica de oxigênio em porcentagem (\%). \\
+Atributo & \texttt{- temperatura : Decimal} & Temperatura axilar aferida em graus Celsius ($^\circ$C). \\
+Atributo & \texttt{- glasgow : Integer} & Pontuação na Escala de Glasgow (valor inteiro entre 3 e 15). \\
+Atributo & \texttt{- corManchester : CorEnum} & Vermelho (imediato), Laranja (10 min), Amarelo (60 min), etc. \\
+Atributo & \texttt{- statusRisco : StatusRisco} & Classificação auxiliar: \texttt{Estavel}, \texttt{Alerta}, \texttt{Critico}. \\
+\midrule
+Método & \texttt{+ calcularEscore() : CorEnum} & Aplica a árvore de decisão do protocolo para sugerir prioridade. \\
+Método & \texttt{+ identificarSinaisAlerta() : List} & Retorna discriminares clínicos compatíveis com sepse precoce. \\
+Método & \texttt{+ avaliarFastTrack() : Boolean} & Avalia elegibilidade para encaminhamento a linhas de cuidado rápido. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe ProntuarioEletronico}
+A classe \texttt{ProntuarioEletronico} consolida o histórico médico e as condutas terapêuticas do paciente. Em conformidade com a Resolução CFM nº 1.821/2007 \cite{cfm_prontuario:2007}, os registros vinculados ao prontuário são estritamente cumulativos e imutáveis; correções exigem a adição de novas notas de retificação sem sobrescrita do conteúdo histórico.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador único global do repositório clínico do paciente. \\
+Atributo & \texttt{- dataCriacao : DateTime} & Carimbo de abertura do prontuário eletrônico institucional. \\
+Atributo & \texttt{- statusImutavel : Boolean} & Flag de garantia de não-exclusão lógica e física dos dados. \\
+Atributo & \texttt{- historico : Registro[]} & Coleção agregada de eventos clínicos indexados cronologicamente. \\
+\midrule
+Método & \texttt{+ adicionarEvolucao(e) : void} & Anexa uma nova nota médica estruturada ao histórico. \\
+Método & \texttt{+ anexarPrescricao(p) : void} & Vincula a prescrição médica digital aprovada ao atendimento. \\
+Método & \texttt{+ gerarHashIntegridade() : String} & Computa o resumo criptográfico SHA-256 do encadeamento do prontuário. \\
+Método & \texttt{+ exportarFHIR() : FHIRBundle} & Converte o histórico em recursos JSON padronizados HL7 FHIR R4 \cite{hl7_fhir:2019}. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe EvolucaoClinica}
+A classe \texttt{EvolucaoClinica} modela a descrição formal das alterações no estado de saúde do paciente, organizada pelo formato SOAP (Subjetivo, Objetivo, Avaliação e Plano) e segregada por sistemas orgânicos (cardiovascular, neurológico, respiratório, entre outros). Toda evolução requer assinatura digital qualificada (padrão ICP-Brasil) conforme a Resolução CFM nº 2.299/2021 \cite{cfm_digital:2021}.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador primário da nota evolutiva. \\
+Atributo & \texttt{- dataHora : DateTime} & Instante exato da realização do exame clínico e redação. \\
+Atributo & \texttt{- sistemaOrganico : Sistema} & Sistema biológico em foco (ex.: \texttt{Cardiovascular}, \texttt{Renal}). \\
+Atributo & \texttt{- descricaoEvolucao : Text} & Corpo do texto clínico contendo a propedêutica e conduta. \\
+Atributo & \texttt{- assinaturaDigital : AssinaturaVO} & Metadados do certificado digital X.509, carimbo do tempo e hash. \\
+\midrule
+Método & \texttt{+ registrarExameFisico(d) : void} & Registra dados propedêuticos objetivos e achados ectoscópicos. \\
+Método & \texttt{+ assinarDigitalmente(c) : void} & Assina o documento via certificado ICP-Brasil, tornando-o imutável. \\
+Método & \texttt{+ validarConformidadeCFM() : Bool} & Verifica a presença de CRM ativo, carimbo e assinatura válida. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe PrescricaoMedica}
+A classe \texttt{PrescricaoMedica} reúne as ordens de administração farmacológica, fluidoterapia e procedimentos profiláticos emitidos pelo médico responsável. No Vitalis v2.0, as prescrições possuem validade máxima parametrizada de 24 horas (exigindo reavaliação médica diária) e compõem uma relação forte com seus itens.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador único da folha de prescrição diária. \\
+Atributo & \texttt{- dataEmissao : DateTime} & Carimbo de data/hora da emissão médica formal. \\
+Atributo & \texttt{- validadeHoras : Integer} & Janela de vigência legal da prescrição (padrão: 24 horas). \\
+Atributo & \texttt{- assinaturaDigital : AssinaturaVO} & Assinatura eletrônica do médico prescritor (ICP-Brasil). \\
+Atributo & \texttt{- status : StatusPrescricao} & Enumerador: \texttt{Ativa}, \texttt{Vencida}, \texttt{Suspensa}, \texttt{Cancelada}. \\
+\midrule
+Método & \texttt{+ adicionarItem(i : Item) : void} & Adiciona novo item terapêutico após checagem pelo Copiloto de IA. \\
+Método & \texttt{+ cancelarPrescricao(m : String)} & Cancela a prescrição inteira com justificativa clínica compulsória. \\
+Método & \texttt{+ suspenderItem(id : UUID, j : String)} & Suspende fármaco individual sem invalidar o restante da folha. \\
+Método & \texttt{+ verificarVencimento() : Boolean} & Avalia se o tempo decorrido ultrapassou a janela de 24 horas. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe ItemPrescricao}
+A classe \texttt{ItemPrescricao} representa cada linha individual de medicação prescrita, contendo o princípio ativo, posologia, via de administração e horários de aprazamento. Durante o ciclo assistencial, a equipe de enfermagem executa a checagem beira-leito, com validação do paciente e registro de eventuais recusas ou efeitos adversos.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador unívoco do item farmacológico. \\
+Atributo & \texttt{- principioAtivo : String} & Denominação Comum Brasileira (DCB) do medicamento. \\
+Atributo & \texttt{- dosagem : String} & Concentração e quantidade prescrita (ex.: "500 mg", "10 ml"). \\
+Atributo & \texttt{- viaAdministracao : ViaEnum} & Via de aplicação: \texttt{Oral}, \texttt{Intravenosa}, \texttt{Inalatoria}, etc. \\
+Atributo & \texttt{- aprazamento : String} & Escala temporal de administração (ex.: "6/6h", "dose unica"). \\
+Atributo & \texttt{- statusChecagem : StatusChec} & Enumerador: \texttt{Pendente}, \texttt{Checado}, \texttt{Recusado}. \\
+\midrule
+Método & \texttt{+ checarAdministracao(enfId, dt)} & Registra a efetiva infusão beira-leito com biometria ou crachá. \\
+Método & \texttt{+ registrarRecusa(m : String)} & Registra a recusa fundamentada do paciente ou intercorrência. \\
+Método & \texttt{+ validarDoseMaxima() : Boolean} & Verifica se a dose diária acumulada respeita os limites da bula. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ==============================================================================
+% 8.4 ANALISE DETALHADA DE INFRAESTRUTURA E FATURAMENTO
+% ==============================================================================
+\subsection{Detalhamento do Pacote de Infraestrutura e Faturamento}
+\label{subsec:detalhe_infra_faturamento}
+
+A eficiência econômica e operacional do hospital depende da sincronia precisa entre a infraestrutura de internação e os processos de faturamento para as operadoras de planos de saúde e Sistema Único de Saúde.
+
+\subsubsection{Classe AlaHospitalar}
+A classe \texttt{AlaHospitalar} delimita uma divisão física e funcional da instituição, categorizada por complexidade assistencial (enfermaria clínica, UTI adulto, UTI neonatal, unidade cirúrgica). Ela congrega os leitos físicos por meio de agregação e provê métodos para cálculo dinâmico da taxa de ocupação.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Chave primária da unidade física ou setor hospitalar. \\
+Atributo & \texttt{- nomeAla : String} & Descrição institucional (ex.: "UTI Coronariana - Bloco B"). \\
+Atributo & \texttt{- tipoComplexidade : TipoEnum} & Nível de assistência: \texttt{Baixa}, \texttt{Media}, \texttt{UTI\_Adulto}, etc. \\
+Atributo & \texttt{- capacidadeTotal : Integer} & Quantidade máxima de leitos estruturados na ala. \\
+\midrule
+Método & \texttt{+ adicionarLeito(l : Leito) : void} & Associa um novo leito físico mantendo a restrição de capacidade. \\
+Método & \texttt{+ calcularTaxaOcupacao() : Decimal} & Retorna a razão percentual entre leitos ocupados e o total ativo. \\
+Método & \texttt{+ obterLeitosDisponiveis() : List} & Consulta leitos com estado operacional estritamente \texttt{Livre}. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe Leito}
+A classe \texttt{Leito} gerencia o estado operacional do mobiliário e espaço de internação. Para prevenir riscos de infecção hospitalar cruzada e assegurar rotatividade segura, o leito percorre um ciclo obrigatório de higienização antes de ser disponibilizado para novas internações.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- numero : String [1]} & Código de identificação visível do leito (ex.: "LEI-204-A"). \\
+Atributo & \texttt{- statusLeito : StatusLeitoEnum} & Estados: \texttt{Livre}, \texttt{Ocupado}, \texttt{Higienizacao}, \texttt{Manutencao}. \\
+Atributo & \texttt{- alaId : UUID [1]} & Chave estrangeira que referencia a \texttt{AlaHospitalar} de alocação. \\
+\midrule
+Método & \texttt{+ ocupar(atendId : UUID) : void} & Transiciona o estado para \texttt{Ocupado} e bloqueia novas reservas. \\
+Método & \texttt{+ desocupar() : void} & Chaveia para \texttt{Higienizacao} imediatamente após a alta. \\
+Método & \texttt{+ solicitarHigienizacao() : void} & Dispara chamado à governança com nível de desinfecção específico. \\
+Método & \texttt{+ liberarHigienizacao() : void} & Atualiza para \texttt{Livre} após validação pelo supervisor predial. \\
+Método & \texttt{+ interditarManutencao(m : String)} & Bloqueia o leito por avaria mecânica ou manutenção de gases. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe ContaFaturamento}
+A classe \texttt{ContaFaturamento} apura os custos diretos da assistência prestada durante o atendimento. Ela consolida diárias de internação, materiais descartáveis, medicamentos administrados e honorários profissionais, executando rotinas automáticas de pré-auditoria para identificar inconsistências cadastrais antes da emissão definitiva da fatura.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Chave primária da conta médica do atendimento. \\
+Atributo & \texttt{- valorTotal : Decimal} & Montante financeiro apurado com precisão monetária (2 casas). \\
+Atributo & \texttt{- statusAuditoria : StatusAudit} & Estados: \texttt{EmAberto}, \texttt{PreAuditada}, \texttt{Aprovada}, \texttt{Discrepante}. \\
+Atributo & \texttt{- dataFechamento : DateTime [0..1]} & Instante do fechamento administrativo da conta. \\
+\midrule
+Método & \texttt{+ consolidarItensConsumo() : void} & Cruza itens checados na prescrição com tabela de preços TUSS. \\
+Método & \texttt{+ executarAuditoriaPrevia() : void} & Varre a conta em busca de incompatibilidades diagnósticas (CID x TUSS). \\
+Método & \texttt{+ gerarFaturaConvenio() : void} & Estrutura a fatura comercial nos padrões do convênio pagador. \\
+Método & \texttt{+ fecharConta() : void} & Trava a conta contra novas alterações e autoriza o envio. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe GuiaTISS}
+A classe \texttt{GuiaTISS} gera e valida os arquivos XML exigidos pelo padrão de Troca de Informação em Saúde Suplementar (TISS v4.01) da Agência Nacional de Saúde Suplementar (ANS) \cite{ans_tiss:2023}. A classe encapsula a validação estrutural contra esquemas XSD oficiais, realiza a transmissão via barramento SOAP seguro e processa os retornos eletrônicos com mapeamento de eventuais glosas.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- numeroGuia : String [1]} & Número único da guia de internação ou consulta (padrão ANS). \\
+Atributo & \texttt{- padraoANS : String} & Versão do componente organizacional da ANS (ex.: "v4.01.00"). \\
+Atributo & \texttt{- xmlPayload : XMLDocument} & Mensagem estruturada em conformidade com o XSD da ANS. \\
+Atributo & \texttt{- statusEnvio : StatusEnvio} & Enumerador: \texttt{Pendente}, \texttt{Transmitida}, \texttt{Aceita}, \texttt{Glosada}. \\
+\midrule
+Método & \texttt{+ gerarXMLTISS() : String} & Serializa os dados da conta hospitalar na sintaxe XML do padrão TISS. \\
+Método & \texttt{+ validarSchemaXSD() : Boolean} & Valida o documento contra a árvore de esquemas XSD da operadora. \\
+Método & \texttt{+ transmitirOperadora() : void} & Dispara requisição HTTPS mTLS para o webservice da fonte pagadora. \\
+Método & \texttt{+ processarRetornoGlosa(xml) : void} & Extrai códigos de glosa e atualiza a conta para contestação recursal. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ==============================================================================
+% 8.5 ANALISE DETALHADA DO MODULO DE IA E AUDITORIA
+% ==============================================================================
+\subsection{Detalhamento do Pacote de Inteligência Artificial e Auditoria}
+\label{subsec:detalhe_ia_auditoria}
+
+O subsistema de inteligência artificial do Vitalis v2.0 atua exclusivamente como ferramenta consultiva de suporte à decisão clínica, operando sob supervisão médica humana estrita (\textit{human-in-the-loop}).
+
+\subsubsection{Classe PredicaoRiscoClinico}
+A classe \texttt{PredicaoRiscoClinico} armazena os resultados inferenciais dos algoritmos de alerta precoce e probabilidade de sepse precoce \cite{singer_sepsis:2016}. Os cálculos baseiam-se em sinais vitais objetivos e contam com matriz de interpretabilidade em formato JSON com valores SHAP \cite{lundberg_shap:2017}, explicitando ao médico os parâmetros que mais contribuíram para o escore de alerta.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador primário da rodada preditiva. \\
+Atributo & \texttt{- scoreQSOFA : Integer} & Pontuação qSOFA (0 a 3) para triagem rápida de sepse à beira-leito. \\
+Atributo & \texttt{- scoreNEWS2 : Integer} & Pontuação agregada do National Early Warning Score 2 (0 a 20) \cite{rcp_news2:2017}. \\
+Atributo & \texttt{- probabilidadeSepse : Decimal} & Estimativa probabilística calculada por modelo calibrado ($0,00$ a $1,00$). \\
+Atributo & \texttt{- scoreDeterioracao : Decimal} & Índice percentual composto de deterioração clínica rápida. \\
+Atributo & \texttt{- explicabilidadeJSON : JSON} & Pesos relativos de cada sinal vital derivados via SHAP \cite{lundberg_shap:2017}. \\
+\midrule
+Método & \texttt{+ processarPredicao(d) : void} & Alimenta os dados de entrada na estratégia algorítmica selecionada. \\
+Método & \texttt{+ dispararAlertaDeterioracao()} & Emite evento WebSocket prioritário caso os limiares críticos estourem. \\
+Método & \texttt{+ gerarExplicabilidadeSHAP() : JSON} & Computa as contribuições marginais dos sinais para a interface médica. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe LogInferenciaIA}
+A classe \texttt{LogInferenciaIA} garante a rastreabilidade total de cada chamada aos modelos preditivos e generativos. Ela registra o hash SHA-256 dos dados sanitizados enviados, a versão exata do modelo, a latência de execução (ms), a sugestão fornecida pela máquina e a decisão clínica tomada pelo profissional de saúde (aceitação integral, modificação da conduta ou rejeição justificada).
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador único da transação de inferência de IA. \\
+Atributo & \texttt{- modeloVersao : String} & Versão do artefato do modelo (ex.: "Clinical-NEWS2-v1.4"). \\
+Atributo & \texttt{- latencyMs : Integer} & Tempo decorrido de execução em milissegundos. \\
+Atributo & \texttt{- promptSanitizadoHash : String} & Hash criptográfico dos dados de entrada sem identificadores pessoais. \\
+Atributo & \texttt{- respostaIA : Text} & Conteúdo textual ou JSON retornado pelo motor de inferência. \\
+Atributo & \texttt{- decisaoMedica : DecisaoEnum} & Conduta adotada pelo médico: \texttt{Aceito}, \texttt{Modificado}, \texttt{Rejeitado}. \\
+Atributo & \texttt{- feedbackHumano : String} & Justificativa clínica preenchida quando o parecer da IA é recusado. \\
+\midrule
+Método & \texttt{+ registrarInferencia() : void} & Salva a transação em armazenamento com proteção contra deleção. \\
+Método & \texttt{+ capturarFeedbackClinico(d, f)} & Associa a ação tomada pelo médico ao registro de predição. \\
+Método & \texttt{+ verificarDerivaModelo() : Boolean} & Analisa se a taxa de rejeição recente indica descalibração do modelo. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe VetorEmbeddingClinico}
+A classe \texttt{VetorEmbeddingClinico} dá suporte ao módulo de Geração Aumentada por Recuperação (RAG) \cite{lewis_rag:2020}. Ela armazena representações vetoriais densas de 1536 dimensões extraídas de diretrizes institucionais, protocolos do Ministério da Saúde e consensos científicos de sepse, permitindo busca semântica por similaridade de cosseno via índices de grafos HNSW.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador primário do fragmento vetorial indexado. \\
+Atributo & \texttt{- fonteDiretriz : String} & Origem documental (ex.: "Protocolo de Sepse ILAS 2026 - Cap. 3"). \\
+Atributo & \texttt{- vetorEmbedding : Vector[1536]} & Vetor denso de ponto flutuante gerado por modelo embedding. \\
+Atributo & \texttt{- metadadosJSON : JSON} & Metadados de busca contendo palavras-chave, autor e data de vigência. \\
+\midrule
+Método & \texttt{+ gerarEmbedding(t : String)} & Executa o pipeline de tokenização e vetorização da diretriz médica. \\
+Método & \texttt{+ calcularSimilaridade(v) : Decimal} & Computa a métrica de cosseno entre a queixa do paciente e o vetor. \\
+Método & \texttt{+ atualizarIndiceHNSW() : void} & Reindexa o grafo de vizinhos mais próximos no PostgreSQL/pgvector. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsubsection{Classe TrilhaAuditoria}
+A classe \texttt{TrilhaAuditoria} atua como salvaguarda jurídica e de conformidade à LGPD (Lei nº 13.709/2018) \cite{brasil_lgpd:2018}. Ela intercepta operações de criação, modificação ou exclusão em qualquer entidade do sistema. Cada registro armazena o hash criptográfico SHA-256 do registro anterior, compondo uma cadeia contínua e imutável que inviabiliza adulterações retroativas em bancos de dados.
+
+\begingroup
+\small
+\noindent\begin{tabularx}{\linewidth}{l >{\raggedright\arraybackslash}p{5.7cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Assinatura / Tipo} & \textbf{Descrição Técnica e Regra de Negócio} \\
+\midrule
+Atributo & \texttt{- id : UUID [1]} & Identificador único da entrada de auditoria. \\
+Atributo & \texttt{- timestampUTC : DateTime} & Carimbo de data/hora (UTC) atestado por autoridade de carimbo. \\
+Atributo & \texttt{- operadorId : UUID} & Identificador do usuário autenticado responsável pelo evento. \\
+Atributo & \texttt{- operacao : TipoOperacao} & Ação: \texttt{INSERT}, \texttt{UPDATE}, \texttt{DELETE}, \texttt{VIEW}, \texttt{OVERRIDE}. \\
+Atributo & \texttt{- tabelaAfetada : String} & Nome da tabela relacional sobre a qual a ação incidiu. \\
+Atributo & \texttt{- hashAnterior : String [1]} & Resumo criptográfico SHA-256 encadeado da transação precedente. \\
+\midrule
+Método & \texttt{+ registrarEventoAuditoria(e)} & Grava o evento na trilha com integridade transacional imediata. \\
+Método & \texttt{+ gerarHashSHA256() : String} & Calcula o resumo criptográfico incorporando o hash do bloco anterior. \\
+Método & \texttt{+ verificarCadeiaCustodia() : Bool} & Percorre a cadeia de logs para certificar a ausência de violações. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ==============================================================================
+% 8.6 PADROES DE PROJETO E ARQUITETURA DE SOFTWARE APLICADOS
+% ==============================================================================
+\subsection{Padrões de Projeto e Arquitetura de Software Aplicados}
+\label{subsec:padroes_projeto}
+
+A concepção estática do Vitalis v2.0 adota padrões de projeto catalogados pelo \textit{Gang of Four} (GoF) \cite{gamma_design_patterns:1994} e pela arquitetura de aplicações corporativas \cite{fowler_patterns:2002}. Os padrões selecionados visam atender aos princípios de desacoplamento, testabilidade e resiliência exigidos em sistemas de saúde.
+
+\subsubsection{Padrão Strategy para os Módulos de Inteligência Artificial}
+O cálculo de escores clínicos de gravidade varia de acordo com o quadro do paciente e o tipo de unidade hospitalar: enquanto a triagem inicial se beneficia da agilidade do escore qSOFA, enfermarias monitoram pacientes estáveis via NEWS2 e unidades de terapia intensiva demandam recuperação contextual de literatura médica via RAG clínico. Além disso, contingências de rede podem inviabilizar chamadas a modelos externos.
+
+Para solucionar essas variações sem violar o princípio Aberto/Fechado (OCP), o Vitalis v2.0 implementa o padrão \textbf{Strategy} \cite{gamma_design_patterns:1994}. A interface \texttt{IEstrategiaPredicao} estabelece um contrato unificado, implementado por quatro classes especializadas:
+
+\begin{itemize}[leftmargin=*]
+    \item \texttt{SepseStrategy}: Calcula a pontuação qSOFA com base em frequência respiratória ($\ge 22\,\text{irpm}$), pressão sistólica ($\le 100\,\text{mmHg}$) e alteração mental (Glasgow $< 15$) \cite{singer_sepsis:2016}.
+    \item \texttt{NEWS2Strategy}: Aplica a tabela ponderada de 7 parâmetros hemodinâmicos preconizada pelo \textit{Royal College of Physicians} \cite{rcp_news2:2017}.
+    \item \texttt{RAGClinicoStrategy}: Realiza busca semântica em base vetorial local e aciona modelo generativo para sintetizar condutas baseadas em diretrizes \cite{lewis_rag:2020}.
+    \item \texttt{FallbackDeterministicoStrategy}: Mecanismo de contingência operado por \textit{Circuit Breaker}. Se a resposta da API externa exceder o limite de 2,0 segundos, o sistema comuta automaticamente para esta estratégia, que opera sobre matrizes de decisão locais e assegura disponibilidade sem interrupção assistencial.
+\end{itemize}
+
+A Figura \ref{fig:padrao_strategy_ia} ilustra a modelagem formal do padrão Strategy no núcleo de IA.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[x=1cm, y=1cm, >=Latex]
+
+\tikzset{
+  umlInterface/.style={
+    draw=purple!85!black,
+    fill=purple!4,
+    rectangle split,
+    rectangle split parts=2,
+    rectangle split draw splits=true,
+    rounded corners=2pt,
+    text width=5.6cm,
+    font=\small\sffamily,
+    align=left,
+    inner sep=4pt,
+    line width=0.9pt
+  },
+  umlClassStrategy/.style={
+    draw=vitalisdark,
+    fill=white,
+    rectangle split,
+    rectangle split parts=3,
+    rectangle split draw splits=true,
+    rounded corners=2pt,
+    text width=4.8cm,
+    font=\scriptsize\sffamily,
+    align=left,
+    inner sep=3.5pt,
+    line width=0.8pt
+  },
+  umlRealization/.style={
+    -{Triangle[open, length=3.2mm]},
+    dashed,
+    draw=vitalisdark,
+    line width=0.8pt
+  },
+  umlAssociation/.style={
+    -Latex,
+    draw=vitalisdark,
+    line width=0.8pt
+  }
+}
+
+% Contexto: PredicaoRiscoClinico
+\node[umlClassStrategy] at (1.0, 6.2) (Contexto) {
+  \textbf{\centerline{\textcolor{purple!85!black}{PredicaoRiscoClinico}}}
+  \nodepart{second}
+  - estrategiaAtiva : IEstrategiaPredicao \\
+  - resultadoScore : Decimal
+  \nodepart{third}
+  + definirEstrategia(e : IEstrategiaPredicao) : void \\
+  + executarCalculoRisco(dados : SinaisVO) : void
+};
+
+% Interface Strategy centralizada sobre as implementações
+\node[umlInterface] at (7.75, 6.2) (Interface) {
+  \centering\textbf{\guillemotleft interface\guillemotright} \\
+  \textbf{IEstrategiaPredicao}
+  \nodepart{second}
+  + calcularRisco(dados : ContextoClinicoVO) : ResultadoPredicaoVO
+};
+
+% Estrategias Concretas
+\node[umlClassStrategy] at (-0.5, 1.0) (Sepse) {
+  \textbf{\centerline{SepseStrategy}}
+  \nodepart{second}
+  - limiarHipotensao : Decimal \\
+  - limiarFreqResp : Integer
+  \nodepart{third}
+  + calcularRisco(dados) : ResultadoVO \\
+  - pontuarQSOFA(dados) : Integer
+};
+
+\node[umlClassStrategy] at (5.0, 1.0) (NEWS2) {
+  \textbf{\centerline{NEWS2Strategy}}
+  \nodepart{second}
+  - matrizPontuacao : Matrix \\
+  - usoSuporteOxigenio : Boolean
+  \nodepart{third}
+  + calcularRisco(dados) : ResultadoVO \\
+  - ponderarFaixasAlerta(dados) : Integer
+};
+
+\node[umlClassStrategy] at (10.5, 1.0) (RAG) {
+  \textbf{\centerline{RAGClinicoStrategy}}
+  \nodepart{second}
+  - modeloEmbedding : String \\
+  - topKFragmentos : Integer = 3
+  \nodepart{third}
+  + calcularRisco(dados) : ResultadoVO \\
+  - consultarSimilaridade(texto) : List
+};
+
+\node[umlClassStrategy] at (16.0, 1.0) (Fallback) {
+  \textbf{\centerline{FallbackDeterministicoStrategy}}
+  \nodepart{second}
+  - timeoutMaximoMs : Integer = 2000 \\
+  - regrasLocaisAtivas : Boolean
+  \nodepart{third}
+  + calcularRisco(dados) : ResultadoVO \\
+  - avaliarSinaisVitaisLocais() : ResultadoVO
+};
+
+% Associacao Contexto -> Interface
+\draw[umlAssociation] (Contexto) -- node[above]{\scriptsize 1} node[above, near end]{\scriptsize 1} (Interface);
+
+% Barramento de Realização (unifica linha horizontal e evita sobreposição de setas)
+\draw[dashed, draw=vitalisdark, line width=0.8pt] 
+  (Sepse.north) -- ++(0,1.3) coordinate (busSepse) -- 
+  (Fallback.north |- busSepse) coordinate (busFallback) -- (Fallback.north);
+\draw[dashed, draw=vitalisdark, line width=0.8pt] (NEWS2.north) -- (NEWS2.north |- busSepse);
+\draw[dashed, draw=vitalisdark, line width=0.8pt] (RAG.north) -- (RAG.north |- busSepse);
+\draw[umlRealization] (Interface.south |- busSepse) -- (Interface.south);
+
+\end{tikzpicture}
+}
+\caption{Diagrama UML do Padrão Strategy para Inferência e Predição Clínica}
+\label{fig:padrao_strategy_ia}
+\end{figure}
+
+\subsubsection{Padrão Repository para Isolamento da Persistência}
+Para evitar o acoplamento do domínio clínico com ferramentas de banco de dados ou bibliotecas ORM, o sistema adota o padrão \textbf{Repository} \cite{fowler_patterns:2002}. Cada entidade raiz de agregação possui uma interface que expõe exclusivamente métodos orientados a coleções de domínio:
+
+\begin{itemize}[leftmargin=*]
+    \item \texttt{IPacienteRepository}: persistência e busca por CPF e CNS.
+    \item \texttt{IAtendimentoRepository}: consulta ativa, triagem e persistência.
+    \item \texttt{IProntuarioRepository}: agrega notas, prescrições e histórico clínico.
+    \item \texttt{ILeitoRepository}: consulta de vagas e atualização de estado operacional.
+    \item \texttt{IContaFaturamentoRepository}: fechamento e consolidação de despesas assistenciais.
+\end{itemize}
+
+Dessa forma, regras assistenciais permanecem testáveis em ambiente de homologação por meio de repositórios em memória (\textit{test doubles}), sem dependência de instâncias de PostgreSQL ativas.
+
+\subsubsection{Normalização em Terceira Forma Normal (3NF) e Modelo Relacional}
+O mapeamento físico das classes modeladas respeita com exatidão os critérios da Terceira Forma Normal (3NF) \cite{pressman:2016}:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Primeira Forma Normal (1NF)}: Todos os atributos contêm valores atômicos indivisíveis. A coleção de alérgenos da classe \texttt{Paciente} é extraída para a tabela associativa relacional \texttt{PACIENTE\_ALERGIA}, eliminando listas aninhadas. Da mesma forma, os itens da prescrição residem na entidade separada \texttt{ITEM\_PRESCRICAO}, dotada de chave primária própria.
+    \item \textbf{Segunda Forma Normal (2NF)}: A estrutura atende à 1NF e todos os atributos não-chave dependem funcionalmente da totalidade da chave primária. Como todas as entidades adotam chaves substitutas artificiais unicomponentes (\texttt{UUID v4}), inexistem chaves compostas e, por decorrência lógica, anula-se o risco de dependências funcionais parciais.
+    \item \textbf{Terceira Forma Normal (3NF)}: A estrutura atende à 2NF e nenhum atributo não-chave depende transitivamente de outro atributo não-chave. Por exemplo, a classe \texttt{Leito} referencia apenas a chave estrangeira \texttt{alaId}. Dados descritivos da ala hospitalar (como \texttt{nomeAla}, \texttt{tipoComplexidade} e \texttt{capacidadeTotal}) são mantidos estritamente na tabela \texttt{ALA\_HOSPITALAR}. Isso impede redundâncias de armazenamento e anomalias de atualização ou deleção anômala.
+\end{enumerate}
+
+Para assegurar a perenidade dos registros exigida pela legislação, operações de remoção física (\texttt{DELETE}) são bloqueadas no banco de dados. As tabelas centrais (\texttt{PACIENTE}, \texttt{ATENDIMENTO}, \texttt{PRONTUARIO\_ELETRONICO}, \texttt{EVOLUCAO\_CLINICA} e \texttt{TRILHA\_AUDITORIA}) utilizam chaves com restrição \texttt{ON DELETE RESTRICT}.
+
+% ==============================================================================
+% 8.7 MATRIZ DE RASTREABILIDADE
+% ==============================================================================
+\subsection{Matriz de Rastreabilidade entre Classes e Requisitos}
+\label{subsec:rastreabilidade_classes}
+
+A Tabela \ref{tab:rastreabilidade_classes} correlaciona as 15 classes centrais modeladas com os Requisitos Funcionais (RF-001 a RF-022) e Regras de Negócio (RN-001 a RN-012) definidos na Seção \ref{sec:requisitos}.
+
+\begingroup
+\small
+\begin{xltabular}{\textwidth}{l l X c}
+\caption{Matriz de Rastreabilidade: Classes do Modelo Estático vs. Requisitos do Sistema} \label{tab:rastreabilidade_classes} \\
+\toprule
+\textbf{Classe Modelada} & \textbf{Pacote} & \textbf{Requisitos Funcionais Atendidos} & \textbf{Regras de Negócio} \\
+\midrule
+\endfirsthead
+
+\multicolumn{4}{c}{{\tablename\ \thetable{} -- Continuação da página anterior}} \\
+\toprule
+\textbf{Classe Modelada} & \textbf{Pacote} & \textbf{Requisitos Funcionais Atendidos} & \textbf{Regras de Negócio} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{4}{r}{{Continua na próxima página \ldots}} \\
+\bottomrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+\texttt{Paciente} & Clínico & RF-001, RF-002, RF-018 & RN-001, RN-002 \\
+\texttt{Atendimento} & Clínico & RF-002, RF-003, RF-004, RF-008, RF-015 & RN-003, RN-006 \\
+\texttt{TriagemManchester} & Clínico & RF-003, RF-004, RF-011, RF-012 & RN-004, RN-005 \\
+\texttt{ProntuarioEletronico} & Clínico & RF-005, RF-007, RF-010, RF-019 & RN-007, RN-008 \\
+\texttt{EvolucaoClinica} & Clínico & RF-005, RF-006, RF-014 & RN-007, RN-008 \\
+\texttt{PrescricaoMedica} & Clínico & RF-007, RF-008, RF-013 & RN-009, RN-010 \\
+\texttt{ItemPrescricao} & Clínico & RF-007, RF-008, RF-013 & RN-009, RN-010 \\
+\midrule
+\texttt{AlaHospitalar} & Infraestrutura & RF-009, RF-017 & RN-006 \\
+\texttt{Leito} & Infraestrutura & RF-008, RF-009, RF-017 & RN-006 \\
+\texttt{ContaFaturamento} & Faturamento & RF-015, RF-016 & RN-011, RN-012 \\
+\texttt{GuiaTISS} & Faturamento & RF-015, RF-016 & RN-011, RN-012 \\
+\midrule
+\texttt{PredicaoRiscoClinico} & IA e Auditoria & RF-004, RF-011, RF-012 & RN-004, RN-005 \\
+\texttt{LogInferenciaIA} & IA e Auditoria & RF-011, RF-012, RF-013, RF-020 & RN-005, RN-010 \\
+\texttt{VetorEmbeddingClinico} & IA e Auditoria & RF-013, RF-014, RF-020 & RN-005, RN-010 \\
+\texttt{TrilhaAuditoria} & IA e Auditoria & RF-018, RF-019, RF-020, RF-021 & RN-001, RN-008 \\
+\end{xltabular}
+\endgroup
+
+A estrutura estática apresentada fornece a fundação necessária para a realização dinâmica dos casos de uso e orquestrações de processo (BPMN), preservando o rigor assistencial, a solidez transacional e a aderência aos padrões de engenharia de software da plataforma Vitalis v2.0.
