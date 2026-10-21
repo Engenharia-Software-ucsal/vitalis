@@ -1,0 +1,337 @@
+\section{Metrificação em Horas e Estimativa de Esforço}
+
+O dimensionamento de esforço em projetos de software hospitalar de alta complexidade demanda rigor metodológico, decomposição granular de tarefas e modelos quantitativos de estimativa. O sistema Vitalis v2.0 opera como uma plataforma assistencial e administrativa orientada a microsserviços, integrando regras determinísticas de triagem, prontuário eletrônico e faturamento a pipelines probabilísticos de inteligência artificial clínica. Subestimar o esforço de engenharia gera atrasos em marcos regulatórios, degradação da cobertura de testes de carga e falhas na conformidade com normas sanitárias e de proteção de dados \cite{pressman:2016, sommerville:2019}.
+
+Esta seção formaliza a metrificação do projeto em cinco eixos:
+\begin{enumerate}[leftmargin=*]
+    \item Critérios metodológicos de decomposição e justificativa da margem de contingência técnica;
+    \item Estrutura Analítica do Projeto (EAP / WBS) em três níveis hierárquicos;
+    \item Detalhamento analítico de horas por pacote de trabalho e subtarefa técnica;
+    \item Matriz de distribuição de esforço pelos sete perfis profissionais da equipe multidisciplinar;
+    \item Consolidação geral do esforço, aplicação da contingência de 15\% e análise de viabilidade temporal frente ao cronograma de 28 semanas.
+\end{enumerate}
+
+% ==============================================================================
+% 6.1 METODOLOGIA DE ESTIMATIVA E CRITÉRIOS DE DIMENSIONAMENTO
+% ==============================================================================
+\subsection{Metodologia de Estimativa e Critérios de Dimensionamento}
+
+A estimativa de esforço do Vitalis v2.0 adota o método ascendente (\textit{bottom-up}), baseado nas práticas do PMBOK (\textit{Project Management Body of Knowledge}) e adaptado aos ciclos quinzenais do modelo Scrum \cite{pressman:2016}. Cada pacote de trabalho da EAP decompõe-se em subtarefas técnicas, cujos esforços são quantificados em horas a partir da complexidade de domínio e da experiência prévia da equipe.
+
+O dimensionamento considerou três vetores de complexidade específicos do ambiente hospitalar:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Missão crítica e tolerância nula a falhas}: A operação ininterrupta do pronto-atendimento e das internações exige disponibilidade de 99,9\% (RNF-007), latência de resposta inferior a 2,0 segundos para 500 usuários concorrentes (RNF-001) e recuperação de desastres com RTO máximo de 4 horas e RPO de 1 hora (RNF-013). Esses requisitos ampliam as horas dedicadas à arquitetura de microsserviços, à mensageria distribuída (BullMQ/Redis) e aos testes de carga.
+    \item \textbf{Convivência entre determinismo clínico e IA generativa/preditiva}: O Vitalis v2.0 acopla modelos estatísticos de predição de sepse precoce (escores qSOFA e NEWS2), sumarização clínica via LLMs e copiloto farmacológico baseado em recuperação contextual (RAG com \texttt{pgvector}) a fluxos determinísticos rígidos (Protocolo de Manchester e validações CFM). Essa integração exige esforço direcionado à esteira de MLOps, à mitigação de alucinações, à anonimização de dados pessoais e ao desenho de interfaces voltadas à supervisão médica obrigatória (\textit{Human-in-the-Loop}).
+    \item \textbf{Conformidade regulatória e trilha de auditoria}: A adesão à Lei Geral de Proteção de Dados (LGPD, Lei nº 13.709/2018) \cite{brasil_lgpd:2018}, às resoluções do Conselho Federal de Medicina (CFM nº 1.821/2007 e nº 2.299/2021) \cite{cfm_prontuario:2007, cfm_digital:2021} e ao padrão TISS/TUSS da ANS \cite{ans_tiss:2023} exige o desenvolvimento de mecanismos de criptografia AES-256 em repouso, assinaturas digitais ICP-Brasil e trilha de auditoria transacional imutável (\texttt{LOG\_AUDITORIA}).
+\end{itemize}
+
+Para absorver incertezas em calibração de modelos de IA, refinamento de prompts contextuais e oscilações em testes de estresse sob 2.000 requisições simultâneas, aplica-se uma \textbf{reserva de contingência técnica de 15\%} sobre o esforço base planejado, alinhando-se aos parâmetros recomendados na literatura de engenharia de software para sistemas críticos \cite{sommerville:2019}.
+
+% ==============================================================================
+% 6.2 ESTRUTURA ANALÍTICA DO PROJETO (EAP / WBS)
+% ==============================================================================
+\subsection{Estrutura Analítica do Projeto (EAP)}
+
+A Estrutura Analítica do Projeto (EAP / WBS) organiza o escopo total do Vitalis v2.0 em entregas gerenciáveis e hierárquicas. O projeto estrutura-se em três níveis funcionais:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Nível 1 (Projeto)}: Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0);
+    \item \textbf{Nível 2 (Pacotes de Trabalho / \textit{Work Packages})}: Sete macrocomponentes de entrega técnica cobrindo todo o ciclo de vida da solução;
+    \item \textbf{Nível 3 (Subtarefas Técnicas)}: Trinta e oito atividades operacionais com critérios de aceitação e entregáveis tangíveis.
+\end{itemize}
+
+A Figura \ref{fig:eap_vitalis} esquematiza a árvore hierárquica dos pacotes de trabalho de Nível 2 do projeto Vitalis v2.0.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    font=\footnotesize\sffamily,
+    boxRoot/.style = {rectangle, rounded corners=3pt, draw=vitalisdark, fill=vitalisdark, text=white, font=\small\bfseries\sffamily, text width=7.2cm, align=center, minimum height=0.85cm},
+    boxPkg/.style = {rectangle, rounded corners=2pt, draw=vitalisblue, fill=vitalislight!70, text=vitalisdark, font=\footnotesize\bfseries\sffamily, text width=5.6cm, align=left, minimum height=0.75cm, inner xsep=8pt},
+    line/.style = {draw=vitalisblue!80, line width=0.8pt}
+]
+    % Nó Raiz
+    \node[boxRoot] (root) at (0, 0) {Vitalis v2.0: Gestão Hospitalar com IA};
+
+    % Tronco central
+    \draw[line] (root.south) -- (0, -3.8);
+
+    % Pacotes da Esquerda
+    \node[boxPkg, anchor=east] (pkg1) at (-0.4, -1.1) {1.0 Requisitos e Modelagem (180h)};
+    \node[boxPkg, anchor=east] (pkg2) at (-0.4, -2.0) {2.0 Arquitetura e Backend (520h)};
+    \node[boxPkg, anchor=east] (pkg3) at (-0.4, -2.9) {3.0 IA e MLOps (452h)};
+    \node[boxPkg, anchor=east] (pkg4) at (-0.4, -3.8) {4.0 Frontend Tablet/Web (400h)};
+
+    \draw[line] (0, -1.1) -- (pkg1.east);
+    \draw[line] (0, -2.0) -- (pkg2.east);
+    \draw[line] (0, -2.9) -- (pkg3.east);
+    \draw[line] (0, -3.8) -- (pkg4.east);
+
+    % Pacotes da Direita
+    \node[boxPkg, anchor=west] (pkg5) at (0.4, -1.1) {5.0 QA e Testes de Carga (240h)};
+    \node[boxPkg, anchor=west] (pkg6) at (0.4, -2.0) {6.0 LGPD e Segurança (180h)};
+    \node[boxPkg, anchor=west] (pkg7) at (0.4, -2.9) {7.0 Implantação e Treino (188h)};
+
+    \draw[line] (0, -1.1) -- (pkg5.west);
+    \draw[line] (0, -2.0) -- (pkg6.west);
+    \draw[line] (0, -2.9) -- (pkg7.west);
+\end{tikzpicture}
+\caption{Representação hierárquica da Estrutura Analítica do Projeto (EAP)}
+\label{fig:eap_vitalis}
+\end{figure}
+
+Os sete pacotes de trabalho delimitam o escopo da solução:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{WP 1.0: Engenharia de Requisitos e Modelagem Clínica}: Elicitação com equipes de emergência, enfermagem e faturamento, formalização dos 22 requisitos funcionais e 12 regras de negócio, modelagem de processos BPMN 2.0 e mapeamento semântico HL7 FHIR \cite{hl7_fhir:2019}.
+    \item \textbf{WP 2.0: Arquitetura, Infraestrutura e Backend}: Núcleo de microsserviços em NestJS com Fastify, modelagem relacional PostgreSQL em 3NF, mensageria distribuída via BullMQ e Redis, gestão de sessões, PEP imutável, prescrição eletrônica e faturamento TISS/TUSS.
+    \item \textbf{WP 3.0: Inteligência Artificial e Engenharia MLOps}: Gateway seguro com anonimização PII, pipeline de reconhecimento de fala Whisper, modelos preditivos de deterioração clínica e sepse (qSOFA/NEWS2), copiloto farmacológico RAG com \texttt{pgvector}, estimativa de permanência (LOS) e auditoria preventiva de glosas.
+    \item \textbf{WP 4.0: Desenvolvimento Frontend Tablet e Web}: Design system institucional acessível (WCAG 2.1 AA), aplicação responsiva para tablets de triagem à beira do leito, mapa interativo de leitos em tempo real via WebSockets, portal web do prontuário eletrônico e portal restrito do paciente.
+    \item \textbf{WP 5.0: Qualidade, Testes de Carga e Homologação}: Automação de testes unitários e de integração (Jest/Supertest), testes de ponta a ponta (Playwright), testes de carga e estresse com k6 para 2.000 conexões concorrentes e homologação clínica formal com o comitê médico.
+    \item \textbf{WP 6.0: Governança, LGPD e Segurança da Informação}: Criptografia em repouso AES-256, canal seguro TLS 1.3, trilha imutável de auditoria transacional (\texttt{LOG\_AUDITORIA}), módulo de assinatura digital ICP-Brasil e análises de vulnerabilidades SAST/DAST e pentests.
+    \item \textbf{WP 7.0: Implantação, Rollout e Capacitação Assistencial}: Infraestrutura como código (IaC), esteira CI/CD em Kubernetes, políticas de backup automatizado (incremental 4h e diário full), observabilidade com Prometheus e Grafana, treinamento operacional e operação assistida.
+\end{enumerate}
+
+% ==============================================================================
+% 6.3 ESTIMATIVA DETALHADA POR PACOTE E SUBTAREFA
+% ==============================================================================
+\subsection{Estimativa Detalhada por Pacote de Trabalho e Subtarefa}
+
+A Tabela \ref{tab:detalhamento_horas} decompõe o esforço base do projeto em 38 subtarefas de Nível 3. Cada atividade especifica o código EAP, a descrição técnica, o entregável associado, o perfil profissional responsável e a estimativa de horas de trabalho direto.
+
+\begin{xltabular}{\textwidth}{l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{4.2cm} c r}
+\caption{Detalhamento de horas por pacote de trabalho e subtarefas da EAP} \label{tab:detalhamento_horas} \\
+\toprule
+\textbf{Cód.} & \textbf{Descrição da Subtarefa Técnica} & \textbf{Entregável Associado} & \textbf{Perfil} & \textbf{Horas} \\
+\midrule
+\endfirsthead
+
+\multicolumn{5}{c}%
+{{\tablename\ \thetable{}: Continuação da página anterior}} \\
+\toprule
+\textbf{Cód.} & \textbf{Descrição da Subtarefa Técnica} & \textbf{Entregável Associado} & \textbf{Perfil} & \textbf{Horas} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{5}{r}{{Continua na próxima página \ldots}} \\
+\bottomrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+\multicolumn{5}{l}{\textit{\textbf{Pacote 1.0: Engenharia de Requisitos e Modelagem Clínica}}} \\
+\midrule
+1.1 & Elicitação de requisitos e entrevistas com equipe multiprofissional (médicos, enfermeiros e faturamento). & Atas de entrevistas e matriz de expectativas de stakeholders. & MED & 40 \\
+\addlinespace
+1.2 & Formalização da ERS (22 RFs, 12 RNs e 7 RNFs) com critérios mensuráveis de aceitação. & Documento ERS v2.0 homologado. & TL & 48 \\
+\addlinespace
+1.3 & Mapeamento de processos hospitalares em BPMN 2.0 (triagem, internação, prescrição e faturamento). & Modelos de processos BPMN validados. & FRONT & 36 \\
+\addlinespace
+1.4 & Especificação formal de Casos de Uso (UC-01 a UC-08) e elaboração da matriz de rastreabilidade. & Caderno de Casos de Uso e rastreabilidade. & BACK & 32 \\
+\addlinespace
+1.5 & Definição do modelo semântico de interoperabilidade clínica em conformidade com o padrão HL7 FHIR. & Especificação de perfis de recursos FHIR. & DBA & 24 \\
+\midrule
+\multicolumn{4}{r}{\textbf{Subtotal Pacote 1.0:}} & \textbf{180} \\
+\midrule
+
+\multicolumn{5}{l}{\textit{\textbf{Pacote 2.0: Arquitetura, Infraestrutura e Backend NestJS}}} \\
+\midrule
+2.1 & Desenho da arquitetura de microsserviços, Clean Architecture e gateway de integração de eventos. & Documento de Arquitetura de Software (DAS). & TL & 40 \\
+\addlinespace
+2.2 & Modelagem relacional em 3NF no PostgreSQL, particionamento e scripts de migração TypeORM. & DDL versionado e migrações estruturadas. & DBA & 44 \\
+\addlinespace
+2.3 & Módulo de autenticação, RBAC hospitalar, emissão de JWT e MFA com expiração de sessão inativa. & Microsserviço de autenticação e autorização. & BACK & 48 \\
+\addlinespace
+2.4 & Microsserviço de Gestão de Pacientes, Admissão e Triagem Manchester (RF-001, RF-002). & API de admissão e cálculo Manchester. & BACK & 64 \\
+\addlinespace
+2.5 & Microsserviço de Prontuário Eletrônico (PEP) e Evolução Clínica Estruturada (RF-005, RF-010). & API de PEP com versionamento imutável. & BACK & 80 \\
+\addlinespace
+2.6 & Microsserviço de Prescrição Médica Digital com checagem de alergias e regras de bloqueio (RF-006). & API de prescrição com travas farmacológicas. & BACK & 76 \\
+\addlinespace
+2.7 & Microsserviço de Gestão de Leitos, Alas e Higienização em tempo real via WebSockets (RF-004). & API de leitos e propagação de eventos de ala. & BACK & 60 \\
+\addlinespace
+2.8 & Microsserviço de Faturamento, Parametrização de Assistência e Guias TISS/TUSS (RF-007, RF-009). & API de faturamento e gerador XML TISS. & BACK & 68 \\
+\addlinespace
+2.9 & Mensageria assíncrona com BullMQ/Redis e barramento de eventos clínicos distribuídos. & Filas e processadores assíncronos ativos. & BACK & 40 \\
+\midrule
+\multicolumn{4}{r}{\textbf{Subtotal Pacote 2.0:}} & \textbf{520} \\
+\midrule
+
+\multicolumn{5}{l}{\textit{\textbf{Pacote 3.0: Inteligência Artificial e Engenharia MLOps}}} \\
+\midrule
+3.1 & Gateway de IA Seguro com anonimização de PII (LGPD), controle de concorrência e \textit{Circuit Breaker}. & Proxy reverso de IA com sanitização atestada. & TL & 52 \\
+\addlinespace
+3.2 & Pipeline de transcrição de voz para texto médico via Whisper API com vocabulário clínico normalizado. & Serviço de áudio-para-texto com WER $< 5\%$. & IA & 44 \\
+\addlinespace
+3.3 & Motor preditivo de deterioração clínica e detecção precoce de sepse (escores qSOFA e NEWS2). & Modelo preditivo integrado com latência $< 1{,}5\text{s}$. & IA & 68 \\
+\addlinespace
+3.4 & Arquitetura RAG para o Copiloto Farmacoterapêutico (Embeddings clínicos, \texttt{pgvector} e bulário). & Base vetorial e motor RAG de validação. & IA & 84 \\
+\addlinespace
+3.5 & Modelo preditivo de estimativa de tempo de internação (LOS) e demanda de leitos de enfermaria e UTI. & Algoritmo preditivo de ocupação de leitos. & IA & 64 \\
+\addlinespace
+3.6 & Módulo generativo de síntese clínica para sumários de alta e evolução estruturada (\textit{Human-in-the-Loop}). & Gerador de sumários com interface de revisão. & IA & 56 \\
+\addlinespace
+3.7 & Módulo de auditoria preventiva de faturamento contra glosas em guias TISS/TUSS com NLP. & Classificador de glosas e alertas de faturamento. & IA & 48 \\
+\addlinespace
+3.8 & Pipeline de telemetria, registro de inferências (\texttt{LOG\_INFERENCIA\_IA}) e governança médica. & Repositório de logs de inferência auditável. & DBA & 36 \\
+\midrule
+\multicolumn{4}{r}{\textbf{Subtotal Pacote 3.0:}} & \textbf{452} \\
+\midrule
+
+\multicolumn{5}{l}{\textit{\textbf{Pacote 4.0: Desenvolvimento Frontend Tablet e Web}}} \\
+\midrule
+4.1 & Design System hospitalar (Tailwind/Tokens), componentes reutilizáveis e conformidade WCAG 2.1 AA. & Biblioteca de componentes visuais acessíveis. & FRONT & 50 \\
+\addlinespace
+4.2 & Interface de Triagem Manchester otimizada para tablets à beira do leito (touch, formulários reativos). & Aplicação tablet para triagem de emergência. & FRONT & 64 \\
+\addlinespace
+4.3 & Mapa visual dinâmico de gestão de leitos com sinalização por cores e atualização via WebSockets. & Painel interativo de hotelaria hospitalar. & FRONT & 56 \\
+\addlinespace
+4.4 & Módulo Web de Prontuário Eletrônico (PEP) com linha do tempo clínica e prescrição rápida. & Aplicação web de atendimento médico e PEP. & FRONT & 88 \\
+\addlinespace
+4.5 & Componente de interface para o Copiloto de IA (alertas contextuais e justificativa médica). & Interface do copiloto com controles humanos. & FRONT & 48 \\
+\addlinespace
+4.6 & Dashboard administrativo com indicadores hospitalares em tempo real e exportação PDF/CSV. & Painel de telemetria e exportações gerenciais. & FRONT & 52 \\
+\addlinespace
+4.7 & Portal do Paciente responsivo, seguro e bilíngue (português/inglês) para consulta de laudos. & Portal do paciente homologado e acessível. & FRONT & 42 \\
+\midrule
+\multicolumn{4}{r}{\textbf{Subtotal Pacote 4.0:}} & \textbf{400} \\
+\midrule
+
+\multicolumn{5}{l}{\textit{\textbf{Pacote 5.0: Qualidade, Testes de Carga e Homologação}}} \\
+\midrule
+5.1 & Plano de garantia de qualidade (QA), matriz de cobertura e configuração de esteiras automatizadas. & Plano formal de testes e pipelines integrados. & QA & 32 \\
+\addlinespace
+5.2 & Implementação de testes unitários e de integração no backend com Jest e Supertest (cobertura $> 85\%$). & Bateria automatizada de testes de serviços. & QA & 64 \\
+\addlinespace
+5.3 & Testes de ponta a ponta (E2E) com Playwright cobrindo admissão, prescrição e faturamento. & Suíte de testes E2E executada em CI/CD. & QA & 56 \\
+\addlinespace
+5.4 & Testes de carga e estresse com k6 validando requisitos de desempenho (2.000 conexões, latência $< 2{,}0\text{s}$). & Relatório de validação de carga e estresse. & QA & 40 \\
+\addlinespace
+5.5 & Homologação clínica formal com comitê de médicos e enfermeiros (simulações assistenciais cegas). & Parecer de homologação clínica aprovado. & MED & 48 \\
+\midrule
+\multicolumn{4}{r}{\textbf{Subtotal Pacote 5.0:}} & \textbf{240} \\
+\midrule
+
+\multicolumn{5}{l}{\textit{\textbf{Pacote 6.0: Governança, LGPD e Segurança da Informação}}} \\
+\midrule
+6.1 & Diagnóstico de conformidade com a LGPD e mapeamento de fluxo de dados pessoais de saúde. & Relatório de Impacto à Proteção de Dados (RIPD). & TL & 36 \\
+\addlinespace
+6.2 & Implementação de criptografia AES-256 em repouso e configuração de canal TLS 1.3 em trânsito. & Mecanismo criptográfico de dados homologado. & BACK & 32 \\
+\addlinespace
+6.3 & Trilha de auditoria transacional imutável (\texttt{LOG\_AUDITORIA} com triggers PostgreSQL). & Mecanismo de auditoria auditado e protegido. & DBA & 36 \\
+\addlinespace
+6.4 & Módulo de assinatura digital padrão ICP-Brasil (PAdES / PKCS\#7) para prontuários e receitas. & Serviço de assinatura digital integrado ao CFM. & BACK & 38 \\
+\addlinespace
+6.5 & Análise estática (SAST), análise dinâmica (DAST) e testes de intrusão (\textit{pentests}) na API e WebSockets. & Relatório de pentest e correção de brechas. & QA & 38 \\
+\midrule
+\multicolumn{4}{r}{\textbf{Subtotal Pacote 6.0:}} & \textbf{180} \\
+\midrule
+
+\multicolumn{5}{l}{\textit{\textbf{Pacote 7.0: Implantação, Rollout e Capacitação Assistencial}}} \\
+\midrule
+7.1 & Infraestrutura como código (IaC), conteinerização Docker e orquestração de cluster Kubernetes. & Manifestos Helm/Kubernetes operacionais. & TL & 44 \\
+\addlinespace
+7.2 & Automação de rotinas de backup (incremental a cada 4h, diário full) e simulação de DR (RTO/RPO). & Rotinas de backup atestadas e plano de DR. & DBA & 32 \\
+\addlinespace
+7.3 & Configuração da pilha de observabilidade e telemetria (Prometheus, Grafana, OpenTelemetry e Loki). & Painéis de monitoramento de infraestrutura. & TL & 36 \\
+\addlinespace
+7.4 & Capacitação operacional e treinamento assistencial de multiplicadores (médicos, enfermagem e faturamento). & Guias de uso e certificados de capacitação. & MED & 40 \\
+\addlinespace
+7.5 & Operação assistida pós-lançamento (\textit{Go-Live} em ambiente controlado) e suporte de primeiro nível. & Relatório de estabilização da primeira quinzena. & QA & 36 \\
+\midrule
+\multicolumn{4}{r}{\textbf{Subtotal Pacote 7.0:}} & \textbf{188} \\
+\midrule
+\multicolumn{4}{r}{\textbf{Total Base de Esforço do Projeto (Horas):}} & \textbf{2160} \\
+\end{xltabular}
+
+% ==============================================================================
+% 6.4 DISTRIBUIÇÃO DE HORAS POR PERFIL PROFISSIONAL
+% ==============================================================================
+\subsection{Distribuição de Horas por Perfil Profissional da Equipe}
+
+A equipe multidisciplinar (squad) do Vitalis v2.0 conta com sete perfis profissionais especializados, cujas atribuições técnicas cobrem as demandas clínicas, arquiteturais e de qualidade:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Tech Lead / Arquiteto de Software (TL)}: Responsável pelas diretrizes arquiteturais, governança de microsserviços, gateway de sanitização de IA, segurança de infraestrutura Kubernetes e esteiras de integração contínua.
+    \item \textbf{Desenvolvedor Backend Sênior (DEV-BACK)}: Responsável pela implementação dos microsserviços em NestJS/Fastify, APIs RESTful, WebSockets de alta frequência, regras de negócio clínicas, PEP, prescrição eletrônica e faturamento TISS/TUSS.
+    \item \textbf{Desenvolvedor Frontend / UX (DEV-FRONT)}: Responsável pela arquitetura de interface web e tablet, implementação do Design System institucional, ergonomia de telas assistenciais e conformidade de acessibilidade com WCAG 2.1 AA.
+    \item \textbf{Engenheiro de IA / ML (ENG-IA)}: Responsável pela esteira de MLOps, ajuste de pipelines Whisper para áudio clínico, calibração dos motores preditivos qSOFA/NEWS2 e LOS, infraestrutura RAG com \texttt{pgvector} e integração de LLMs para síntese clínica.
+    \item \textbf{DBA / Engenheiro de Dados (DBA)}: Responsável pela modelagem relacional 3NF no PostgreSQL, particionamento de tabelas de alta volumetria, indexação vetorial, integridade referencial, triggers de auditoria imutável e testes de contingência RTO/RPO.
+    \item \textbf{Especialista Clínico / Consultor Médico (CONS-MED)}: Responsável pela curadoria da base de conhecimento médico, validação dos fluxos Manchester, parametrização toxicológica de prescrições, testes assistenciais cego-conduzidos e treinamento das equipes de saúde.
+    \item \textbf{QA Engineer (QA)}: Responsável pela formulação da estratégia de qualidade, testes automatizados unitários e de integração, suítes ponta a ponta (E2E), simulações de carga e estresse com k6 e auditoria de vulnerabilidades de segurança.
+\end{enumerate}
+
+A Tabela \ref{tab:matriz_perfis} apresenta a matriz de distribuição de esforço multidisciplinar por pacote de trabalho da EAP e perfil profissional. Enquanto a Tabela \ref{tab:detalhamento_horas} atribui cada atividade à sua liderança técnica primária, a Tabela \ref{tab:matriz_perfis} reflete o esforço cooperativo real de todo o squad em cada frente. As somas por pacote de trabalho coincidem com os subtotais da EAP.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Matriz de distribuição de horas por pacote de trabalho e perfil profissional}
+\label{tab:matriz_perfis}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X *{7}{>{\centering\arraybackslash}p{1.2cm}} >{\raggedleft\arraybackslash}p{1.3cm}}
+\toprule
+\textbf{Pacote de Trabalho (EAP)} & \textbf{TL} & \textbf{BACK} & \textbf{FRONT} & \textbf{IA} & \textbf{DBA} & \textbf{MED} & \textbf{QA} & \textbf{Total (h)} \\
+\midrule
+1.0 Engenharia de Requisitos e Modelagem    & 30 &  20 &  24 &  16 & 16 & 60 &  14 &  180 \\
+2.0 Arquitetura, Infraestrutura e Backend   & 70 & 230 &  20 &  20 & 90 & 10 &  80 &  520 \\
+3.0 Inteligência Artificial e MLOps         & 50 &  50 &  22 & 230 & 40 & 30 &  30 &  452 \\
+4.0 Desenvolvimento Frontend Tablet e Web   & 30 &  30 & 250 &  10 & 10 & 20 &  50 &  400 \\
+5.0 Qualidade, Testes de Carga e Homologação& 20 &  30 &  20 &  20 & 10 & 20 & 120 &  240 \\
+6.0 Governança, LGPD e Segurança            & 40 &  40 &  10 &  16 & 40 & 14 &  20 &  180 \\
+7.0 Implantação, Rollout e Capacitação      & 40 &  40 &  20 &  20 & 24 & 20 &  24 &  188 \\
+\midrule
+\textbf{Total Base por Perfil (Horas)}      & \textbf{280} & \textbf{440} & \textbf{366} & \textbf{332} & \textbf{230} & \textbf{174} & \textbf{338} & \textbf{2160} \\
+\textbf{Participação Relativa no Projeto (\%)} & \textbf{12,96\%} & \textbf{20,37\%} & \textbf{16,94\%} & \textbf{15,37\%} & \textbf{10,65\%} & \textbf{8,06\%} & \textbf{15,65\%} & \textbf{100,00\%} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+A distribuição de horas reflete as prioridades técnicas da arquitetura:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Construção de Software (Backend e Frontend)}: Soma 806 horas (37,31\% do total), dedicadas à lógica de negócio assistencial, regras clínicas e interfaces para terminais web e tablets de beira de leito.
+    \item \textbf{Inteligência Artificial e Engenharia de Dados}: Concentra 562 horas (26,02\% do total), cobrindo modelos preditivos, indexação vetorial com \texttt{pgvector}, anonimização de dados pessoais e modelagem relacional 3NF.
+    \item \textbf{Qualidade, Testes de Carga e Arquitetura}: Absorve 618 horas (28,61\% do total), com foco em disponibilidade de 99,9\%, tempo de resposta inferior a 2,0 segundos sob concorrência e conformidade com padrões de segurança.
+    \item \textbf{Consultoria e Validação Médica}: Totaliza 174 horas (8,06\% do total), garantindo validação de fluxos Manchester, toxicologia de prescrições e treinamento das equipes de saúde.
+\end{itemize}
+
+% ==============================================================================
+% 6.5 TOTAIS CONSOLIDADOS E CONTINGÊNCIA TÉCNICA
+% ==============================================================================
+\subsection{Totais Consolidados, Margem de Contingência e Esforço Total}
+
+A mitigação proativa de riscos em projetos de tecnologia em saúde exige a previsão explícita de uma reserva de contingência técnica. A Tabela \ref{tab:consolidado_horas} consolida o esforço base por pacote de trabalho, detalha a reserva de contingência calculada em 15\% e totaliza as horas necessárias para o ciclo de desenvolvimento do Vitalis v2.0.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Consolidação geral de esforço, contingência técnica e esforço total}
+\label{tab:consolidado_horas}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{2.3cm} >{\centering\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{2.8cm} >{\raggedleft\arraybackslash}p{2.3cm}}
+\toprule
+\textbf{Pacote de Trabalho (EAP)} & \textbf{Esforço Base (h)} & \textbf{Partic. (\%)} & \textbf{Contingência 15\% (h)} & \textbf{Total Projetado (h)} \\
+\midrule
+1.0 Engenharia de Requisitos e Modelagem    & 180  & 8,33\%  & 27,0 & 207,0 \\
+2.0 Arquitetura, Infraestrutura e Backend   & 520  & 24,07\% & 78,0 & 598,0 \\
+3.0 Inteligência Artificial e MLOps         & 452  & 20,93\% & 67,8 & 519,8 \\
+4.0 Desenvolvimento Frontend Tablet e Web   & 400  & 18,52\% & 60,0 & 460,0 \\
+5.0 Qualidade, Testes de Carga e Homologação& 240  & 11,11\% & 36,0 & 276,0 \\
+6.0 Governança, LGPD e Segurança            & 180  & 8,33\%  & 27,0 & 207,0 \\
+7.0 Implantação, Rollout e Capacitação      & 188  & 8,70\%  & 28,2 & 216,2 \\
+\midrule
+\textbf{Total Geral do Projeto Vitalis v2.0}& \textbf{2160} & \textbf{100,00\%} & \textbf{324,0} & \textbf{2484,0} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\destaqueVitalis{Síntese do Esforço e Capacidade Produtiva da Equipe Vitalis v2.0}{
+    O esforço base do projeto totaliza \textbf{2.160 horas}, expandindo-se para \textbf{2.484 horas} com a incorporação da reserva de contingência técnica de 15\% (324 horas). Distribuído ao longo das \textbf{28 semanas} de desenvolvimento ativo descritas no cronograma oficial, o esforço demanda uma dedicação líquida de aproximadamente \textbf{88,7 horas por semana da equipe multidisciplinar}, plenamente compatível com a capacidade instalada do squad alocado.
+}
+
+\subsection{Viabilidade Operacional e Alinhamento com o Cronograma}
+
+A viabilidade de execução do esforço dimensionado sustenta-se na capacidade de entrega da equipe e na estrutura das 28 semanas de cronograma:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Capacidade Nominal da Equipe}: Os cinco papéis com dedicação integral (Tech Lead, Backend Sênior, Frontend/UX, Engenheiro de IA e QA Engineer) operam sob regime padrão de engenharia de software de 40 horas semanais, totalizando 200 horas/semana nominais de base. Os papéis de suporte especializado (DBA / Engenheiro de Dados e Consultor Médico) operam em regime de dedicação consultiva parcial (25 horas/semana para banco de dados e 15 horas/semana para consultoria médica clínica), perfazendo uma capacidade teórica total de 240 horas semanais instaladas.
+    \item \textbf{Carga de Trabalho Real vs. Capacidade}: Considerando o esforço total projetado de 2.484 horas ao longo das 28 semanas do projeto, a demanda média real corresponde a cerca de 88,7 horas/semana da equipe, o que equivale a um fator de ocupação médio em torno de 37\% da capacidade produtiva instalada total do grupo, ou 44\% considerando apenas os profissionais full-time. Essa margem oferece folga para reuniões com partes interessadas, homologações comitivas e tratamento de riscos imprevistos sem sobrecarga ou adiamento de prazos.
+    \item \textbf{Sincronização com as Fases do Cronograma}: O sequenciamento acompanha as seis fases descritas na Seção 4: o esforço de requisitos (180h) e governança (180h) concentra-se nas Fases 1 e 2; o backend (520h) e frontend (400h) avançam nas Fases 2, 3 e 5; os módulos de inteligência artificial (452h) são desenvolvidos nas Fases 4 e 5; e o esforço de testes de carga, qualidade e implantação (428h) atinge o ápice nas Fases 5 e 6, finalizando com a homologação clínica na Semana 28.
+\end{itemize}
