@@ -1,0 +1,727 @@
+% ==============================================================================
+% SEÇÃO 09: DIAGRAMA E ESPECIFICAÇÃO DE CASOS DE USO (UML)
+% ==============================================================================
+\section{Diagrama e Especificação de Casos de Uso (UML)}
+\label{sec:casos_uso}
+
+A modelagem de casos de uso estabelece as fronteiras operacionais do sistema Vitalis v2.0, delimitando o escopo funcional e as interações entre os atores humanos, os serviços automatizados de inteligência artificial e os repositórios clínicos centrais. Em ambientes de saúde de alta complexidade, a especificação formal de casos de uso previne ambiguidades de processo, orienta o desenvolvimento orientado a testes e assegura conformidade com os protocolos assistenciais e regulatórios vigentes \cite{pressman:2016, sommerville:2019}.
+
+No Vitalis v2.0, os serviços de inteligência artificial atuam como agentes cooperativos de suporte à decisão. Conforme o princípio de governança \textit{Human-in-the-Loop} (Regra de Negócio RN-002), nenhuma inferência clínica, prescrição terapêutica ou ajuste de conduta é executado de forma autônoma sem a validação, edição ou recusa expressa de um profissional de saúde habilitado.
+
+% ==============================================================================
+% 9.1 MAPEAMENTO DE ATORES
+% ==============================================================================
+\subsection{Mapeamento e Caracterização dos Atores}
+\label{sec:atores}
+
+Os atores representam papéis desempenhados por entidades externas que interagem diretamente com os serviços do sistema Vitalis v2.0. O sistema compreende atores humanos (equipes assistenciais, administrativas e usuários externos) e um ator secundário de sistema especializado em inferências de IA.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Enfermeiro Triador}: Profissional de enfermagem responsável pelo acolhimento inicial, registro de sinais vitais, aferição de dados biométricos, transcrição verbal de queixas e condução da triagem com suporte preditivo de risco clínico.
+    \item \textbf{Médico Assistente}: Profissional médico responsável pelo diagnóstico, evolução clínica estruturada, elaboração e assinatura de prescrições farmacoterapêuticas com suporte de copiloto RAG, solicitação de exames complementares e homologação de sumários de alta hospitalar.
+    \item \textbf{Gestor de Leitos / Regulador}: Operador responsável pelo monitoramento dinâmico da ocupação hospitalar, coordenação de transferências internas e regulação de leitos com base em projeções de tempo de permanência (\textit{Length of Stay}, LOS).
+    \item \textbf{Farmacêutico}: Profissional responsável pela análise técnica de prescrições, conferência de estabilidade e incompatibilidades medicamentosas, reconciliação terapêutica e dispensação de fármacos sob protocolo de dupla checagem.
+    \item \textbf{Auditor de Faturamento}: Profissional de controladoria e contas médicas encarregado da auditoria preventiva de guias TISS/TUSS, verificação de conformidade de lançamentos com prontuários e mitigação ativa de glosas assistenciais.
+    \item \textbf{Paciente / Responsável}: Usuário externo ou responsável legal que acessa o ambiente seguro do Portal do Paciente para consultar laudos laboratoriais, agendamentos, orientações de autocuidado e documentos de alta hospitalar.
+    \item \textbf{Serviço de IA Vitalis} (Ator de Sistema Secundário): Microsserviço de inteligência artificial clínica e operacional que executa processamento de linguagem natural (transcrição Whisper/Speech), escores preditivos de risco hemodinâmico (qSOFA e NEWS2), recuperação semântica de diretrizes terapêuticas (RAG), síntese de prontuários via LLM e predição estatística de internação e glosas.
+\end{itemize}
+
+A Tabela \ref{tab:mapeamento_atores} apresenta os perfis de acesso, categorias de interação e responsabilidades associadas a cada ator no Vitalis v2.0.
+
+\begingroup
+\small
+\begin{xltabular}{\textwidth}{l c >{\raggedright\arraybackslash}p{4.8cm} >{\raggedright\arraybackslash}X}
+\caption{Matriz de Caracterização dos Atores do Sistema Vitalis v2.0} \label{tab:mapeamento_atores} \\
+\toprule
+\textbf{Ator} & \textbf{Tipo} & \textbf{Escopo de Responsabilidade} & \textbf{Casos de Uso Primários / Apoio} \\
+\midrule
+\endfirsthead
+
+\multicolumn{4}{c}%
+{{\tablename\ \thetable{} (continua{\c{c}}{\~a}o)}} \\
+\toprule
+\textbf{Ator} & \textbf{Tipo} & \textbf{Escopo de Responsabilidade} & \textbf{Casos de Uso Primários / Apoio} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{4}{r}{{Continua na próxima página \ldots}} \\
+\bottomrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+\textbf{Enfermeiro Triador} & 
+Humano & 
+Acolhimento, aferição de parâmetros vitais, validação de escores e triagem Manchester. & 
+UC-01 (Primário) \newline UC-06 (Apoio na checagem) \\
+\addlinespace
+
+\textbf{Médico Assistente} & 
+Humano & 
+Atendimento clínico, prescrição eletrônica, condutas terapêuticas e sumário de alta. & 
+UC-03 (Primário) \newline UC-04 (Primário) \\
+\addlinespace
+
+\textbf{Gestor de Leitos} & 
+Humano & 
+Regulação de transferências, gestão de vagas, contingência e governança de giro de leitos. & 
+UC-02 (Primário) \\
+\addlinespace
+
+\textbf{Farmacêutico} & 
+Humano & 
+Conferência posológica, rastreamento de lote/validade, dispensação e dupla checagem. & 
+UC-06 (Primário) \newline UC-03 (Revisão Técnica) \\
+\addlinespace
+
+\textbf{Auditor de Faturamento} & 
+Humano & 
+Auditoria de contas, validação de regras TISS/TUSS, prevenção de glosas e faturamento ANS. & 
+UC-05 (Primário) \newline UC-08 (Auditoria) \\
+\addlinespace
+
+\textbf{Paciente / Responsável} & 
+Humano & 
+Consulta de histórico assistencial, laudos de exames e orientações de alta via portal web. & 
+UC-07 (Primário) \\
+\addlinespace
+
+\textbf{Serviço de IA Vitalis} & 
+Sistema & 
+Execução assíncrona de pipelines preditivos, RAG clínico, transcrição de áudio e LLM. & 
+UC-01, UC-02, UC-03, UC-04, UC-05, UC-08 (Secundário) \\
+
+\end{xltabular}
+\endgroup
+
+% ==============================================================================
+% 9.2 DIAGRAMA DE CASOS DE USO (TIKZ NATIVO)
+% ==============================================================================
+\subsection{Diagrama de Casos de Uso Geral (TikZ Nativo)}
+\label{sec:diagrama_tikz}
+
+A Figura \ref{fig:diagrama_casos_uso_vitalis} apresenta a modelagem gráfica dos casos de uso do Vitalis v2.0 em padrão UML 2.5, codificada integralmente em TikZ nativo. O diagrama organiza as interações funcionais por meio de fronteira explícita do sistema (\textit{system boundary}), estabelecendo os relacionamentos de associação direta, inclusão compulsória ($\ll$include$\gg$) e extensão condicional ($\ll$extend$\gg$).
+
+\begin{figure}[htb]
+\centering
+\begingroup
+% Definições locais para renderização precisa do diagrama
+\providecommand{\drawHumanActorUml}[3]{% #1: coord, #2: name, #3: label
+    \coordinate (#2) at #1;
+    \node[circle, draw=vitalisdark, fill=vitalislight, minimum size=5.5mm, line width=1.1pt] (#2-head) at (#2) {};
+    \draw[vitalisdark, line width=1.1pt] (#2-head.south) -- ++(0,-6.2mm) coordinate (#2-pelvis);
+    \draw[vitalisdark, line width=1.1pt] ($(#2-head.south)!0.32!(#2-pelvis)$) ++(-4.5mm,0) -- ++(9.0mm,0);
+    \draw[vitalisdark, line width=1.1pt] (#2-pelvis) -- ++(-3.6mm,-6.5mm);
+    \draw[vitalisdark, line width=1.1pt] (#2-pelvis) -- ++(3.6mm,-6.5mm);
+    \coordinate (#2-center) at ($(#2-head.south)!0.45!(#2-pelvis)$);
+    \node[below=8.5mm of #2-pelvis, text width=2.5cm, text centered, font=\scriptsize\bfseries\sffamily, text=vitalisdark] (#2-label) {#3};
+}
+
+\tikzset{
+    umlUcMain/.style={
+        ellipse, draw=vitalisblue, fill=vitalisblue!10, line width=1.1pt,
+        text centered, minimum width=3.8cm, minimum height=1.15cm, text width=3.5cm,
+        font=\scriptsize\bfseries\sffamily, text=vitalisdark
+    },
+    umlUcSub/.style={
+        ellipse, draw=vitalisblue!70, fill=vitalislight!60, line width=0.85pt, dashed,
+        text centered, minimum width=3.4cm, minimum height=1.0cm, text width=3.1cm,
+        font=\scriptsize\sffamily, text=vitalisdark
+    },
+    umlSysBox/.style={
+        rectangle, rounded corners=4pt, draw=purple!80!black, fill=purple!8, line width=1.2pt,
+        text centered, minimum width=2.6cm, minimum height=1.4cm, text width=2.4cm,
+        font=\scriptsize\bfseries\sffamily, text=purple!90!black
+    },
+    umlArrowInc/.style={
+        -{Latex[length=2.3mm]}, dashed, draw=vitalisgreen!70!black, line width=0.9pt,
+        font=\tiny\bfseries\sffamily, text=vitalisgreen!70!black
+    },
+    umlArrowExt/.style={
+        -{Latex[length=2.3mm]}, dashed, draw=vitalisred!80!black, line width=0.9pt,
+        font=\tiny\bfseries\sffamily, text=vitalisred!80!black
+    },
+    umlLineAssoc/.style={
+        -, draw=vitalisdark!85, line width=0.95pt
+    },
+    umlLineAi/.style={
+        -{Latex[length=2mm]}, densely dashed, draw=purple!80!black, line width=0.85pt
+    }
+}
+
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[x=1cm, y=1cm]
+
+    % Limites do Sistema Vitalis v2.0 (System Boundary)
+    \draw[draw=vitalisblue!75, fill=vitalislight!12, line width=1.3pt, rounded corners=8pt]
+        (-0.5, 0.7) rectangle (15.5, -21.6);
+    
+    % Cabeçalho Institucional do Limite do Sistema
+    \node[anchor=north west, fill=vitalisblue!15, draw=vitalisblue!60, rounded corners=3pt, inner sep=4pt, font=\small\bfseries\sffamily, text=vitalisdark]
+        at (0.0, 0.4) {Vitalis v2.0: Sistema de Gest{\~a}o Hospitalar Inteligente};
+
+    % =========================================================================
+    % ATORES HUMANOS - LADO ESQUERDO
+    % =========================================================================
+    \drawHumanActorUml{(-2.6, -1.8)}{enf}{Enfermeiro\\Triador}
+    \drawHumanActorUml{(-2.6, -7.0)}{med}{M{\'e}dico\\Assistente}
+    \drawHumanActorUml{(-2.6, -12.4)}{gestor}{Gestor de Leitos\\/ Regulador}
+    \drawHumanActorUml{(-2.6, -16.8)}{farm}{Farmac{\^e}utico}
+
+    % =========================================================================
+    % ATORES LADO DIREITO
+    % =========================================================================
+    \drawHumanActorUml{(17.6, -4.2)}{pac}{Paciente /\\Respons{\'a}vel}
+    \drawHumanActorUml{(17.6, -18.2)}{aud}{Auditor de\\Faturamento}
+
+    % Ator do Sistema / Secundário: Serviço de IA Vitalis (Centralizado à direita)
+    \node[umlSysBox] (iaSys) at (17.6, -10.5) {
+        $\ll$system$\gg$\\[2pt]
+        Servi{\c{c}}o de IA\\Vitalis v2.0
+    };
+
+    % =========================================================================
+    % CASOS DE USO PRINCIPAIS E SECUNDÁRIOS DENTRO DO LIMITE DO SISTEMA
+    % Coluna 1 (x = 3.5): Casos de Uso Principais
+    % Coluna 2 (x = 10.6): Casos de Uso Subordinados / Específicos
+    % =========================================================================
+
+    % --- BLOCO 1: UC-01 Triagem de Risco Preditiva ---
+    \node[umlUcMain] (uc01) at (3.5, -1.8) {UC-01: Triagem de Risco Preditiva com IA};
+    \node[umlUcSub] (inc01) at (10.6, -1.0) {Transcrever Queixas\\por Voz};
+    \node[umlUcSub] (ext01) at (10.6, -2.5) {Disparar Alerta Vermelho\\de Ressuscita{\c{c}}{\~a}o};
+
+    % --- BLOCO 2: UC-07 Portal do Paciente ---
+    \node[umlUcMain] (uc07) at (10.6, -4.2) {UC-07: Consultar\\Hist{\'o}rico e Exames\\no Portal};
+
+    % --- BLOCO 3: UC-03 Prescrição Médica e Copiloto RAG ---
+    \node[umlUcMain] (uc03) at (3.5, -6.6) {UC-03: Prescri{\c{c}}{\~a}o com Copiloto RAG};
+    \node[umlUcSub] (ext03) at (10.6, -6.4) {Bloquear\\Contraindica{\c{c}}{\~a}o};
+    \node[umlUcSub] (inc03) at (10.6, -7.9) {Assinar com\\ICP-Brasil};
+
+    % --- BLOCO 4: UC-04 Síntese Clínica e Sumário de Alta ---
+    \node[umlUcMain] (uc04) at (3.5, -9.6) {UC-04: Gerar Sum{\'a}rio de Alta e Evolu{\c{c}}{\~a}o (LLM)};
+    \node[umlUcSub] (inc04) at (10.6, -9.8) {Homologar\\Minuta M{\'e}dica};
+
+    % --- BLOCO 5: UC-02 Gestão de Ocupação e Leitos ---
+    \node[umlUcMain] (uc02) at (3.5, -12.4) {UC-02: Gerenciar Aloca{\c{c}}{\~a}o Preditiva de Leitos};
+    \node[umlUcSub] (inc02) at (10.6, -12.4) {Projetar Length\\of Stay (LOS)};
+
+    % --- BLOCO 6: UC-06 Dispensação e Dupla Checagem ---
+    \node[umlUcMain] (uc06) at (3.5, -16.8) {UC-06: Validar e Dispensar com Dupla Checagem};
+
+    % --- BLOCO 7: UC-08 Telemetria e Auditoria de IA ---
+    \node[umlUcMain] (uc08) at (10.6, -16.2) {UC-08: Rastrear Logs e\\Telemetria de IA};
+
+    % --- BLOCO 8: UC-05 Auditoria Preventiva TISS/TUSS ---
+    \node[umlUcMain] (uc05) at (3.5, -19.6) {UC-05: Auditoria Preventiva de Faturamento TISS};
+    \node[umlUcSub] (inc05) at (10.6, -19.6) {Validar XML contra\\Schemas ANS};
+
+    % =========================================================================
+    % ASSOCIAÇÕES ATORES HUMANOS -> CASOS DE USO
+    % =========================================================================
+    \draw[umlLineAssoc] (enf-center) -- (uc01.west);
+
+    \draw[umlLineAssoc] (med-center) -- (uc03.west);
+    \draw[umlLineAssoc] (med-center) -- (uc04.west);
+
+    \draw[umlLineAssoc] (gestor-center) -- (uc02.west);
+
+    \draw[umlLineAssoc] (farm-center) -- (uc06.west);
+
+    % Paciente -> UC-07
+    \draw[umlLineAssoc] (pac-center) -- (uc07.east);
+
+    % Auditor de Faturamento -> UC-08 e UC-05
+    \draw[umlLineAssoc] (aud-center) -- (uc08.east);
+    \draw[umlLineAssoc] (aud-center) .. controls (14.2, -21.0) and (7.0, -21.0) .. (uc05.south);
+
+    % =========================================================================
+    % RELACIONAMENTOS <<include>> E <<extend>>
+    % =========================================================================
+    % UC-01
+    \draw[umlArrowInc] (uc01.east) -- node[above=1pt, sloped] {$\ll$include$\gg$} (inc01.west);
+    \draw[umlArrowExt] (ext01.west) -- node[below=1pt, sloped] {$\ll$extend$\gg$} (uc01.east);
+
+    % UC-03
+    \draw[umlArrowExt] (ext03.west) -- node[above=1pt] {$\ll$extend$\gg$} (uc03.east);
+    \draw[umlArrowInc] (uc03.east) -- node[below=1pt, sloped] {$\ll$include$\gg$} (inc03.west);
+
+    % UC-04
+    \draw[umlArrowInc] (uc04.east) -- node[above=1pt] {$\ll$include$\gg$} (inc04.west);
+
+    % UC-02
+    \draw[umlArrowInc] (uc02.east) -- node[above=1pt] {$\ll$include$\gg$} (inc02.west);
+
+    % UC-05
+    \draw[umlArrowInc] (uc05.east) -- node[above=1pt] {$\ll$include$\gg$} (inc05.west);
+
+    % =========================================================================
+    % ASSOCIAÇÕES DO ATOR SERVIÇO DE IA (SISTEMA)
+    % =========================================================================
+    \draw[umlLineAi] (iaSys.north) .. controls (17.6, -1.0) and (14.2, -1.0) .. (inc01.east);
+    \draw[umlLineAi] (iaSys.west)  .. controls (15.0, -7.0) and (14.2, -6.4) .. (ext03.east);
+    \draw[umlLineAi] (iaSys.west)  -- (inc04.east);
+    \draw[umlLineAi] (iaSys.west)  .. controls (15.0, -11.5) and (14.2, -12.4) .. (inc02.east);
+    \draw[umlLineAi] (iaSys.south) .. controls (17.6, -14.2) and (14.2, -15.8) .. (uc08.north east);
+    \draw[umlLineAi] (iaSys.south) .. controls (16.0, -14.0) and (6.8, -16.0) .. (uc05.north);
+
+\end{tikzpicture}%
+}
+\endgroup
+\caption{Diagrama Geral de Casos de Uso do Sistema Vitalis v2.0}
+\label{fig:diagrama_casos_uso_vitalis}
+\end{figure}
+
+% ==============================================================================
+% 9.3 ESPECIFICAÇÃO TEXTUAL DOS CASOS DE USO
+% ==============================================================================
+\subsection{Especificação Textual Detalhada dos Casos de Uso}
+\label{sec:especificacao_casos_uso}
+
+A Tabela \ref{tab:resumo_uc} resume os oito casos de uso primários que estruturam a operação assistencial e analítica do Vitalis v2.0, com seus atores, pré-condições, fluxo principal e pós-condições.
+
+\begingroup
+\small
+\begin{xltabular}{\textwidth}{l >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.8cm}}
+\caption{Síntese da Especificação Textual dos Casos de Uso do Vitalis v2.0} \label{tab:resumo_uc} \\
+\toprule
+\textbf{Código} & \textbf{Ator Primário} & \textbf{Pré-condições} & \textbf{Resumo do Fluxo Principal} & \textbf{Pós-condições} \\
+\midrule
+\endfirsthead
+
+\multicolumn{5}{c}%
+{{\tablename\ \thetable{} (continua{\c{c}}{\~a}o)}} \\
+\toprule
+\textbf{Código} & \textbf{Ator Primário} & \textbf{Pré-condições} & \textbf{Resumo do Fluxo Principal} & \textbf{Pós-condições} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{5}{r}{{Continua na próxima página \ldots}} \\
+\bottomrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+\textbf{UC-01} & 
+Enfermeiro Triador & 
+Paciente acolhido na fila de triagem da recepção. & 
+Coleta de sinais vitais, transcrição de voz ($\ll$include$\gg$), cálculo Manchester e escores qSOFA/NEWS2 pela IA, validação humana e priorização em fila médica. & 
+Classificação gravada no PEP; paciente alocado na fila correspondente. \\
+\addlinespace
+
+\textbf{UC-02} & 
+Gestor de Leitos & 
+Solicitação médica de internação emitida no sistema. & 
+Consulta ao mapa dinâmico de leitos, projeção do Length of Stay por IA ($\ll$include$\gg$), ranqueamento de leitos compatíveis e confirmação da alocação. & 
+Status do leito atualizado para Reservado/Ocupado; escala informada. \\
+\addlinespace
+
+\textbf{UC-03} & 
+Médico Assistente & 
+Atendimento clínico ativo; médico autenticado via ICP-Brasil. & 
+Seleção de fármacos, validação de interações e posologia por copiloto RAG, assinatura digital com ICP-Brasil ($\ll$include$\gg$) e envio à farmácia satélite. & 
+Ordem médica assinada gravada no prontuário; envio para dispensação. \\
+\addlinespace
+
+\textbf{UC-04} & 
+Médico Assistente & 
+Critérios de desospitalização atingidos ou round médico. & 
+Compilação automática do episódio de cuidado, redação de minuta clínica estruturada por LLM, homologação médica ($\ll$include$\gg$) e emissão do PDF de alta. & 
+Sumário de alta persistido no PEP; desospitalização liberada. \\
+\addlinespace
+
+\textbf{UC-05} & 
+Auditor de Faturamento & 
+Atendimento clínico finalizado e lançamentos consolidados. & 
+Varredura preditiva de glosas pela IA, confronto com regras contratuais e ANS, ajuste documental e validação do XML contra schemas ANS ($\ll$include$\gg$). & 
+Lote TISS auditado, validado e preparado para transmissão. \\
+\addlinespace
+
+\textbf{UC-06} & 
+Farmacêutico & 
+Prescrição médica assinada eletronicamente ativa. & 
+Conferência de posologia e lote, separação física dos itens, execução de dupla checagem biométrica para fármacos controlados e baixa automática de estoque. & 
+Itens debitados do estoque satélite; grade de aprazamento ativada. \\
+\addlinespace
+
+\textbf{UC-07} & 
+Paciente / Responsável & 
+Cadastro homologado e autenticação com segundo fator (MFA). & 
+Acesso ao Portal do Paciente, consulta a laudos laboratoriais liberados, histórico de atendimentos e download de sumários de alta assinados. & 
+Acesso registrado em log imutável de auditoria (LGPD). \\
+\addlinespace
+
+\textbf{UC-08} & 
+Auditor / Governança & 
+Perfil de auditoria técnica ou conformidade habilitado. & 
+Acesso ao painel de telemetria de IA, filtragem de inferências por latência, score de confiança e taxas de aceite/rejeição médica para calibragem de modelos. & 
+Relatório analítico de explicabilidade e rastreabilidade emitido. \\
+
+\end{xltabular}
+\endgroup
+
+Nas seções a seguir, cada caso de uso é detalhado com a descrição de seus fluxos de eventos, pontos de inclusão/extensão, cenários de exceção e requisitos correlacionados.
+
+% ------------------------------------------------------------------------------
+% 9.3.1 UC-01
+% ------------------------------------------------------------------------------
+\subsubsection{UC-01: Executar Triagem de Risco Preditiva Assistida por IA}
+\label{sec:uc01}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-01: Executar Triagem de Risco Preditiva Assistida por IA \\
+\midrule
+Atores & \textbf{Primário:} Enfermeiro Triador. \textbf{Secundário:} Serviço de IA Vitalis. \\
+Pré-condições & Paciente registrado na recepção e aguardando acolhimento na fila eletrônica. \\
+Gatilho & O enfermeiro seleciona o paciente no terminal de triagem. \\
+Relacionamentos & $\ll$include$\gg$ Transcrever Queixas por Voz; $\ll$extend$\gg$ Disparar Alerta Vermelho de Ressuscitação. \\
+\midrule
+Fluxo Principal & 
+1. O enfermeiro seleciona o paciente e inicia a sessão de triagem.\par
+2. O sistema carrega o formulário de sinais vitais: Pressão Arterial (PA), Frequência Cardíaca (FC), Frequência Respiratória (FR), Saturação Periférica ($\text{SpO}_2$), Temperatura Axilar e Escala de Glasgow.\par
+3. O enfermeiro aciona a captura de áudio e dita as queixas; o sistema executa o caso de uso incluído ($\ll$include$\gg$ \textbf{Transcrever Queixas por Voz}) via Whisper/Speech API, estruturando sintomas e duração do quadro.\par
+4. O motor de IA executa em paralelo: (i) classificação determinística pelo Protocolo de Manchester e (ii) escores preditivos de risco hemodinâmico e sepse (qSOFA e NEWS2).\par
+5. O sistema projeta em tela a sugestão de cor de prioridade, o índice probabilístico de deterioração e a fundamentação explicável dos parâmetros determinantes.\par
+6. O enfermeiro revisa os apontamentos, ajusta a prioridade se seu juízo clínico demandar e homologa a triagem com assinatura digital (Regra de Negócio RN-002: \textit{Human-in-the-Loop}).\par
+7. O sistema direciona o paciente automaticamente para a fila médica prioritária da especialidade recomendada. \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Ponto de Extensão (Deterioração Crítica Iminente):} Se a combinação de sinais vitais indicar risco iminente de morte (ex.: $\text{SpO}_2 < 85\%$, PA Sistólica $< 80\,\text{mmHg}$ ou Glasgow $< 9$), o sistema aciona $\ll$extend$\gg$ \textbf{Disparar Alerta Vermelho de Ressuscitação}, disparando alarme sonoro e visual no posto de emergência e abrindo vaga imediata no leito de choque (RN-001, RF-021).\par
+\textbf{Exceção 1A (Falha na Conexão com API de IA):} Se a latência exceder $2{,}0\,\text{s}$ ou houver falha de rede externa, o sistema chaveia automaticamente para o modo \textit{Circuit Breaker}, calculando a triagem pelo algoritmo Manchester determinístico local sem reter o paciente (RN-004, RF-020). \\
+\midrule
+Pós-condições & Classificação de risco salva de forma imutável no PEP; paciente posicionado na fila eletrônica priorizada; log de inferência registrado em banco. \\
+Regras / Requisitos & RF-002, RF-003, RF-004, RF-020, RF-021, RN-001, RN-002, RN-004. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ------------------------------------------------------------------------------
+% 9.3.2 UC-02
+% ------------------------------------------------------------------------------
+\subsubsection{UC-02: Gerenciar Ocupação e Alocação Preditiva de Leitos}
+\label{sec:uc02}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-02: Gerenciar Ocupação e Alocação Preditiva de Leitos \\
+\midrule
+Atores & \textbf{Primário:} Gestor de Leitos / Regulador Interno. \textbf{Secundário:} Serviço de IA Vitalis. \\
+Pré-condições & Indicação médica de internação confirmada no prontuário eletrônico. \\
+Gatilho & Notificação de paciente aguardando internação ou necessidade de remanejamento. \\
+Relacionamentos & $\ll$include$\gg$ Projetar Length of Stay (LOS). \\
+\midrule
+Fluxo Principal & 
+1. O Gestor de Leitos acessa o painel do Censo Hospitalar dinâmico.\par
+2. O sistema lista os pedidos de internação ativos e a situação de ocupação das alas (UTI, Semi-intensiva, Enfermaria e Isolamento).\par
+3. O sistema executa o caso de uso incluído ($\ll$include$\gg$ \textbf{Projetar Length of Stay - LOS}), estimando os dias de permanência provável com base no diagnóstico principal CID-10, comorbidades, idade e escore NEWS2.\par
+4. O motor de IA ranqueia os leitos vagos com maior compatibilidade de isolamento, perfil assistencial e menor impacto no giro global da unidade.\par
+5. O gestor analisa as recomendações e seleciona o leito de destino.\par
+6. O sistema atualiza o leito para o status ``Reservado'' e emite mensagem de confirmação de transferência via WebSockets para as equipes de enfermagem de origem e destino. \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Exceção 2A (Leito em Processo de Limpeza):} Caso o leito selecionado esteja sob o status ``Higienização Pendente'', o sistema bloqueia a ocupação física até que o serviço de governança e hotelaria confirme a desinfecção via dispositivo móvel (RN-007, RF-005).\par
+\textbf{Exceção 2B (Indisponibilidade de Vagas na Especialidade):} Caso não haja vagas diretas na ala indicada, o sistema projeta cenários de remanejamento interno por previsão de alta nas próximas $4$ horas baseando-se no LOS projetado. \\
+\midrule
+Pós-condições & Leito atualizado para ``Ocupado''; estimativa de LOS vinculada ao episódio de cuidado; telemetria do censo hospitalar recalculada. \\
+Regras / Requisitos & RF-005, RF-006, RN-007. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ------------------------------------------------------------------------------
+% 9.3.3 UC-03
+% ------------------------------------------------------------------------------
+\subsubsection{UC-03: Realizar Prescrição Médica com Copiloto RAG Farmacoterapêutico}
+\label{sec:uc03}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-03: Realizar Prescrição Médica com Copiloto RAG Farmacoterapêutico \\
+\midrule
+Atores & \textbf{Primário:} Médico Assistente. \textbf{Secundário:} Serviço de IA Vitalis, Farmacêutico. \\
+Pré-condições & Médico autenticado com credenciais ativas e certificado digital ICP-Brasil; paciente sob episódio de cuidado ativo. \\
+Gatilho & O médico aciona o módulo ``Nova Prescrição'' no prontuário do paciente. \\
+Relacionamentos & $\ll$extend$\gg$ Bloquear Contraindicação; $\ll$include$\gg$ Assinar com ICP-Brasil. \\
+\midrule
+Fluxo Principal & 
+1. O médico acessa a interface de prescrição eletrônica no prontuário.\par
+2. O médico inicia a inserção de substâncias ativas ou medicamentos comerciais.\par
+3. O copiloto de IA com arquitetura RAG realiza busca vetorial em bases de conhecimento farmacológico, cruzando os princípios ativos digitados com: (i) alergias registradas do paciente, (ii) função renal/hepática recente nos laudos laboratoriais e (iii) interações medicamentosas entre os itens prescritos.\par
+4. O sistema apresenta alertas consultivos com recomendações de ajuste de dosagem (baseado na depuração de creatinina) e alternativas terapêuticas.\par
+5. O médico valida a lista de fármacos, horários e vias de administração.\par
+6. O sistema invoca o caso de uso compulsório ($\ll$include$\gg$ \textbf{Assinar com ICP-Brasil}), colhendo a assinatura digital qualificada em padrão PAdES/PKCS\#7 (RN-008, RF-009).\par
+7. A ordem é persistida e sincronizada automaticamente com o estoque da farmácia satélite e com a planilha de aprazamento de enfermagem. \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Ponto de Extensão (Detecção de Risco Farmacológico Fatal):} Caso o copiloto identifique uma interação medicamentosa grau 4 (potencialmente fatal) ou hipersensibilidade documentada a item essencial prescrito, o sistema estende o caso de uso via $\ll$extend$\gg$ \textbf{Bloquear Contraindicação}, travando a submissão do item e exigindo justificativa médica circunstanciada ou substituição da molécula (RN-008, RF-007). \\
+\midrule
+Pós-condições & Prescrição digital válida arquivada no PEP; notificação despachada para validação e dispensação farmacêutica. \\
+Regras / Requisitos & RF-007, RF-008, RF-009, RN-002, RN-008. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ------------------------------------------------------------------------------
+% 9.3.4 UC-04
+% ------------------------------------------------------------------------------
+\subsubsection{UC-04: Gerar Sumário de Alta e Evolução Estruturada via LLM}
+\label{sec:uc04}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-04: Gerar Sumário de Alta e Evolução Estruturada via LLM \\
+\midrule
+Atores & \textbf{Primário:} Médico Assistente. \textbf{Secundário:} Serviço de IA Vitalis. \\
+Pré-condições & Paciente em condições clínicas de alta hospitalar ou round médico diário concluído com laudos emitidos. \\
+Gatilho & O médico clica em ``Emitir Sumário de Alta'' ou ``Gerar Evolução por Sistemas''. \\
+Relacionamentos & $\ll$include$\gg$ Homologar Minuta Médica. \\
+\midrule
+Fluxo Principal & 
+1. O médico assistente solicita a geração estruturada do sumário ou da evolução.\par
+2. O microsserviço de IA agrega a totalidade dos registros clínicos do episódio: diagnósticos de entrada, intervenções cirúrgicas, curva de sinais vitais, resultados de exames laboratoriais/imagem e medicamentos administrados.\par
+3. O pipeline de LLM sintetiza os dados em linguagem técnica clínica padronizada, gerando uma minuta estruturada contendo: motivo de internação, histórico do tratamento, evolução por sistemas orgânicos, plano terapêutico pós-alta e orientações preventivas de retorno.\par
+4. O sistema executa o caso de uso incluído ($\ll$include$\gg$ \textbf{Homologar Minuta Médica}), apresentando a minuta em modo de edição assistida para conferência integral pelo médico.\par
+5. O médico revisa o texto, aplica correções pertinentes e confirma a homologação com assinatura digital ICP-Brasil.\par
+6. O sistema emite o documento oficial em PDF e atualiza o encerramento do prontuário para fins de desospitalização. \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Exceção 4A (Divergência Fática Apontada pelo Médico):} O médico altera trechos substanciais da síntese sugerida; o sistema salva as alterações e armazena o par prompt-edição em \texttt{LOG\_INFERENCIA\_IA} como amostra supervisionada de aprendizado contínuo (RF-019). \\
+\midrule
+Pós-condições & Sumário de alta ou evolução anexado de forma imutável ao prontuário; trâmite administrativo de desospitalização desbloqueado. \\
+Regras / Requisitos & RF-011, RF-017, RF-019, RN-002, RN-012. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ------------------------------------------------------------------------------
+% 9.3.5 UC-05
+% ------------------------------------------------------------------------------
+\subsubsection{UC-05: Realizar Auditoria Preventiva de Faturamento TISS/TUSS}
+\label{sec:uc05}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-05: Realizar Auditoria Preventiva de Faturamento TISS/TUSS \\
+\midrule
+Atores & \textbf{Primário:} Auditor de Faturamento. \textbf{Secundário:} Serviço de IA Vitalis. \\
+Pré-condições & Atendimento clínico encerrado e conta hospitalar com lançamentos assistenciais consolidados. \\
+Gatilho & O faturista seleciona um lote de internações para fechamento de conta. \\
+Relacionamentos & $\ll$include$\gg$ Validar XML contra Schemas ANS. \\
+\midrule
+Fluxo Principal & 
+1. O Auditor de Faturamento acessa o painel de faturamento hospitalar.\par
+2. O sistema consolida as despesas assistenciais: diárias de leito, procedimentos médicos, taxas de sala, gases medicinais, materiais e fármacos administrados.\par
+3. O motor preditivo de auditoria por IA compara a conta médica com o prontuário eletrônico e a matriz contratual da operadora de saúde (tabelas TUSS e diretrizes de utilização da ANS).\par
+4. O sistema destaca inconformidades com probabilidade estimada de glosa (ex.: cobrança de antibiótico de amplo espectro sem laudo de cultura comprobatório anexo).\par
+5. O auditor revisa as pendências, solicita complementação técnica ou ajusta a codificação dos procedimentos.\par
+6. O sistema executa o caso de uso compulsório ($\ll$include$\gg$ \textbf{Validar XML contra Schemas ANS}), garantindo que os nós estruturais do arquivo atendam rigorosamente ao XSD oficial da ANS vigente (RF-012).\par
+7. O lote de guias TISS é compilado, assinado e preparado para transmissão eletrônica via Web Services. \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Exceção 5A (Inconsistência Estrutural no XML):} Caso o schema XSD acuse falha de preenchimento obrigatório (ex.: ausência de CRM do cirurgião principal ou CNS inválido), a geração é interrompida com apontamento exato da linha divergente para saneamento imediato. \\
+\midrule
+Pós-condições & Guia TISS validada e fechada; índice preditivo de glosa minimizado; lote exportável gerado. \\
+Regras / Requisitos & RF-012, RF-013, RN-005, RN-011. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ------------------------------------------------------------------------------
+% 9.3.6 UC-06
+% ------------------------------------------------------------------------------
+\subsubsection{UC-06: Validar e Dispensar Medicamentos com Dupla Checagem}
+\label{sec:uc06}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-06: Validar e Dispensar Medicamentos com Dupla Checagem \\
+\midrule
+Atores & \textbf{Primário:} Farmacêutico. \textbf{Secundário:} Enfermeiro (beira do leito). \\
+Pré-condições & Prescrição médica ativa, homologada com certificado ICP-Brasil e não expirada. \\
+Gatilho & Recepção de ordem de prescrição na fila de atendimento da farmácia satélite. \\
+Relacionamentos & Associação direta com Farmacêutico e Enfermeiro. \\
+\midrule
+Fluxo Principal & 
+1. O farmacêutico acessa a fila de ordens médicas ativas no sistema da farmácia.\par
+2. O sistema detalha os medicamentos prescritos com suas respectivas concentrações, vias e horários de administração.\par
+3. O farmacêutico executa a checagem técnica do fracionamento e vincula o código de barras do lote/validade do estoque físico aos itens da prescrição.\par
+4. Para medicamentos de alta vigilância (MAV), como quimioterápicos, opioides, anticoagulantes e eletrólitos concentrados, o sistema exige a confirmação por dupla checagem mediante credencial de dois profissionais distintos (RN-009, RF-010).\par
+5. O profissional confirma a separação e liberação do pedido.\par
+6. O sistema executa a baixa automática no estoque da farmácia satélite e altera o status do item na prescrição para ``Dispensado'', liberando a grade de aprazamento para a equipe de enfermagem. \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Exceção 6A (Ruptura de Estoque na Farmácia Satélite):} Caso o item prescrito esteja esgotado na farmácia setorial, o sistema sugere transferência automática do almoxarifado central ou alerta o médico assistente para solicitação de substituição farmacêutica (RF-016). \\
+\midrule
+Pós-condições & Estoque físico e contábil baixado; fármaco identificado com etiqueta segura; grade de enfermagem apta para checagem de administração à beira do leito. \\
+Regras / Requisitos & RF-007, RF-009, RF-010, RF-016, RN-008, RN-009. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ------------------------------------------------------------------------------
+% 9.3.7 UC-07
+% ------------------------------------------------------------------------------
+\subsubsection{UC-07: Consultar Histórico Clínico e Exames no Portal do Paciente}
+\label{sec:uc07}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-07: Consultar Histórico Clínico e Exames no Portal do Paciente \\
+\midrule
+Atores & \textbf{Primário:} Paciente / Responsável Legal. \\
+Pré-condições & Paciente previamente admitido com cadastro associado ao CPF/CNS e credencial ativa com autenticação em múltiplos fatores (MFA). \\
+Gatilho & Acesso do usuário à interface web ou móvel do Portal do Paciente. \\
+Relacionamentos & Associação direta com Paciente / Responsável. \\
+\midrule
+Fluxo Principal & 
+1. O paciente realiza login seguro na plataforma com duplo fator de autenticação (MFA) via SMS, e-mail ou integração com conta \texttt{Gov.br}.\par
+2. O sistema valida as credenciais e apresenta o painel inicial com o resumo de atendimentos passados, consultas agendadas e internações.\par
+3. O paciente seleciona o módulo de exames e laudos diagnósticos.\par
+4. O sistema lista os exames liberados com assinatura digital do médico radiologista/patologista.\par
+5. O paciente visualiza em tela o relatório estruturado ou efetua o download do arquivo PDF assinado criptograficamente.\par
+6. O sistema registra a consulta no módulo de auditoria em conformidade com o Artigo 18 da LGPD (Lei nº 13.709/2018). \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Exceção 7A (Laudo com Liberação Pendente):} Exames que ainda estejam em fase de análise laboratorial são exibidos sob o status ``Em Processamento'', informando a data prevista de liberação e bloqueando visualizações parciais. \\
+\midrule
+Pós-condições & Documento clínico consultado ou baixado com integridade assegurada; log de acesso arquivado com carimbo de tempo. \\
+Regras / Requisitos & RF-001, RF-009, RNF-003, RNF-007, RN-006. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ------------------------------------------------------------------------------
+% 9.3.8 UC-08
+% ------------------------------------------------------------------------------
+\subsubsection{UC-08: Rastrear Logs e Telemetria de Inferências de IA}
+\label{sec:uc08}
+
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.4cm} X}
+\toprule
+Código e Nome & UC-08: Rastrear Logs e Telemetria de Inferências de IA \\
+\midrule
+Atores & \textbf{Primário:} Auditor de Faturamento / Comitê de Governança Clínica. \textbf{Secundário:} Serviço de IA Vitalis. \\
+Pré-condições & Usuário autenticado com credenciais administrativas, de auditoria ou governança assistencial. \\
+Gatilho & Acesso ao painel analítico de observabilidade e explicabilidade de IA. \\
+Relacionamentos & Associação direta com Auditor e Serviço de IA Vitalis. \\
+\midrule
+Fluxo Principal & 
+1. O usuário com permissão de auditoria acessa o console de governança de inteligência artificial.\par
+2. O sistema exibe o painel consolidado com a volumetria de inferências clínicas e operacionais executadas no período selecionado.\par
+3. O auditor aplica filtros granulares por tipo de modelo (Whisper, qSOFA, Copiloto RAG, Sumarizador LLM, Auditoria de Glosas), versão do algoritmo, intervalo temporal ou desfecho médico (Aceito, Modificado ou Rejeitado).\par
+4. O sistema detalha os registros da tabela \texttt{LOG\_INFERENCIA\_IA}: identificador único da chamada, hash do prompt pré-sanitizado (sem PII), score de confiança gerado, latência em milissegundos e justificativa técnica da ação humana.\par
+5. O auditor analisa eventuais taxas atípicas de divergência médica para auditoria de viés algorítmico ou segurança do paciente.\par
+6. O auditor exporta relatório técnico de conformidade para prestação de contas aos órgãos regulatórios (ANS, CFM e ANPD). \\
+\midrule
+Fluxos Alternativos e Exceções & 
+\textbf{Exceção 8A (Detecção de Queda de Desempenho ou \textit{Data Drift}):} Se o sistema detectar uma taxa de rejeição médica superior a $15\%$ em um período móvel de $24$ horas, um alerta de severidade alta é encaminhado automaticamente aos engenheiros de MLOps para recalibragem das bases RAG ou ajuste de hiperparâmetros. \\
+\midrule
+Pós-condições & Trilha de auditoria consultada de modo imutável; relatórios de governança clínica e conformidade LGPD disponibilizados. \\
+Regras / Requisitos & RF-018, RF-019, RNF-006, RN-002, RN-003. \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+% ==============================================================================
+% 9.4 MATRIZ DE RASTREABILIDADE: CASOS DE USO X REQUISITOS
+% ==============================================================================
+\subsection{Matriz de Rastreabilidade entre Casos de Uso e Requisitos}
+\label{sec:rastreabilidade_uc}
+
+A Tabela \ref{tab:rastreabilidade_uc_rf} mapeia as correspondências entre os casos de uso, os requisitos funcionais (RF) e as regras de negócio (RN) do Vitalis v2.0.
+
+\begingroup
+\small
+\begin{xltabular}{\textwidth}{l >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}p{4.0cm} >{\raggedright\arraybackslash}X}
+\caption{Matriz de Rastreabilidade dos Casos de Uso do Vitalis v2.0} \label{tab:rastreabilidade_uc_rf} \\
+\toprule
+\textbf{Caso de Uso} & \textbf{Nome do Caso de Uso} & \textbf{Requisitos Funcionais Cobertos} & \textbf{Regras de Negócio Vinculadas} \\
+\midrule
+\endfirsthead
+
+\multicolumn{4}{c}%
+{{\tablename\ \thetable{} (continua{\c{c}}{\~a}o)}} \\
+\toprule
+\textbf{Caso de Uso} & \textbf{Nome do Caso de Uso} & \textbf{Requisitos Funcionais Cobertos} & \textbf{Regras de Negócio Vinculadas} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{4}{r}{{Continua na próxima página \ldots}} \\
+\bottomrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+\textbf{UC-01} & 
+Executar Triagem de Risco Preditiva & 
+RF-002, RF-003, RF-004, RF-020, RF-021 & 
+RN-001 (Prioridade Vermelha), RN-002 (\textit{Human-in-the-Loop}), RN-004 (Circuit Breaker) \\
+\addlinespace
+
+\textbf{UC-02} & 
+Gerenciar Alocação Preditiva de Leitos & 
+RF-005, RF-006 & 
+RN-007 (Leito Homologado e Higienizado) \\
+\addlinespace
+
+\textbf{UC-03} & 
+Realizar Prescrição com Copiloto RAG & 
+RF-007, RF-008, RF-009 & 
+RN-002 (\textit{Human-in-the-Loop}), RN-008 (Validade Jurídica ICP-Brasil) \\
+\addlinespace
+
+\textbf{UC-04} & 
+Gerar Sumário de Alta e Evolução (LLM) & 
+RF-011, RF-017, RF-019 & 
+RN-002 (\textit{Human-in-the-Loop}), RN-012 (Imutabilidade do Prontuário) \\
+\addlinespace
+
+\textbf{UC-05} & 
+Auditoria Preventiva de Faturamento TISS & 
+RF-012, RF-013 & 
+RN-005 (Vedação Retroativa), RN-011 (Validação de Cobertura) \\
+\addlinespace
+
+\textbf{UC-06} & 
+Validar e Dispensar com Dupla Checagem & 
+RF-007, RF-009, RF-010, RF-016 & 
+RN-008 (Validade Jurídica), RN-009 (Dupla Checagem Medicamentos) \\
+\addlinespace
+
+\textbf{UC-07} & 
+Consultar Histórico no Portal do Paciente & 
+RF-001, RF-009, RNF-003, RNF-007 & 
+RN-006 (Sigilo Assistencial / LGPD) \\
+\addlinespace
+
+\textbf{UC-08} & 
+Rastrear Logs e Telemetria de IA & 
+RF-018, RF-019, RNF-006 & 
+RN-002 (\textit{Human-in-the-Loop}), RN-003 (Desidentificação de Dados) \\
+
+\end{xltabular}
+\endgroup
