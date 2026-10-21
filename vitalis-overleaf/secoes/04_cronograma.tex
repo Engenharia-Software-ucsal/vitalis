@@ -1,0 +1,241 @@
+\section{Cronograma do Trabalho e Marcos do Projeto}
+
+O desenvolvimento do Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0) compreende um ciclo contínuo de 28 semanas (aproximadamente sete meses de execução técnica). A metodologia de trabalho organiza a construção do software de forma iterativa e incremental \cite{pressman:2016, sommerville:2019}, com as atividades divididas em seis fases estruturadas. Cada ciclo quinzenal de desenvolvimento entrega componentes funcionais avaliados por marcos de controle formais (\textit{milestones}), o que viabiliza a validação contínua dos requisitos clínicos e operacionais.
+
+As seis fases do cronograma distribuem-se da seguinte forma:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Fase 1: Concepção, elicitação e engenharia de requisitos} (Semanas 1 a 4);
+    \item \textbf{Fase 2: Arquitetura de microsserviços e modelagem de dados 3NF} (Semanas 5 a 8);
+    \item \textbf{Fase 3: Desenvolvimento do core clínico e triagem Manchester} (Semanas 9 a 14);
+    \item \textbf{Fase 4: Módulo de inteligência artificial clínica e governança} (Semanas 15 a 20);
+    \item \textbf{Fase 5: Gestão de leitos, faturamento TISS/TUSS e painéis gerenciais} (Semanas 21 a 24);
+    \item \textbf{Fase 6: Testes integrados, simulações clínicas, segurança e homologação} (Semanas 25 a 28).
+\end{enumerate}
+
+\subsection{Estrutura Analítica das Fases e Marcos do Projeto}
+
+Cada fase do projeto possui objetivos técnicos delimitados, atividades práticas e marcos de entrega que condicionam o avanço para a etapa seguinte.
+
+\subsubsection{Fase 1: Concepção, elicitação e engenharia de requisitos (Semanas 1 a 4)}
+
+A etapa inicial concentra o alinhamento com os usuários do hospital e a formalização das especificações técnicas:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Semanas 1 e 2}: Condução de entrevistas estruturadas com médicos emergencistas, enfermeiros triadores, gestores de hotelaria hospitalar e faturistas. Consolidação dos 22 requisitos funcionais, 12 regras de negócio e requisitos não funcionais de desempenho e segurança na Especificação de Requisitos de Software (ERS).
+    \item \textbf{Semanas 3 e 4}: Mapeamento completo dos processos de trabalho hospitalares em diagramas BPMN 2.0 (acolhimento, classificação de risco, internação, prescrição eletrônica e faturamento). Análise de conformidade legal com a Lei Geral de Proteção de Dados Pessoais (LGPD) e com as resoluções do Conselho Federal de Medicina (CFM nº 1.821/2007 e nº 2.299/2021).
+\end{itemize}
+
+Os marcos de controle definidos para a Fase 1 são:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Marco M1.1 (Semana 2)}: Especificação de Requisitos de Software (ERS) homologada com matriz preliminar de rastreabilidade.
+    \item \textbf{Marco M1.2 (Semana 4)}: Modelagem de processos em BPMN 2.0 e relatório de diretrizes de conformidade com a LGPD concluídos.
+\end{itemize}
+
+\subsubsection{Fase 2: Arquitetura de microsserviços e modelagem de dados 3NF (Semanas 5 a 8)}
+
+A segunda etapa estabelece os alicerces estruturais de software e persistência de dados:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Semanas 5 e 6}: Modelagem e implementação do banco de dados relacional PostgreSQL em Terceira Forma Normal (3NF). O esquema abrange entidades centrais (Paciente, Atendimento, Prontuário Lógico, Evolução, Prescrição, Leito e Faturamento), com integridade referencial estrita e tabelas de log imutáveis para auditoria clínica e inferências de inteligência artificial.
+    \item \textbf{Semanas 7 e 8}: Estruturação do barramento de microsserviços com NestJS e Fastify, conteinerização dos módulos via Docker e orquestração básica. Configuração de filas assíncronas com Redis e BullMQ para processamento de eventos hospitalares, esteira de integração contínua (CI/CD) e módulo de controle de acesso híbrido (RBAC e ABAC).
+\end{itemize}
+
+Os marcos de controle definidos para a Fase 2 são:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Marco M2.1 (Semana 6)}: Esquema relacional 3NF implementado com scripts de migração automatizados e integridade referencial testada.
+    \item \textbf{Marco M2.2 (Semana 8)}: Infraestrutura de microsserviços, mensageria distribuída e esteira de CI/CD operacionais no ambiente de desenvolvimento.
+\end{itemize}
+
+\subsubsection{Fase 3: Desenvolvimento do core clínico e triagem Manchester (Semanas 9 a 14)}
+
+A terceira etapa foca na construção das ferramentas de atendimento direto ao paciente:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Semanas 9 a 11}: Construção do módulo de recepção com validação cadastral de CPF e integração ao Cartão Nacional de Saúde (CNS). Desenvolvimento da interface de triagem com implementação determinística do Protocolo de Manchester (cinco níveis de prioridade), formulário de coleta de sinais vitais e transcrição de áudio via API para queixas dos pacientes.
+    \item \textbf{Semanas 12 a 14}: Desenvolvimento do Prontuário Eletrônico do Paciente (PEP), com garantia de imutabilidade dos registros após a assinatura médica. Implementação da prescrição médica digital estruturada, incluindo checagem obrigatória de alergias cadastradas e suporte à assinatura digital padrão ICP-Brasil (PAdES e PKCS\#7).
+\end{itemize}
+
+Os marcos de controle definidos para a Fase 3 são:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Marco M3.1 (Semana 11)}: Módulo de recepção e triagem Manchester concluído com reorganização automática de filas para casos classificados como Emergência (Vermelho).
+    \item \textbf{Marco M3.2 (Semana 14)}: Prontuário eletrônico imutável e prescrição médica com verificação de alergias e assinatura digital em pleno funcionamento.
+\end{itemize}
+
+\subsubsection{Fase 4: Módulo de inteligência artificial clínica e governança (Semanas 15 a 20)}
+
+A quarta etapa integra as capacidades de inteligência artificial preditiva e generativa sob salvaguardas éticas:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Semanas 15 a 17}: Construção do gateway de anonimização e sanitização de dados pessoais identificáveis (PII), com aplicação de tokenização e $k$-anonimato ($k \ge 5$) antes de qualquer chamada a APIs externas. Desenvolvimento do motor preditivo para cálculo contínuo dos escores de instabilidade hemodinâmica e sepse precoce (qSOFA e NEWS2) vinculado aos dados da triagem e internação.
+    \item \textbf{Semanas 18 a 20}: Construção do copiloto clínico de prescrição com arquitetura RAG (\textit{Retrieval-Augmented Generation}), utilizando banco vetorial alimentado com literatura médica, protocolos institucionais e bulários \cite{lewis_rag:2020}. Implementação da síntese automática de evoluções médicas e minutas de sumários de alta hospitalar via modelos de linguagem, sob supervisão médica estrita (\textit{Human-in-the-Loop}). Configuração do mecanismo de \textit{Circuit Breaker} para acionamento de contingência local quando a latência de rede superar 2,0 segundos.
+\end{itemize}
+
+Os marcos de controle definidos para a Fase 4 são:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Marco M4.1 (Semana 17)}: Gateway de sanitização PII aprovado em testes de vazamento de dados e motor preditivo qSOFA/NEWS2 respondendo em menos de 1,5 segundos.
+    \item \textbf{Marco M4.2 (Semana 20)}: Copiloto farmacoterapêutico baseado em RAG e gerador de sumários clínicos homologados com interface de revisão médica.
+\end{itemize}
+
+\subsubsection{Fase 5: Gestão de leitos, faturamento TISS/TUSS e painéis gerenciais (Semanas 21 a 24)}
+
+A quinta etapa contempla as operações logísticas, administrativas e financeiras da instituição:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Semanas 21 e 22}: Desenvolvimento do mapa interativo de leitos com atualização reativa via WebSockets e controle dos estados de Livre, Ocupado, Higienização, Manutenção e Isolamento. Acoplamento do modelo de aprendizado de máquina para estimativa do tempo provável de permanência (\textit{Length of Stay} ou LOS) e apoio à regulação de vagas.
+    \item \textbf{Semanas 23 e 24}: Construção do módulo de faturamento hospitalar para geração de lotes eletrônicos no padrão TISS/TUSS da ANS \cite{ans_tiss:2023}. Implementação da auditoria preventiva por inteligência artificial para detecção precoce de inconsistências documentais e glosas financeiras. Desenvolvimento de painéis de telemetria hospitalar (tempo médio de espera, taxa de ocupação e giro de leitos) com exportação em PDF, CSV e JSON FHIR \cite{hl7_fhir:2019}.
+\end{itemize}
+
+Os marcos de controle definidos para a Fase 5 são:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Marco M5.1 (Semana 22)}: Painel de leitos sincronizado em tempo real e modelo preditivo de tempo de permanência ativos.
+    \item \textbf{Marco M5.2 (Semana 24)}: Módulo de faturamento TISS com auditoria preventiva de glosas e painéis gerenciais operando de forma integrada.
+\end{itemize}
+
+\subsubsection{Fase 6: Testes integrados, simulações clínicas, segurança e homologação (Semanas 25 a 28)}
+
+A etapa final submete a plataforma hospitalar a verificações de confiabilidade sob estresse:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Semanas 25 e 26}: Bateria de testes de carga com 2.000 conexões concorrentes para certificar a estabilidade transacional do banco de dados e a resposta das APIs. Realização de testes de penetração (\textit{pentests}), auditoria de segurança da informação (criptografia AES-256 e TLS 1.3) e validação da imutabilidade das trilhas de auditoria.
+    \item \textbf{Semanas 27 e 28}: Execução de simulações clínicas em ambiente hospitalar de testes, com reprodução de fluxos de emergência médica, transferências de pacientes e falhas deliberadas de conectividade para testar o chaveamento determinístico. Capacitação técnica de multiplicadores (médicos, enfermeiros e administradores) e liberação formal da versão 2.0 do Vitalis.
+\end{itemize}
+
+Os marcos de controle definidos para a Fase 6 são:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Marco M6.1 (Semana 26)}: Testes de estresse concluídos com atendimento aos índices de latência e relatório de auditoria de segurança sem vulnerabilidades críticas.
+    \item \textbf{Marco M6.2 (Semana 28)}: Homologação clínica completa realizada, equipe treinada e entrega formal do sistema para operação piloto.
+\end{itemize}
+
+\subsection{Matriz de Atividades, Prazos e Entregáveis do Projeto}
+
+A Tabela \ref{tab:cronograma_vitalis} sintetiza a distribuição das 28 semanas do projeto, relacionando as fases de engenharia aos seus componentes, semanas de execução e entregáveis formais.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Estrutura analítica de atividades, cronograma e entregáveis do Vitalis v2.0}
+\label{tab:cronograma_vitalis}
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}X c >{\raggedright\arraybackslash}p{3.5cm}}
+\toprule
+\textbf{Fase} & \textbf{Componente} & \textbf{Atividades Principais} & \textbf{Semanas} & \textbf{Entregável Formal} \\
+\midrule
+\multirow{2}{*}{\textbf{Fase 1}} & Elicitação e Requisitos & Entrevistas com especialistas, levantamento de escopo e redação da ERS. & 1 a 2 & Documento formal de ERS v2.0 aprovado. \\
+\cmidrule(lr){2-5}
+ & Processos e Regulação & Modelagem de processos em BPMN 2.0 e análise de conformidade com a LGPD e CFM. & 3 a 4 & Diagramas BPMN e relatório de conformidade jurídica. \\
+\midrule
+\multirow{2}{*}{\textbf{Fase 2}} & Modelagem de Dados & Normalização relacional em 3NF e criação de tabelas de log auditáveis. & 5 a 6 & DDL PostgreSQL com migrações versionadas. \\
+\cmidrule(lr){2-5}
+ & Microsserviços e Filas & Barramento NestJS, orquestração Docker, filas Redis/BullMQ e autenticação RBAC/ABAC. & 7 a 8 & Repositório base com esteira CI/CD e mensageria funcional. \\
+\midrule
+\multirow{2}{*}{\textbf{Fase 3}} & Recepção e Manchester & Cadastro integrado ao CNS e motor determinístico da triagem de Manchester. & 9 a 11 & Módulo de acolhimento e fila prioritária reativa. \\
+\cmidrule(lr){2-5}
+ & Prontuário e Prescrição & PEP estruturado com imutabilidade e prescrição médica com assinatura ICP-Brasil. & 12 a 14 & Módulo PEP integrado e prescrição médica digital assinada. \\
+\midrule
+\multirow{2}{*}{\textbf{Fase 4}} & Sanitização e Risco & Gateway de sanitização PII e motor preditivo de instabilidade clínica (qSOFA/NEWS2). & 15 a 17 & Pipeline de desidentificação e alertas de sepse em tempo real. \\
+\cmidrule(lr){2-5}
+ & Copiloto RAG e LLM & Base vetorial clínica, recomendação posológica e síntese supervisionada de sumários. & 18 a 20 & Copiloto farmacológico e gerador de sumários homologados. \\
+\midrule
+\multirow{2}{*}{\textbf{Fase 5}} & Leitos e Predição LOS & Painel visual de leitos via WebSockets e predição do tempo de permanência hospitalar. & 21 a 22 & Mapa de leitos interativo e modelo preditivo de alta. \\
+\cmidrule(lr){2-5}
+ & Faturamento e Painéis & Geração de lotes XML TISS/TUSS, auditoria preditiva de glosas e painéis gerenciais. & 23 a 24 & Módulo de contas médicas e painel de indicadores operacionais. \\
+\midrule
+\multirow{2}{*}{\textbf{Fase 6}} & Carga e Segurança & Testes com 2.000 requisições simultâneas, pentests e validação de criptografia. & 25 a 26 & Relatório de conformidade de carga e segurança da informação. \\
+\cmidrule(lr){2-5}
+ & Simulações e Release & Ensaios clínicos de emergência, treinamento de usuários e liberação da versão 2.0. & 27 a 28 & Pacote de implantação homologado e manuais técnicos. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Representação Visual do Cronograma (Gráfico de Gantt)}
+
+A Figura \ref{fig:gantt_vitalis} ilustra a linha temporal das 28 semanas do projeto por meio de um gráfico de Gantt elaborado com o pacote \texttt{pgfgantt}. A visualização destaca o sequenciamento das tarefas e os marcos críticos de encerramento de cada etapa.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{ganttchart}[
+    canvas/.append style={fill=none, draw=vitalisdark!30, line width=.75pt},
+    hgrid style/.style={draw=vitalisdark!12, line width=.4pt},
+    vgrid={*1{draw=vitalisdark!12, line width=.4pt}},
+    x unit=0.46cm,
+    y unit chart=0.68cm,
+    y unit title=0.65cm,
+    title/.style={draw=vitalisdark!30, fill=vitalislight!70},
+    title label font=\bfseries\scriptsize\color{vitalisdark},
+    bar/.append style={fill=vitalisblue!80, draw=vitalisdark, line width=0.5pt, rounded corners=2pt},
+    bar label font=\scriptsize\sffamily,
+    bar height=0.52,
+    group/.append style={fill=vitalisdark!85, draw=vitalisdark},
+    group label font=\bfseries\scriptsize\sffamily\color{vitalisdark},
+    group height=0.22,
+    milestone/.append style={fill=vitalisred, draw=vitalisred!80!black},
+    milestone label font=\scriptsize\bfseries\sffamily\color{vitalisred!80!black},
+    milestone height=0.4
+]{1}{28}
+    % Títulos das colunas
+    \gantttitle{Cronograma Global de Desenvolvimento: Sistema Vitalis v2.0 (28 Semanas)}{28} \\
+    \gantttitle{Fase 1}{4}
+    \gantttitle{Fase 2}{4}
+    \gantttitle{Fase 3}{6}
+    \gantttitle{Fase 4}{6}
+    \gantttitle{Fase 5}{4}
+    \gantttitle{Fase 6}{4} \\
+    \gantttitlelist{1,...,28}{1} \\
+
+    % Fase 1
+    \ganttgroup{Fase 1: Requisitos e Processos}{1}{4} \\
+    \ganttbar{Elicita\c{c}\~ao de Requisitos e ERS}{1}{2} \\
+    \ganttbar{Mapeamento BPMN e Parecer LGPD}{3}{4} \\
+    \ganttmilestone{M1: Requisitos Homologados}{4} \\
+
+    % Fase 2
+    \ganttgroup{Fase 2: Arquitetura e Modelagem 3NF}{5}{8} \\
+    \ganttbar{Banco de Dados Relacional 3NF}{5}{6} \\
+    \ganttbar{Microsservi\c{c}os, Redis e CI/CD}{7}{8} \\
+    \ganttmilestone{M2: Infraestrutura Operacional}{8} \\
+
+    % Fase 3
+    \ganttgroup{Fase 3: Core Cl\'inico e Manchester}{9}{14} \\
+    \ganttbar{Recep\c{c}\~ao e Triagem Manchester}{9}{11} \\
+    \ganttbar{PEP e Prescri\c{c}\~ao com Assinatura}{12}{14} \\
+    \ganttmilestone{M3: Fluxo Assistencial Ativo}{14} \\
+
+    % Fase 4
+    \ganttgroup{Fase 4: M\'odulo de IA e Governan\c{c}a}{15}{20} \\
+    \ganttbar{Sanitizador PII e Predi\c{c}\~ao qSOFA}{15}{17} \\
+    \ganttbar{Copiloto RAG e S\'intese Cl\'inica}{18}{20} \\
+    \ganttmilestone{M4: Pipeline de IA Homologado}{20} \\
+
+    % Fase 5
+    \ganttgroup{Fase 5: Leitos e Faturamento TISS}{21}{24} \\
+    \ganttbar{Mapa de Leitos e Estimativa LOS}{21}{22} \\
+    \ganttbar{Faturamento TISS/TUSS e Pain\'eis}{23}{24} \\
+    \ganttmilestone{M5: Gest\~ao Hospitalar Pronta}{24} \\
+
+    % Fase 6
+    \ganttgroup{Fase 6: Testes, Seguran\c{c}a e Release}{25}{28} \\
+    \ganttbar{Testes de Carga e Seguran\c{c}a (Pentest)}{25}{26} \\
+    \ganttbar{Simula\c{c}\~oes Cl\'inicas e Capacita\c{c}\~ao}{27}{28} \\
+    \ganttmilestone{M6: Release Final Vitalis v2.0}{28}
+\end{ganttchart}
+}
+\caption{Gráfico de Gantt representativo das 28 semanas do projeto Vitalis v2.0}
+\label{fig:gantt_vitalis}
+\end{figure}
+
+\subsection{Caminho Crítico e Gestão de Riscos do Projeto}
+
+O sucesso do cronograma depende do monitoramento contínuo das dependências técnicas que compõem o caminho crítico (\textit{Critical Path Method}). O encadeamento estrito do projeto exige que cada fase forneça os artefatos fundamentais para a subsequente:
+\begin{enumerate}[leftmargin=*]
+    \item A conclusão da modelagem de dados relacional 3NF (Fase 2) depende diretamente do refinamento dos atributos contidos na ERS (Fase 1);
+    \item A gravação de prontuários eletrônicos e prescrições médicas (Fase 3) exige a disponibilidade das tabelas relacionais com integridade referencial ativa (Fase 2);
+    \item A integração dos motores de inteligência artificial (Fase 4) depende da maturidade dos dados clínicos gerados na triagem e no prontuário (Fase 3), além da operação confiável do gateway de sanitização de dados pessoais identificáveis (PII);
+    \item A auditoria preventiva de contas médicas (Fase 5) requer o cruzamento entre as prescrições médicas executadas (Fase 3) e os modelos de detecção de inconformidades (Fase 4);
+    \item A bateria final de testes de carga e simulação clínica (Fase 6) pressupõe todos os módulos integrados no mesmo ambiente operacional.
+\end{enumerate}
+
+Para mitigar desvios durante as 28 semanas, foram estabelecidas quatro contingências preventivas:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Instabilidade ou latência de APIs externas de IA}: O sistema conta com um componente de \textit{Circuit Breaker}. Se a latência de rede exceder 2,0 segundos ou houver indisponibilidade momentânea da nuvem de IA, o sistema chaveia automaticamente para a avaliação determinística local (tabelas convencionais de Manchester e cálculo estático de doses), sem bloquear o atendimento médico.
+    \item \textbf{Vazamento inadvertido de dados sensíveis}: O pipeline de sanitização executa testes de regressão automatizados em todas as alterações de código para garantir que nenhuma entidade identificável (CPF, nome, registro geral ou endereço) seja transmitida externamente.
+    \item \textbf{Rejeição de arquivos de faturamento pelas operadoras}: A validação sintática contra os esquemas XSD oficiais da ANS é realizada no próprio ambiente hospitalar antes do fechamento do lote XML, o que previne retrabalhos com glosas administrativas.
+    \item \textbf{Resistência profissional ao uso de recomendações automatizadas}: A interface adota o princípio de supervisão médica mandatória (\textit{Human-in-the-Loop}). Nenhum escore de risco ou sugestão farmacológica entra em vigor sem a aprovação explícita e assinatura digital do médico ou enfermeiro responsável.
+\end{itemize}
+
+\destaqueVitalis{Marco Final e Entrada em Operação Piloto (Semana 28)}{%
+A conclusão bem-sucedida da Semana 28 culmina na entrega formal da versão 2.0 do Vitalis. O sistema entra em operação assistida com a equipe multiprofissional treinada, documentação técnica homologada, cobertura de testes de carga com 2.000 conexões concorrentes e conformidade integral com a LGPD e as resoluções do Conselho Federal de Medicina.
+}

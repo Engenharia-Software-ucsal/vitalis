@@ -1,0 +1,158 @@
+% ==============================================================================
+% SEÇÃO 3: OBJETIVOS DO PROJETO VITALIS v2.0
+% ==============================================================================
+
+\section{Objetivos do Projeto Vitalis v2.0}
+\label{sec:objetivos}
+
+O Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0) responde às deficiências estruturais identificadas na Seção \ref{sec:problema}. A lentidão no acolhimento de urgência, a subnotificação da sepse na janela terapêutica inicial, a sobrecarga cognitiva na prescrição médica, a ociosidade oculta no giro de leitos e as perdas financeiras causadas por glosas na saúde suplementar exigem uma resposta de engenharia integrada. Esta seção formaliza o objetivo geral do sistema, detalha os objetivos específicos divididos por domínios operacionais e estabelece a matriz de metas mensuráveis do projeto segundo a metodologia SMART (\textit{Specific, Measurable, Achievable, Relevant, Time-bound}).
+
+\subsection{Objetivo Geral}
+\label{subsec:objetivo_geral}
+
+O objetivo geral do projeto consiste em projetar, implementar e validar uma plataforma hospitalar integrada em arquitetura de microsserviços, em estrita conformidade com os padrões de interoperabilidade HL7 FHIR e ANS TISS/TUSS. O sistema fornece suporte à decisão clínica em tempo real e executa a automação assistencial e financeira de ponta a ponta.
+
+A plataforma unifica o ciclo de atendimento ao paciente: recepção, triagem de urgência, prontuário eletrônico do paciente (PEP), regulação de leitos, prescrição farmacoterapêutica digital, sumários de alta e auditoria de faturamento hospitalar. Microsserviços de inteligência artificial preditiva e generativa atuam em camada consultiva sob supervisão humana ativa (\textit{Human-in-the-Loop}). Essa dinâmica preserva a autoridade decisória dos profissionais de saúde e protege os dados sensíveis conforme a Lei Geral de Proteção de Dados Pessoais (LGPD) \cite{brasil_lgpd:2018}.
+
+\subsection{Objetivos Específicos}
+\label{subsec:objetivos_especificos}
+
+Para atingir a finalidade geral, o projeto estabelece seis frentes de implementação técnica e validação clínica:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Triagem Clínica Aumentada por Voz}: Construir módulo de acolhimento e classificação de risco alinhado ao Protocolo de Manchester \cite{manchester:2014}. O componente integra transcrição contínua de áudio via Whisper/Speech API para registrar queixas em linguagem natural, extrai entidades clínicas e reduz a digitação manual da equipe de enfermagem.
+    \item \textbf{Predição Hemodinâmica e Detecção Precoce de Sepse}: Implementar pipeline assíncrono para cálculo contínuo dos escores qSOFA e NEWS2 a partir de sinais vitais e exames laboratoriais. O modelo deve atingir área sob a curva ROC (AUC-ROC) superior a $0{,}88$ na identificação precoce de pacientes com risco iminente de deterioração clínica ou choque séptico \cite{singer_sepsis:2016}.
+    \item \textbf{Copiloto Farmacoterapêutico com Arquitetura RAG}: Desenvolver assistente de prescrição médica baseado em Recuperação Aumentada por Geração (\textit{Retrieval-Augmented Generation}, RAG) \cite{lewis_rag:2020}. O motor cruza a farmacopeia institucional e compêndios da ANVISA com o histórico do paciente para bloquear 100\% das prescrições com alergias registradas ou interações medicamentosas críticas.
+    \item \textbf{Alocação Preditiva de Leitos e Previsão de Permanência (LOS)}: Treinar e integrar modelos de aprendizado de máquina para estimar o tempo de permanência hospitalar (\textit{Length of Stay}, LOS) a partir do diagnóstico CID-10 e histórico de comorbidades. O sistema atualiza o mapa de leitos em tempo real via WebSockets para acelerar os ciclos de higienização e ocupação de quartos.
+    \item \textbf{Síntese Clínica e Documentação Automatizada}: Integrar modelos de linguagem em ambiente isolado para gerar rascunhos de sumários de alta e evoluções estruturadas por sistemas orgânicos. A persistência no prontuário exige validação expressa e assinatura digital do médico assistente, conforme as resoluções do CFM \cite{cfm_prontuario:2007,cfm_digital:2021}.
+    \item \textbf{Auditoria Prévia de Faturamento e Prevenção de Glosas TISS}: Criar motor de regras de faturamento e checagem semântica no padrão TISS/TUSS da ANS \cite{ans_tiss:2023}. O módulo confronta prescrições médicas, registros de administração de enfermagem e contratos das operadoras, interceptando inconsistências antes do envio dos lotes de guias.
+\end{enumerate}
+
+\subsection{Matriz de Metas SMART}
+\label{subsec:metas_smart}
+
+A governança do projeto adota o método SMART para estabelecer metas que orientam o desenvolvimento de software e a aferição de resultados práticos:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Específicas (\textit{Specific})}: Cada meta vincula-se a um módulo do sistema com escopo delimitado e sem ambiguidade funcional.
+    \item \textbf{Mensuráveis (\textit{Measurable})}: Todos os objetivos possuem métricas quantitativas com métodos formais de aferição e valores-alvo definidos.
+    \item \textbf{Atingíveis (\textit{Achievable})}: As metas apoiam-se em algoritmos validados na literatura médica e padrões de arquitetura de software de mercado.
+    \item \textbf{Relevantes (\textit{Relevant})}: Os resultados atacam diretamente os gargalos assistenciais e os prejuízos orçamentários diagnosticados na operação hospitalar.
+    \item \textbf{Temporais (\textit{Time-bound})}: As entregas dividem-se em marcos cronológicos associados às fases de desenvolvimento do projeto.
+\end{itemize}
+
+A Tabela \ref{tab:matriz_smart} apresenta a matriz SMART detalhada do Vitalis v2.0.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4.5pt}
+\caption{Matriz SMART de objetivos, métricas, viabilidade e prazos do Vitalis v2.0}
+\label{tab:matriz_smart}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{2.9cm} >{\raggedright\arraybackslash}p{2.9cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{1.8cm}}
+\toprule
+\textbf{Módulo / Eixo} & \textbf{Meta Mensurável (M)} & \textbf{Viabilidade Técnica (A)} & \textbf{Relevância Hospitalar (R)} & \textbf{Prazo (T)} \\
+\midrule
+Triagem por Voz e Manchester &
+Redução de 40\% no tempo (de 12 para $\le 7$ min); acurácia de transcrição $\ge 92\%$. &
+Whisper API com vocabulário clínico e contingência manual via digitação. &
+Reduz filas nas salas de espera e desonera a enfermagem de digitação repetitiva. &
+Mês 3 \newline (Marco M2) \\
+\addlinespace
+Predição de Sepse e Choque &
+AUC-ROC $> 0{,}88$, sensibilidade $\ge 90\%$, especificidade $\ge 85\%$; alerta em $< 1$ s. &
+Modelos Gradient Boosting sobre séries vitais e cálculo de escores qSOFA/NEWS2. &
+Permite iniciar protocolo na primeira hora e diminui a letalidade hospitalar. &
+Mês 3 \newline (Marco M2) \\
+\addlinespace
+Copiloto RAG de Prescrição &
+Bloqueio de 100\% de contraindicações graves; latência de resposta $\le 1{,}5$ s. &
+Banco vetorial pgvector com compêndios ANVISA e exames recentes do paciente. &
+Elimina prescrições com interações letais e mitiga a fadiga de alertas clínicos. &
+Mês 4 \newline (Marco M3) \\
+\addlinespace
+Regulação de Leitos e LOS &
+Redução de 50\% na ociosidade pós-alta ($\le 2$h); erro médio de LOS $\le 1{,}2$ dias. &
+Regressão supervisionada com CID-10 e atualização de estado via WebSockets. &
+Acelera liberação de quartos e otimiza a ocupação de leitos de terapia intensiva. &
+Mês 5 \newline (Marco M4) \\
+\addlinespace
+Síntese Clínica com LLM &
+Redução de 60\% no tempo de redação; aprovação sem reescrita $\ge 85\%$. &
+Gateway seguro de anonimização e validação médica digital (CFM nº 2.299/2021). &
+Diminui desgaste burocrático e padroniza a transição de cuidados no pós-alta. &
+Mês 5 \newline (Marco M4) \\
+\addlinespace
+Auditoria TISS e Glosas &
+Redução de 75\% no valor glosado ($\le 3\%$); conformidade estrita com a ANS. &
+Cruzamento semântico entre prescrições, checagens de enfermagem e contratos. &
+Evita retenções de receita e reduz prazo de recebimento de 120 para 30 dias. &
+Mês 6 \newline (Marco M5) \\
+\addlinespace
+Plataforma e Resiliência &
+Disponibilidade mensal $\ge 99{,}95\%$; consultas PEP $< 2$ s com 500 acessos. &
+Microsserviços em Docker e Kubernetes, PostgreSQL replicado e filas Redis. &
+Garante continuidade ininterrupta em setores de emergência e terapia intensiva. &
+Meses 1 a 6 \newline (Geral) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Critérios de Sucesso e Indicadores de Desempenho (KPIs)}
+\label{subsec:criterios_sucesso}
+
+A validação do Vitalis v2.0 requer a comparação direta entre os indicadores operacionais do cenário hospitalar legado e os resultados alcançados após a implantação do sistema. A Tabela \ref{tab:kpis_projeto} consolida esses indicadores de desempenho (\textit{Key Performance Indicators}, KPIs) com a linha de base de referência, a meta estabelecida e o procedimento formal de aferição técnica.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Quadro comparativo de KPIs: linha de base, metas do Vitalis v2.0 e validação}
+\label{tab:kpis_projeto}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Indicador (KPI)} & \textbf{Linha de Base} & \textbf{Meta Vitalis v2.0} & \textbf{Procedimento de Validação} \\
+\midrule
+Tempo médio de acolhimento e triagem &
+12 a 15 minutos por paciente &
+$\le 7$ minutos (redução de 40\%) &
+Logs cronometrados entre o início da gravação de áudio e a confirmação do protocolo Manchester no banco. \\
+\addlinespace
+Acurácia preditiva na detecção de sepse &
+Não existente (avaliação manual com atraso) &
+AUC-ROC $> 0{,}88$ (sensibilidade $\ge 90\%$) &
+Validação retrospectiva e prospectiva com confronto entre predições e desfechos clínicos anotados no PEP. \\
+\addlinespace
+Interceptação de contraindicações graves &
+Inferior a 60\% em sistemas legados &
+100\% de bloqueio determinístico &
+Injeção automatizada de casos de teste com alérgenos declarados e interações medicamentosas de grau 1. \\
+\addlinespace
+Índice financeiro de glosas hospitalares &
+8\% a 14\% do faturamento bruto &
+$\le 3\%$ (redução de 75\%) &
+Relatórios de conciliação bancária e demonstrativos de retorno de lote de guias TISS das operadoras. \\
+\addlinespace
+Tempo médio de giro de leito pós-alta &
+3 a 6 horas de intervalo ocioso &
+$\le 2$ horas (redução de 50\%) &
+Métricas do mapa de leitos entre a liberação médica no sistema e a confirmação de higienização concluída. \\
+\addlinespace
+Disponibilidade e resiliência sistêmica &
+98,5\% a 99,0\% mensal em sistemas legados &
+Disponibilidade $\ge 99{,}95\%$ &
+Monitoramento contínuo por sondas sintéticas externas com cálculo mensal de tempo ativo (\textit{uptime}). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Alinhamento Regulatório e Diretrizes Éticas}
+\label{subsec:alinhamento_regulatorio}
+
+A execução dos objetivos do Vitalis v2.0 subordina-se a três pilares de governança hospitalar, que resguardam a segurança jurídica da instituição e a integridade dos pacientes:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Privacidade e Proteção de Dados (LGPD)}: O sistema opera com um gateway anonimizador intermediário. O pipeline remove identificadores diretos (como nome, CPF e endereço) antes do envio para motores de inteligência artificial. O sistema armazena os dados brutos em repositório criptografado com padrão AES-256 e mantém trilha de auditoria transacional imutável \cite{brasil_lgpd:2018}.
+    \item \textbf{Conformidade com os Padrões em Saúde}: As trocas de mensagens e prontuários utilizam os recursos estruturados do HL7 FHIR Release 4 \cite{hl7_fhir:2019}. A comunicação com a saúde suplementar segue a versão vigente do Padrão TISS da ANS \cite{ans_tiss:2023}, o que viabiliza a interoperabilidade entre operadoras, prestadores e órgãos reguladores.
+    \item \textbf{Ética Médica e Princípio Human-in-the-Loop}: A plataforma atende às resoluções do Conselho Federal de Medicina quanto à guarda e emissão de documentos eletrônicos \cite{cfm_prontuario:2007,cfm_digital:2021}. Nenhum algoritmo preditivo ou modelo de linguagem toma decisões clínicas sem intervenção humana. Todo diagnóstico sugerido, prescrição ajustada ou sumário de alta exige expressa revisão e confirmação por profissional habilitado munido de certificado digital padrão ICP-Brasil.
+\end{enumerate}
