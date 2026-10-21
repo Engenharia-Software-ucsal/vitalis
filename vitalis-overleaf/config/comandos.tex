@@ -1,0 +1,37 @@
+% ==============================================================================
+% DEFINIÇÕES DE ESTILOS TIKZ PARA BPMN E UML NATIVOS NO OVERLEAF
+% ==============================================================================
+
+% --- BPMN Styles ---
+\tikzstyle{bpmnStart} = [circle, draw=vitalisgreen!80!black, fill=vitalisgreen!15, line width=1.5pt, minimum size=8mm]
+\tikzstyle{bpmnEnd} = [circle, draw=vitalisred!80!black, fill=vitalisred!15, line width=2.5pt, minimum size=8mm]
+\tikzstyle{bpmnTask} = [rectangle, rounded corners=3pt, draw=vitalisblue!90, fill=vitalisblue!8, line width=1pt, minimum width=2.5cm, minimum height=1.1cm, text centered, text width=2.3cm, font=\scriptsize\sffamily]
+\tikzstyle{bpmnAiTask} = [rectangle, rounded corners=3pt, draw=purple!80!black, fill=purple!8, line width=1.2pt, minimum width=2.5cm, minimum height=1.1cm, text centered, text width=2.3cm, font=\scriptsize\sffamily]
+\tikzstyle{bpmnGateway} = [diamond, draw=orange!90!black, fill=orange!15, line width=1.2pt, minimum size=9mm, text centered, font=\scriptsize\sffamily]
+\tikzstyle{bpmnArrow} = [-{Latex[length=2.5mm]}, draw=vitalisdark, line width=0.9pt]
+\tikzstyle{bpmnDashArrow} = [-{Latex[length=2.5mm]}, dashed, draw=vitalisgray, line width=0.8pt]
+
+% --- UML Class Diagram Styles ---
+\tikzstyle{umlClass} = [rectangle, draw=vitalisdark, fill=vitalislight!40, line width=1pt, text width=3.8cm, font=\scriptsize\sffamily]
+\tikzstyle{umlAiClass} = [rectangle, draw=purple!80!black, fill=purple!5, line width=1.2pt, text width=4.0cm, font=\scriptsize\sffamily]
+
+% --- UML Use Case Styles ---
+\tikzstyle{umlActor} = [circle, draw=vitalisdark, fill=vitalisdark!20, minimum size=5mm, line width=1pt]
+\tikzstyle{umlUseCase} = [ellipse, draw=vitalisblue, fill=vitalisblue!8, line width=1pt, text centered, minimum width=3.2cm, minimum height=1.1cm, text width=3.0cm, font=\scriptsize\sffamily]
+\tikzstyle{umlInclude} = [-{Latex[length=2mm]}, dashed, draw=vitalisgray, font=\tiny\itshape]
+\tikzstyle{umlExtend} = [-{Latex[length=2mm]}, dashed, draw=vitalisred!80, font=\tiny\itshape]
+
+% --- Box de Destaque / Callout ---
+\newcommand{\destaqueVitalis}[2]{%
+    \begin{center}
+    \fcolorbox{vitalisblue!60}{vitalislight!50}{%
+        \parbox{0.95\textwidth}{%
+            \vspace{0.3em}
+            \textbf{\color{vitalisdark}#1}\par
+            \vspace{0.2em}
+            \small #2
+            \vspace{0.3em}
+        }%
+    }
+    \end{center}
+}

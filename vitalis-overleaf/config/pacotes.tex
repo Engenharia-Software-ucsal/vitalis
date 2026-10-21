@@ -1,0 +1,97 @@
+% ==============================================================================
+% PACOTES BÁSICOS E TIPOGRAFIA
+% ==============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% Tradução e termos em Português
+\renewcommand{\contentsname}{Sumário}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabela}
+\renewcommand{\refname}{Referências Bibliográficas}
+\usepackage{lmodern}
+
+% ==============================================================================
+% MATEMÁTICA E SÍMBOLOS
+% ==============================================================================
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% ==============================================================================
+% LAYOUT, TABELAS E FORMATAÇÃO
+% ==============================================================================
+\usepackage{geometry}
+\geometry{left=3cm,right=2cm,top=3cm,bottom=2cm}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{float}
+
+% ==============================================================================
+% CORES E ELEMENTOS GRÁFICOS
+% ==============================================================================
+\usepackage{xcolor}
+\definecolor{vitalisblue}{RGB}{24, 76, 120}
+\definecolor{vitalisdark}{RGB}{18, 52, 86}
+\definecolor{vitalislight}{RGB}{230, 240, 250}
+\definecolor{vitalisred}{RGB}{180, 40, 40}
+\definecolor{vitalisgreen}{RGB}{34, 139, 34}
+\definecolor{vitalisgray}{RGB}{100, 110, 120}
+\definecolor{codebg}{RGB}{245, 247, 250}
+
+\usepackage{graphicx}
+
+% ==============================================================================
+% TIKZ E DIAGRAMAS (BPMN, UML, CLASSES, CASOS DE USO)
+% ==============================================================================
+\usepackage{tikz}
+\usetikzlibrary{
+    shapes.geometric,
+    shapes.misc,
+    arrows.meta,
+    positioning,
+    calc,
+    fit,
+    backgrounds,
+    decorations.pathreplacing,
+    matrix,
+    shadows
+}
+
+% ==============================================================================
+% CRONOGRAMA E MARCOS (PGFGANTT)
+% ==============================================================================
+\usepackage{pgfgantt}
+
+% ==============================================================================
+% CÓDIGO-FONTE E LISTINGS
+% ==============================================================================
+\usepackage{listings}
+\lstset{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    frame=single,
+    rulecolor=\color{vitalisgray!40},
+    numbers=left,
+    numberstyle=\tiny\color{vitalisgray},
+    keywordstyle=\color{vitalisblue}\bfseries,
+    commentstyle=\color{vitalisgreen}\itshape,
+    stringstyle=\color{vitalisred}
+}
+
+% ==============================================================================
+% HIPERLINKS E CITAÇÕES
+% ==============================================================================
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=vitalisblue,
+    citecolor=vitalisdark,
+    urlcolor=vitalisblue,
+    pdfstartview={FitH}
+}

@@ -1,0 +1,92 @@
+\documentclass[12pt,a4paper]{article}
+
+% Inclusão de configurações, pacotes e comandos visuais
+\input{config/pacotes.tex}
+\input{config/comandos.tex}
+
+\begin{document}
+
+% ==============================================================================
+% CAPA INSTITUCIONAL UCSAL
+% ==============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1.0cm}
+    {\large \textbf{UNIVERSIDADE CATÓLICA DO SALVADOR -- UCSAL}}\\[0.3cm]
+    {\large \textbf{ESCOLA DE TECNOLOGIAS}}\\[0.3cm]
+    {\large \textbf{CURSO DE ENGENHARIA DE SOFTWARE}}\\[0.3cm]
+    {\large \textbf{DISCIPLINA: TÓPICOS AVANÇADOS DE PROGRAMAÇÃO}}\\[0.3cm]
+    {\large \textbf{PROFESSOR: ELTON FIGUEIREDO DA SILVA}}\\[3.5cm]
+
+    {\LARGE \textbf{\color{vitalisdark}SISTEMA DE GESTÃO HOSPITALAR INTELIGENTE}}\\[0.4cm]
+    {\huge \textbf{\color{vitalisblue}VITALIS (VERSÃO 2.0)}}\\[0.8cm]
+    {\large \textbf{DOCUMENTAÇÃO DE ENGENHARIA DE SOFTWARE, ARQUITETURA E MODELAGEM DE PROCESSOS COM INTELIGÊNCIA ARTIFICIAL CLÍNICA}}\\[3.5cm]
+
+    \begin{flushright}
+        \begin{minipage}{0.55\textwidth}
+            \small
+            \textbf{Acadêmico:} Davi dos Santos Ribeiro\\
+            \textbf{Matrícula / E-mail:} davi.ribeiro@ucsal.edu.br\\
+            \textbf{Projeto:} Documentação Técnica Integral (Requisitos, BPMN, Classes, Casos de Uso, Cronograma e Módulo de IA)
+        \end{minipage}
+    \end{flushright}
+
+    \vfill
+    {\large Salvador -- BA\\ Outubro de 2026}
+\end{titlepage}
+
+% ==============================================================================
+% ELEMENTOS PRÉ-TEXTUAIS (SUMÁRIO, LISTAS)
+% ==============================================================================
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+\listoffigures
+\vspace{1.5cm}
+\listoftables
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ==============================================================================
+% SEÇÕES DO PROJETO VITALIS v2.0
+% ==============================================================================
+\input{secoes/01_descritivo.tex}
+\newpage
+
+\input{secoes/02_problema.tex}
+\newpage
+
+\input{secoes/03_objetivo.tex}
+\newpage
+
+\input{secoes/04_cronograma.tex}
+\newpage
+
+\input{secoes/05_requisitos.tex}
+\newpage
+
+\input{secoes/06_metricas_horas.tex}
+\newpage
+
+\input{secoes/07_bpmn.tex}
+\newpage
+
+\input{secoes/08_diagrama_classes.tex}
+\newpage
+
+\input{secoes/09_diagrama_casos_uso.tex}
+\newpage
+
+\input{secoes/10_funcionalidade_ia.tex}
+\newpage
+
+% ==============================================================================
+% REFERÊNCIAS BIBLIOGRÁFICAS
+% ==============================================================================
+\bibliographystyle{plain}
+\bibliography{referencias}
+
+\end{document}
