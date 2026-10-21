@@ -2,11 +2,12 @@
 
 O dimensionamento de esforço em projetos de software hospitalar de alta complexidade demanda rigor metodológico, decomposição granular de tarefas e modelos quantitativos de estimativa. O sistema Vitalis v2.0 opera como uma plataforma assistencial e administrativa orientada a microsserviços, integrando regras determinísticas de triagem, prontuário eletrônico e faturamento a pipelines probabilísticos de inteligência artificial clínica. Subestimar o esforço de engenharia gera atrasos em marcos regulatórios, degradação da cobertura de testes de carga e falhas na conformidade com normas sanitárias e de proteção de dados \cite{pressman:2016, sommerville:2019}.
 
-Esta seção formaliza a metrificação do projeto em cinco eixos:
+Esta seção formaliza a metrificação do projeto em seis eixos:
 \begin{enumerate}[leftmargin=*]
     \item Critérios metodológicos de decomposição e justificativa da margem de contingência técnica;
     \item Estrutura Analítica do Projeto (EAP / WBS) em três níveis hierárquicos;
     \item Detalhamento analítico de horas por pacote de trabalho e subtarefa técnica;
+    \item Estimativa paramétrica baseada na Métrica de Função de Implementação (MFI / Modelo UCSAL);
     \item Matriz de distribuição de esforço pelos sete perfis profissionais da equipe multidisciplinar;
     \item Consolidação geral do esforço, aplicação da contingência de 15\% e análise de viabilidade temporal frente ao cronograma de 28 semanas.
 \end{enumerate}
@@ -245,7 +246,75 @@ A Tabela \ref{tab:detalhamento_horas} decompõe o esforço base do projeto em 38
 \end{xltabular}
 
 % ==============================================================================
-% 6.4 DISTRIBUIÇÃO DE HORAS POR PERFIL PROFISSIONAL
+% 6.4 ESTIMATIVA PARAMÉTRICA POR MÉTRICA DE FUNÇÃO DE IMPLEMENTAÇÃO (MFI)
+% ==============================================================================
+\subsection{Estimativa Paramétrica por Métrica de Função de Implementação (MFI / Modelo UCSAL)}
+
+Como instrumento normativo e comparativo de estimativa de desenvolvimento de software, o projeto adota a metodologia oficial da Universidade Católica do Salvador (UCSAL), consubstanciada na planilha de cálculo \texttt{Documento de metrificação.xlsx} disponibilizada pela cátedra da disciplina. Essa ferramenta baseia-se no modelo de \textbf{Métrica de Função de Implementação (MFI)}, um método algorítmico paramétrico que correlaciona o tamanho funcional de cada componente de software aos seus atributos internos, à plataforma tecnológica e aos fatores de produtividade da equipe \cite{pressman:2016}.
+
+A planilha parametrizada oficial do projeto Vitalis v2.0 foi incorporada ao repositório institucional sob o nome \texttt{Documento\_de\_metrificacao\_Vitalis\_v2.0.xlsx} (disponível no diretório de anexos do projeto), estruturada nas abas \textit{Estimativa}, \textit{Recursos} e \textit{Instruções}.
+
+\subsubsection{Formulações Matemáticas da Métrica MFI}
+
+O modelo MFI decompõe cada função em atributos de complexidade ponderados:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Pontos de Implementação ($PI$)}: Mensura o tamanho da função considerando a quantidade de programas homogêneos ($Q$) multiplicada pelo somatório de suas características:
+    \begin{equation}
+        PI = Q \times \left( \text{Tela} + \text{SemTela} + \text{Relat} + \text{Tab} + \text{Plat} + \text{Ling} + \text{Interf} + \text{Serv} \right)
+    \end{equation}
+    onde os pesos variam de 0 a 4 conforme a complexidade volumétrica dos campos, tabelas físicas e interfaces externas.
+    
+    \item \textbf{Esforço de Construção / Codificação ($H_{\text{const}}$)}: Aplica os fatores multiplicadores de execução ($N$), reaproveitamento de código ($O$) e complexidade de manutenção ($P$):
+    \begin{equation}
+        H_{\text{const}} = PI \times N \times O \times P
+    \end{equation}
+    onde $N = 1{,}2$ (programa novo), $O \in [0{,}5; 1{,}0]$ (taxa de reuso) e $P \in [0{,}6; 4{,}8]$ (índice de manutenibilidade).
+
+    \item \textbf{Rateio Oficial do Ciclo de Vida da UCSAL}: A metodologia estabelece uma proporção empírica entre as fases da engenharia de software:
+    \begin{align}
+        H_{\text{proj}} &= \frac{H_{\text{const}} \times 25}{55} \quad (25\% \text{ do esforço bruto para especificação lógica e física}) \\
+        H_{\text{test}} &= \frac{H_{\text{const}} \times 20}{55} \quad (20\% \text{ do esforço bruto para testes de funcionalidade}) \\
+        H_{\text{bruto}} &= H_{\text{const}} + H_{\text{proj}} + H_{\text{test}} = H_{\text{const}} \times \frac{100}{55}
+    \end{align}
+
+    \item \textbf{Ajuste por Nível de Recurso (Aba Recursos)}: Calibra o esforço bruto a partir do nível de maturidade técnica do profissional alocado (Níveis 1, 2 e 3):
+    \begin{equation}
+        H_{\text{líquido}} = \text{ROUND}\left( H_{\text{bruto}} \times \left(1 - \frac{\% \text{Redução}}{100}\right), 0 \right)
+    \end{equation}
+\end{enumerate}
+
+\subsubsection{Parametrização das Macrofunções do Vitalis v2.0}
+
+Os 22 Requisitos Funcionais do sistema foram agrupados nas oito macrofunções padronizadas da planilha, calculadas na Tabela \ref{tab:mfi_vitalis}.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\caption{Metrificação de software das funções do Vitalis v2.0 na Métrica MFI (Modelo UCSAL)}
+\label{tab:mfi_vitalis}
+\begin{tabularx}{\textwidth}{c >{\raggedright\arraybackslash}X *{9}{c}}
+\toprule
+\textbf{ID} & \textbf{Macrofunção de Implementação} & \textbf{Q} & \textbf{PI} & \textbf{Const} & \textbf{Proj} & \textbf{Test} & \textbf{Bruto} & \textbf{Nível} & \textbf{Red.} & \textbf{Líq.} \\
+\midrule
+MFI-01 & Cadastro Pacientes e Recepção (RF-001, 017)        & 2 & 36 &  38,88 & 17,67 & 14,14 &  70,69 & Nível 2 & 15\% &  60 h \\
+MFI-02 & Triagem Manchester com Voz (RF-002, 003, 021)      & 2 & 38 &  61,56 & 27,98 & 22,39 & 111,93 & Nível 2 & 15\% &  95 h \\
+MFI-03 & Motor Predição Sepse qSOFA/NEWS2 (RF-004, 020)     & 2 & 38 & 109,44 & 49,75 & 39,80 & 198,98 & Nível 3 & 25\% & 149 h \\
+MFI-04 & Gestão e Alocação Leitos LOS (RF-005, 006)         & 2 & 36 &  58,32 & 26,51 & 21,21 & 106,04 & Nível 2 & 15\% &  90 h \\
+MFI-05 & Prontuário PEP e Prescrição (RF-009, 010, 011)     & 3 & 66 & 106,92 & 48,60 & 38,88 & 194,40 & Nível 3 & 25\% & 146 h \\
+MFI-06 & Copiloto Farmacoterapêutico RAG (RF-007, 008)      & 2 & 38 & 109,44 & 49,75 & 39,80 & 198,98 & Nível 3 & 25\% & 149 h \\
+MFI-07 & Faturamento TISS/TUSS e Glosas (RF-012, 013, 022)   & 2 & 40 &  64,80 & 29,45 & 23,56 & 117,82 & Nível 2 & 15\% & 100 h \\
+MFI-08 & Gateway Higienização PII e WORM (RF-018, 019)     & 2 & 28 &  45,36 & 20,62 & 16,49 &  82,47 & Nível 3 & 25\% &  62 h \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total Consolidado da Métrica MFI (Horas):}} & \textbf{17} & \textbf{320} & \textbf{594,72} & \textbf{270,33} & \textbf{216,26} & \textbf{1081,31} & \multicolumn{2}{c}{\textbf{Líquido:}} & \textbf{851 h} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+A aplicação da métrica paramétrica MFI totaliza \textbf{1.081,31 horas brutas de desenvolvimento direto de software} (594,72 h de codificação, 270,33 h de especificação e 216,26 h de testes unitários e funcionais), que se reduzem para \textbf{851 horas líquidas} considerando a alocação de desenvolvedores plenos e seniores (Níveis 2 e 3). Esse montante representa o núcleo executivo de construção dos microsserviços e algoritmos clínicos, perfeitamente compatível com os pacotes de engenharia de software da EAP global (WP 2.0, WP 3.0, WP 4.0 e WP 5.0, que somam 1.612 horas nominais incluindo infraestrutura, esteiras de MLOps e testes de estresse k6).
+
+% ==============================================================================
+% 6.5 DISTRIBUIÇÃO DE HORAS POR PERFIL PROFISSIONAL
 % ==============================================================================
 \subsection{Distribuição de Horas por Perfil Profissional da Equipe}
 
@@ -295,7 +364,7 @@ A distribuição de horas reflete as prioridades técnicas da arquitetura:
 \end{itemize}
 
 % ==============================================================================
-% 6.5 TOTAIS CONSOLIDADOS E CONTINGÊNCIA TÉCNICA
+% 6.6 TOTAIS CONSOLIDADOS E CONTINGÊNCIA TÉCNICA
 % ==============================================================================
 \subsection{Totais Consolidados, Margem de Contingência e Esforço Total}
 

@@ -1,0 +1,122 @@
+\contentsline {section}{\numberline {1}Descritivo Detalhado do Sistema Vitalis v2.0}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Contexto Operacional e Visão de Negócio}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Arquitetura em Microsserviços e Engenharia de Software}{1}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Ciclo Assistencial Completo do Paciente}{2}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Recepção e Admissão Cadastral}{2}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}Acolhimento e Triagem Aumentada por IA}{3}{subsubsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.3}Regulação e Alocação Preditiva de Leitos}{3}{subsubsection.1.3.3}%
+\contentsline {subsubsection}{\numberline {1.3.4}Prontuário Eletrônico (PEP) e Copiloto Farmacoterapêutico}{3}{subsubsection.1.3.4}%
+\contentsline {subsubsection}{\numberline {1.3.5}Evoluções Clínicas e Sumário de Alta Automatizado}{4}{subsubsection.1.3.5}%
+\contentsline {subsubsection}{\numberline {1.3.6}Faturamento Hospitalar e Auditoria TISS/TUSS}{4}{subsubsection.1.3.6}%
+\contentsline {subsection}{\numberline {1.4}Módulos Especializados de Inteligência Artificial e Suporte à Decisão}{4}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Governança Clínica, Segurança da Informação e Conformidade Regulatória}{5}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Identificação e Delimitação do Problema}{7}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Fragmentação dos Fluxos e Gargalos na Triagem}{7}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Subnotificação da Deterioração Clínica e a Janela Terapêutica da Sepse}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Sobrecarga Cognitiva e Falhas na Prescrição Médica}{8}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Gargalos Operacionais na Gestão e no Giro de Leitos}{8}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Inconsistências de Faturamento e o Impacto das Glosas TISS/TUSS}{9}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Síntese dos Impactos Clínicos e Operacionais}{9}{subsection.2.6}%
+\contentsline {section}{\numberline {3}Objetivos do Projeto Vitalis v2.0}{11}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Objetivo Geral}{11}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Objetivos Específicos}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Matriz de Metas SMART}{12}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Critérios de Sucesso e Indicadores de Desempenho (KPIs)}{12}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Alinhamento Regulatório e Diretrizes Éticas}{15}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Cronograma do Trabalho e Marcos do Projeto}{16}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Estrutura Analítica das Fases e Marcos do Projeto}{16}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Fase 1: Concepção, elicitação e engenharia de requisitos (Semanas 1 a 4)}{16}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Fase 2: Arquitetura de microsserviços e modelagem de dados 3NF (Semanas 5 a 8)}{17}{subsubsection.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.3}Fase 3: Desenvolvimento do core clínico e triagem Manchester (Semanas 9 a 14)}{17}{subsubsection.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.4}Fase 4: Módulo de inteligência artificial clínica e governança (Semanas 15 a 20)}{18}{subsubsection.4.1.4}%
+\contentsline {subsubsection}{\numberline {4.1.5}Fase 5: Gestão de leitos, faturamento TISS/TUSS e painéis gerenciais (Semanas 21 a 24)}{18}{subsubsection.4.1.5}%
+\contentsline {subsubsection}{\numberline {4.1.6}Fase 6: Testes integrados, simulações clínicas, segurança e homologação (Semanas 25 a 28)}{19}{subsubsection.4.1.6}%
+\contentsline {subsection}{\numberline {4.2}Matriz de Atividades, Prazos e Entregáveis do Projeto}{19}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Representação Visual do Cronograma (Gráfico de Gantt)}{20}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Caminho Crítico e Gestão de Riscos do Projeto}{21}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Requisitos do Sistema e Diretrizes Operacionais}{23}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Requisitos Funcionais (RF)}{23}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Regras de Negócio e Diretrizes Operacionais (RN)}{26}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Requisitos Não Funcionais (RNF)}{29}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Matriz de Rastreabilidade e Conformidade Regulatória}{32}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Metrificação em Horas e Estimativa de Esforço}{33}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Metodologia de Estimativa e Critérios de Dimensionamento}{33}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Estrutura Analítica do Projeto (EAP)}{34}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Estimativa Detalhada por Pacote de Trabalho e Subtarefa}{35}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Estimativa Paramétrica por Métrica de Função de Implementação (MFI / Modelo UCSAL)}{40}{subsection.6.4}%
+\contentsline {subsubsection}{\numberline {6.4.1}Formulações Matemáticas da Métrica MFI}{40}{subsubsection.6.4.1}%
+\contentsline {subsubsection}{\numberline {6.4.2}Parametrização das Macrofunções do Vitalis v2.0}{41}{subsubsection.6.4.2}%
+\contentsline {subsection}{\numberline {6.5}Distribuição de Horas por Perfil Profissional da Equipe}{42}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Totais Consolidados, Margem de Contingência e Esforço Total}{43}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Viabilidade Operacional e Alinhamento com o Cronograma}{44}{subsection.6.7}%
+\contentsline {section}{\numberline {7}Modelagem de Processos de Negócio (BPMN 2.0)}{46}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Fundamentação Metodológica e Notação Gráfica}{46}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Fluxo 1: Acolhimento, Triagem Manchester e Predição de Sepse}{46}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Fluxo 2: Atendimento Médico, Copiloto RAG e Dispensação Farmacêutica}{48}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Fluxo 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS}{49}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Matriz de Atores, Intervenções de IA e Salvaguardas}{50}{subsection.7.5}%
+\contentsline {section}{\numberline {8}Diagrama de Classes UML do Sistema Vitalis v2.0}{52}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Visão Geral da Arquitetura Estática e Separação em Pacotes}{52}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Diagrama Estrutural do Sistema Vitalis v2.0}{53}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Detalhamento do Pacote Clínico-Assistencial}{53}{subsection.8.3}%
+\contentsline {subsubsection}{\numberline {8.3.1}Classe Paciente}{53}{subsubsection.8.3.1}%
+\contentsline {subsubsection}{\numberline {8.3.2}Classe Atendimento}{54}{subsubsection.8.3.2}%
+\contentsline {subsubsection}{\numberline {8.3.3}Classe TriagemManchester}{55}{subsubsection.8.3.3}%
+\contentsline {subsubsection}{\numberline {8.3.4}Classe ProntuarioEletronico}{56}{subsubsection.8.3.4}%
+\contentsline {subsubsection}{\numberline {8.3.5}Classe EvolucaoClinica}{57}{subsubsection.8.3.5}%
+\contentsline {subsubsection}{\numberline {8.3.6}Classe PrescricaoMedica}{57}{subsubsection.8.3.6}%
+\contentsline {subsubsection}{\numberline {8.3.7}Classe ItemPrescricao}{58}{subsubsection.8.3.7}%
+\contentsline {subsection}{\numberline {8.4}Detalhamento do Pacote de Infraestrutura e Faturamento}{58}{subsection.8.4}%
+\contentsline {subsubsection}{\numberline {8.4.1}Classe AlaHospitalar}{58}{subsubsection.8.4.1}%
+\contentsline {subsubsection}{\numberline {8.4.2}Classe Leito}{59}{subsubsection.8.4.2}%
+\contentsline {subsubsection}{\numberline {8.4.3}Classe ContaFaturamento}{59}{subsubsection.8.4.3}%
+\contentsline {subsubsection}{\numberline {8.4.4}Classe GuiaTISS}{60}{subsubsection.8.4.4}%
+\contentsline {subsection}{\numberline {8.5}Detalhamento do Pacote de Inteligência Artificial e Auditoria}{60}{subsection.8.5}%
+\contentsline {subsubsection}{\numberline {8.5.1}Classe PredicaoRiscoClinico}{61}{subsubsection.8.5.1}%
+\contentsline {subsubsection}{\numberline {8.5.2}Classe LogInferenciaIA}{61}{subsubsection.8.5.2}%
+\contentsline {subsubsection}{\numberline {8.5.3}Classe VetorEmbeddingClinico}{62}{subsubsection.8.5.3}%
+\contentsline {subsubsection}{\numberline {8.5.4}Classe TrilhaAuditoria}{62}{subsubsection.8.5.4}%
+\contentsline {subsection}{\numberline {8.6}Padrões de Projeto e Arquitetura de Software Aplicados}{63}{subsection.8.6}%
+\contentsline {subsubsection}{\numberline {8.6.1}Padrão Strategy para os Módulos de Inteligência Artificial}{63}{subsubsection.8.6.1}%
+\contentsline {subsubsection}{\numberline {8.6.2}Padrão Repository para Isolamento da Persistência}{64}{subsubsection.8.6.2}%
+\contentsline {subsubsection}{\numberline {8.6.3}Normalização em Terceira Forma Normal (3NF) e Modelo Relacional}{64}{subsubsection.8.6.3}%
+\contentsline {subsection}{\numberline {8.7}Matriz de Rastreabilidade entre Classes e Requisitos}{65}{subsection.8.7}%
+\contentsline {section}{\numberline {9}Diagrama e Especificação de Casos de Uso (UML)}{67}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Mapeamento e Caracterização dos Atores}{67}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Diagrama de Casos de Uso Geral (TikZ Nativo)}{68}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Especificação Textual Detalhada dos Casos de Uso}{69}{subsection.9.3}%
+\contentsline {subsubsection}{\numberline {9.3.1}UC-01: Executar Triagem de Risco Preditiva Assistida por IA}{72}{subsubsection.9.3.1}%
+\contentsline {subsubsection}{\numberline {9.3.2}UC-02: Gerenciar Ocupação e Alocação Preditiva de Leitos}{73}{subsubsection.9.3.2}%
+\contentsline {subsubsection}{\numberline {9.3.3}UC-03: Realizar Prescrição Médica com Copiloto RAG Farmacoterapêutico}{74}{subsubsection.9.3.3}%
+\contentsline {subsubsection}{\numberline {9.3.4}UC-04: Gerar Sumário de Alta e Evolução Estruturada via LLM}{75}{subsubsection.9.3.4}%
+\contentsline {subsubsection}{\numberline {9.3.5}UC-05: Realizar Auditoria Preventiva de Faturamento TISS/TUSS}{76}{subsubsection.9.3.5}%
+\contentsline {subsubsection}{\numberline {9.3.6}UC-06: Validar e Dispensar Medicamentos com Dupla Checagem}{77}{subsubsection.9.3.6}%
+\contentsline {subsubsection}{\numberline {9.3.7}UC-07: Consultar Histórico Clínico e Exames no Portal do Paciente}{78}{subsubsection.9.3.7}%
+\contentsline {subsubsection}{\numberline {9.3.8}UC-08: Rastrear Logs e Telemetria de Inferências de IA}{79}{subsubsection.9.3.8}%
+\contentsline {subsection}{\numberline {9.4}Matriz de Rastreabilidade entre Casos de Uso e Requisitos}{79}{subsection.9.4}%
+\contentsline {section}{\numberline {10}Definição da Funcionalidade Integrada com Inteligência Artificial}{81}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Visão Geral dos Módulos de IA e Papel Clínico Assistencial}{81}{subsection.10.1}%
+\contentsline {subsubsection}{\numberline {10.1.1}Princípio do Human-in-the-Loop (HITL)}{81}{subsubsection.10.1.1}%
+\contentsline {subsubsection}{\numberline {10.1.2}Enquadramento Regulatório e Ético}{81}{subsubsection.10.1.2}%
+\contentsline {subsection}{\numberline {10.2}Arquitetura do Copiloto Farmacoterapêutico (RAG Clínico)}{82}{subsection.10.2}%
+\contentsline {subsubsection}{\numberline {10.2.1}Pipeline de Recuperação Aumentada por Geração (RAG)}{82}{subsubsection.10.2.1}%
+\contentsline {subsubsection}{\numberline {10.2.2}Algoritmo de Busca Híbrida e Re-ranking Contextual}{82}{subsubsection.10.2.2}%
+\contentsline {subsubsection}{\numberline {10.2.3}Engenharia de Prompt Clínico e Restrição de Alucinações}{83}{subsubsection.10.2.3}%
+\contentsline {subsubsection}{\numberline {10.2.4}Bloqueios Estritos e Ajuste Automático por Função Renal}{84}{subsubsection.10.2.4}%
+\contentsline {subsection}{\numberline {10.3}Motor Preditivo de Sepse e Deterioração (qSOFA e NEWS2)}{84}{subsection.10.3}%
+\contentsline {subsubsection}{\numberline {10.3.1}Coleta de Telemetria e Sinais Vitais em Tempo Real}{84}{subsubsection.10.3.1}%
+\contentsline {subsubsection}{\numberline {10.3.2}Algoritmo Preditivo Baseado em Ensemble Calibrado}{85}{subsubsection.10.3.2}%
+\contentsline {subsubsection}{\numberline {10.3.3}Janela Terapêutica da Primeira Hora da Sepse}{85}{subsubsection.10.3.3}%
+\contentsline {subsubsection}{\numberline {10.3.4}Explicabilidade Clínica com SHAP (SHapley Additive exPlanations)}{85}{subsubsection.10.3.4}%
+\contentsline {subsection}{\numberline {10.4}Gateway de Higienização de PII e Conformidade com a LGPD}{86}{subsection.10.4}%
+\contentsline {subsubsection}{\numberline {10.4.1}Pipeline de Desidentificação Pré-Tráfego Externo}{86}{subsubsection.10.4.1}%
+\contentsline {subsubsection}{\numberline {10.4.2}Pseudonimização Reversível no Perímetro Hospitalar Seguro}{87}{subsubsection.10.4.2}%
+\contentsline {subsubsection}{\numberline {10.4.3}Criptografia de Cargas Úteis em Trânsito e em Repouso}{87}{subsubsection.10.4.3}%
+\contentsline {subsection}{\numberline {10.5}Mecanismo de Resiliência: Circuit Breaker e Contingência Determinística}{87}{subsection.10.5}%
+\contentsline {subsubsection}{\numberline {10.5.1}Estados do Circuit Breaker}{88}{subsubsection.10.5.1}%
+\contentsline {subsubsection}{\numberline {10.5.2}Limite de Timeout Estrito de 2,0 Segundos}{88}{subsubsection.10.5.2}%
+\contentsline {subsubsection}{\numberline {10.5.3}Fallback Instantâneo para Motores Determinísticos}{88}{subsubsection.10.5.3}%
+\contentsline {subsubsection}{\numberline {10.5.4}Diagrama de Fluxo de Inferência com Circuit Breaker}{88}{subsubsection.10.5.4}%
+\contentsline {subsection}{\numberline {10.6}Auditoria e Explicabilidade: Tabela \texttt {LOG\_INFERENCIA\_IA}}{89}{subsection.10.6}%
+\contentsline {subsubsection}{\numberline {10.6.1}Modelo de Dados Relacional e Trilha Imutável}{89}{subsubsection.10.6.1}%
+\contentsline {subsubsection}{\numberline {10.6.2}Governança de IA e Monitoramento Pós-Implantação}{90}{subsubsection.10.6.2}%

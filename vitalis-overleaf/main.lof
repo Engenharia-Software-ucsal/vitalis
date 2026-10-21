@@ -1,0 +1,9 @@
+\contentsline {figure}{\numberline {1}{\ignorespaces Gráfico de Gantt representativo das 28 semanas do projeto Vitalis v2.0}}{21}{figure.1}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Representação hierárquica da Estrutura Analítica do Projeto (EAP)}}{34}{figure.2}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Fluxo BPMN 1: Acolhimento, Triagem Manchester e Predição de Sepse no Vitalis v2.0.}}{47}{figure.3}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Fluxo BPMN 2: Atendimento Médico, Copiloto RAG e Dispensação Farmacêutica no Vitalis v2.0.}}{48}{figure.4}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Fluxo BPMN 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS no Vitalis v2.0.}}{49}{figure.5}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Diagrama Estrutural de Classes UML do Sistema Vitalis v2.0}}{53}{figure.6}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Diagrama UML do Padrão Strategy para Inferência e Predição Clínica}}{64}{figure.7}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Diagrama Geral de Casos de Uso do Sistema Vitalis v2.0}}{69}{figure.8}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Fluxo de inferência clínica com higienização de dados, resiliência por Circuit Breaker e contingência determinística.}}{89}{figure.9}%

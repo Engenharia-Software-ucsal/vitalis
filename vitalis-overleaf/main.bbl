@@ -1,0 +1,131 @@
+\begin{thebibliography}{10}
+
+\bibitem{ans_tiss:2023}
+{ANS - Agência Nacional de Saúde Suplementar}.
+\newblock Padrão tiss -- troca de informação de saúde suplementar:
+  Diretrizes gerais e componentes organizacionais, 2023.
+\newblock Acesso em: 12 out. 2026.
+
+\bibitem{brasil_lgpd:2018}
+{BRASIL}.
+\newblock Lei nº 13.709, de 14 de agosto de 2018. lei geral de proteção de
+  dados pessoais (lgpd), 2018.
+\newblock Acesso em: 15 out. 2026.
+
+\bibitem{cfm_prontuario:2007}
+{CFM - Conselho Federal de Medicina}.
+\newblock Resolu{\c{c}}{\~a}o cfm n{\textordmasculine} 1.821/2007: Aprova as
+  normas t{\'e}cnicas concernentes {\`a} digitaliza{\c{c}}{\~a}o e uso dos
+  sistemas informatizados para a guarda e manuseio dos documentos dos
+  prontu{\'a}rios dos pacientes, 2007.
+\newblock Acesso em: 18 out. 2026.
+
+\bibitem{cfm_digital:2021}
+{CFM - Conselho Federal de Medicina}.
+\newblock Resolu{\c{c}}{\~a}o cfm n{\textordmasculine} 2.299/2021: Regulamenta
+  a emiss{\~a}o de documentos m{\'e}dicos eletr{\^o}nicos e a assinatura
+  digital no {\^a}mbito da sa{\'u}de, 2021.
+\newblock Acesso em: 18 out. 2026.
+
+\bibitem{cockcroft_gault:1976}
+Donald~W. Cockcroft and M.~Henry Gault.
+\newblock Prediction of creatinine clearance from serum creatinine.
+\newblock {\em Nephron}, 16(1):31--41, 1976.
+
+\bibitem{fowler_patterns:2002}
+Martin Fowler.
+\newblock {\em Patterns of Enterprise Application Architecture}.
+\newblock Addison-Wesley Professional, Boston, 2002.
+
+\bibitem{gamma_design_patterns:1994}
+Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
+\newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
+\newblock Addison-Wesley Professional, Reading, MA, 1994.
+
+\bibitem{hl7_fhir:2019}
+{HL7 International}.
+\newblock {\em HL7 FHIR Release 4: Fast Healthcare Interoperability Resources
+  Specification}.
+\newblock Health Level Seven International, 2019.
+\newblock Acesso em: 18 out. 2026.
+
+\bibitem{kumar_sepsis:2006}
+Anand Kumar, Dan Roberts, Kenneth~E. Wood, Bruce Light, Joseph~E. Parrillo,
+  Satendra Sharma, Robert Suppes, Dan Feinstein, Sergio Zanotti, Leo Taiberg,
+  David Gurka, and Amarjit Cheang.
+\newblock Duration of hypotension before initiation of effective antimicrobial
+  therapy is the critical determinant of survival in human septic shock.
+\newblock {\em Critical Care Medicine}, 34(6):1589--1596, 2006.
+
+\bibitem{lewis_rag:2020}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
+  Rockt{\"a}schel, Sebastian Riedel, and Douwe Kiela.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS
+  2020)}, volume~33, pages 9459--9474, 2020.
+
+\bibitem{lundberg_shap:2017}
+Scott~M. Lundberg and Su-In Lee.
+\newblock A unified approach to interpreting model predictions.
+\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS
+  2017)}, volume~30, pages 4765--4774, 2017.
+
+\bibitem{manchester:2014}
+Kevin Mackway-Jones, Janet Marsden, and Jill Windle.
+\newblock {\em Emergency Triage: Manchester Triage Group}.
+\newblock John Wiley \& Sons, Oxford, 3 edition, 2014.
+
+\bibitem{nygard:2018}
+Michael~T. Nygard.
+\newblock {\em Release It!: Design and Deploy Production-Ready Software}.
+\newblock Pragmatic Bookshelf, Raleigh, NC, 2 edition, 2018.
+
+\bibitem{omg_bpmn:2011}
+{OMG - Object Management Group}.
+\newblock Business process model and notation (bpmn), version 2.0, 2011.
+\newblock Acesso em: 15 out. 2026.
+
+\bibitem{omg_uml:2017}
+{OMG - Object Management Group}.
+\newblock Unified modeling language (omg uml), version 2.5.1, 2017.
+\newblock Acesso em: 19 out. 2026.
+
+\bibitem{pressman:2016}
+Roger~S. Pressman and Bruce~R. Maxim.
+\newblock {\em Engenharia de Software: Uma Abordagem Profissional}.
+\newblock AMGH Editora, Porto Alegre, 8 edition, 2016.
+
+\bibitem{robertson_bm25:2009}
+Stephen Robertson and Hugo Zaragoza.
+\newblock The probabilistic relevance framework: Bm25 and beyond.
+\newblock {\em Foundations and Trends in Information Retrieval}, 3(4):333--389,
+  2009.
+
+\bibitem{rcp_news2:2017}
+{Royal College of Physicians}.
+\newblock {\em National Early Warning Score (NEWS) 2: Standardising the
+  assessment of acute-illness severity in the NHS}.
+\newblock Royal College of Physicians, London, 2017.
+
+\bibitem{singer_sepsis:2016}
+Mervyn Singer, Clifford~S. Deutschman, Christopher~Warren Seymour, Manu
+  Shankar-Hari, Djillali Annane, Michael Bauer, Rinaldo Bellomo, Gordon~R.
+  Bernard, Jean-Daniel Chiche, Craig~M. Coopersmith, et~al.
+\newblock The third international consensus definitions for sepsis and septic
+  shock (sepsis-3).
+\newblock {\em JAMA - Journal of the American Medical Association},
+  315(8):801--810, 2016.
+
+\bibitem{sommerville:2019}
+Ian Sommerville.
+\newblock {\em Engenharia de Software}.
+\newblock Pearson, São Paulo, 10 edition, 2019.
+
+\bibitem{topol:2019}
+Eric Topol.
+\newblock {\em Deep Medicine: How Artificial Intelligence Can Make Healthcare
+  Human Again}.
+\newblock Basic Books, New York, 2019.
+
+\end{thebibliography}
