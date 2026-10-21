@@ -1,0 +1,356 @@
+\section{Requisitos do Sistema e Diretrizes Operacionais}
+
+A especificação de requisitos em sistemas hospitalares de missão crítica demanda rigor metodológico, critérios objetivos de aceitação e rastreabilidade integral. Falhas funcionais ou ambiguidades conceituais em saúde comprometem diretamente a integridade física de pacientes, além de acarretarem sanções regulatórias e perdas financeiras às instituições \cite{sommerville:2019, pressman:2016}.
+
+O Vitalis v2.0 combina regras de negócio determinísticas com serviços de inteligência artificial clínica. Para disciplinar a coexistência desses componentes, os requisitos adotam a priorização MoSCoW:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Essencial (\textit{Must have})}: Funcionalidades indispensáveis para a continuidade assistencial, segurança do paciente, conformidade com o Conselho Federal de Medicina (CFM) \cite{cfm_prontuario:2007, cfm_digital:2021} e preservação da integridade transacional.
+    \item \textbf{Importante (\textit{Should have})}: Capacidades de alto valor que elevam a produtividade médica, previnem glosas e otimizam a ocupação de leitos, contornáveis temporariamente por procedimentos operacionais padrão.
+    \item \textbf{Desejável (\textit{Could have})}: Recursos de conveniência analítica, agendamentos avançados e exportações complementares, implementados conforme a disponibilidade do cronograma.
+\end{itemize}
+
+Esta seção estrutura os 22 Requisitos Funcionais (RF), as 12 Regras de Negócio (RN), os 7 Requisitos Não Funcionais (RNF) e a Matriz de Conformidade Regulatória do Vitalis v2.0.
+
+% ==============================================================================
+% 5.1 REQUISITOS FUNCIONAIS
+% ==============================================================================
+\subsection{Requisitos Funcionais (RF)}
+
+Os Requisitos Funcionais abrangem desde o acolhimento do paciente na recepção até o faturamento de encerramento da conta, integrando processamento de linguagem natural e modelos preditivos à rotina clínica. A Tabela \ref{tab:rf_vitalis} consolida o conjunto de requisitos funcionais com seus respectivos códigos, descrições técnicas, critérios mensuráveis de aceitação e prioridades.
+
+\begingroup
+\small
+\begin{xltabular}{\textwidth}{l >{\raggedright\arraybackslash}p{4.4cm} >{\raggedright\arraybackslash}X c}
+\caption{Matriz Detalhada de Requisitos Funcionais do Vitalis v2.0} \label{tab:rf_vitalis} \\
+\toprule
+\textbf{Código} & \textbf{Descrição do Requisito} & \textbf{Critério de Aceitação Técnico} & \textbf{Prioridade} \\
+\midrule
+\endfirsthead
+
+\multicolumn{4}{c}%
+{{\tablename\ \thetable{} -- Continuação da página anterior}} \\
+\toprule
+\textbf{Código} & \textbf{Descrição do Requisito} & \textbf{Critério de Aceitação Técnico} & \textbf{Prioridade} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{4}{r}{{Continua na próxima página \ldots}} \\
+\bottomrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+\multicolumn{4}{l}{\textbf{\color{vitalisblue}Bloco 1: Acolhimento, Triagem e Admissão}} \\
+\midrule
+\textbf{RF-001} &
+Cadastro de pacientes com integração ao barramento nacional CNS/CPF e validação cadastral. &
+Validação de duplicidade cadastral e conferência de dígitos verificadores em tempo $< 1{,}0\,\text{s}$. &
+Essencial \\
+\addlinespace
+\textbf{RF-002} &
+Cálculo de prioridade clínica por algoritmo de Manchester com validação hemodinâmica determinística. &
+Atribuição determinística da cor de risco (Vermelho a Azul) conforme sinais vitais registrados sem intervenção discricionária do software. &
+Essencial \\
+\addlinespace
+\textbf{RF-003} &
+Transcrição por voz e extração de sintomas clínicos e queixas principais via API de IA. &
+Taxa de erro de palavras ($\text{WER} < 5\%$) para vocabulário médico em língua portuguesa e latência de processamento $< 2{,}0\,\text{s}$. &
+Importante \\
+\midrule
+
+\multicolumn{4}{l}{\textbf{\color{vitalisblue}Bloco 2: Monitoramento Clínico, Leitos e Sepse}} \\
+\midrule
+\textbf{RF-004} &
+Cálculo contínuo de deterioração hemodinâmica e risco de sepse (escores qSOFA e NEWS2) por IA clínica. &
+Atualização automática do escore em tela a cada novo sinal vital lançado, com notificação de alerta crítico em $< 1{,}0\,\text{s}$. &
+Essencial \\
+\addlinespace
+\textbf{RF-005} &
+Gestão em tempo real de status de leitos hospitalares (Livre, Ocupado, Limpeza, Manutenção). &
+Propagação reativa do estado de cada leito para todos os terminais conectados via WebSockets em tempo $< 200\,\text{ms}$. &
+Essencial \\
+\addlinespace
+\textbf{RF-006} &
+Alocação preditiva de leitos baseada em estimativa de tempo de permanência (\textit{Length of Stay}, LOS). &
+Geração de recomendação de ala e tipo de leito compatível com o perfil clínico em $< 1{,}5\,\text{s}$ no momento da indicação de internação. &
+Importante \\
+\midrule
+
+\multicolumn{4}{l}{\textbf{\color{vitalisblue}Bloco 3: Prescrição Médica e Segurança Farmacológica}} \\
+\midrule
+\textbf{RF-007} &
+Registro de prescrição médica digital com checagem cruzada automática de alergias e comorbidades. &
+Bloqueio imediato da seleção de fármacos contraindicados no cadastro de alergias do paciente, com registro do veto no prontuário. &
+Essencial \\
+\addlinespace
+\textbf{RF-008} &
+Copiloto clínico de IA para validação posológica e detecção de interações medicamentosas via RAG. &
+Exibição de análise contextual fundamentada em diretrizes farmacêuticas oficiais em tempo $< 1{,}5\,\text{s}$ durante a digitação. &
+Importante \\
+\addlinespace
+\textbf{RF-009} &
+Assinatura digital padrão ICP-Brasil em prontuários, prescrições e laudos (PAdES / PKCS\#7). &
+Geração de artefato assinado com carimbo do tempo criptográfico, verificável de forma autônoma fora da plataforma. &
+Essencial \\
+\addlinespace
+\textbf{RF-010} &
+Módulo de aprazamento de enfermagem e dupla checagem biométrica para fármacos de alta vigilância. &
+Confirmação obrigatória por dois profissionais de enfermagem distintos via leitura biométrica ou senha antes da liberação do lote no leito. &
+Essencial \\
+\midrule
+
+\multicolumn{4}{l}{\textbf{\color{vitalisblue}Bloco 4: Documentação Clínica, Faturamento e TISS/TUSS}} \\
+\midrule
+\textbf{RF-011} &
+Geração automatizada de minutas de sumários de alta e evolução clínica estruturada por IA. &
+Elaboração do rascunho textual estruturado em $< 3{,}0\,\text{s}$, mantendo a obrigatoriedade de revisão e assinatura médica. &
+Importante \\
+\addlinespace
+\textbf{RF-012} &
+Emissão e exportação automatizada de guias de faturamento hospitalar no padrão TISS/TUSS da ANS. &
+Geração de lotes XML compatíveis com os esquemas XSD oficiais da ANS, com validação sintática pré-envio sem erros de formatação. &
+Essencial \\
+\addlinespace
+\textbf{RF-013} &
+Auditoria preventiva de faturamento assistida por IA para identificação de inconsistências e prevenção de glosas. &
+Confronto entre registros de procedimentos, medicamentos administrados e regras contratuais com marcação de pendências antes da guia XML. &
+Importante \\
+\midrule
+
+\multicolumn{4}{l}{\textbf{\color{vitalisblue}Bloco 5: Operação Hospitalar e Farmácia Satélite}} \\
+\midrule
+\textbf{RF-014} &
+Painel gerencial de indicadores em tempo real para monitoramento de tempo de espera e giro de leitos. &
+Atualização assíncrona dos cartões métricos do dashboard a cada $30\,\text{s}$ sem recarga da página web. &
+Importante \\
+\addlinespace
+\textbf{RF-015} &
+Agendamento inteligente de exames complementares e alocação de salas diagnósticas. &
+Identificação dinâmica de conflitos de horário, disponibilidade de equipamentos e tempo de preparo prévio do paciente. &
+Desejável \\
+\addlinespace
+\textbf{RF-016} &
+Gestão de estoque de farmácias satélites com baixa automática sincronizada à checagem de beira de leito. &
+Decremento imediato no saldo de estoque e disparo automático de ordem de reposição ao atingir o ponto de ressuprimento. &
+Essencial \\
+\addlinespace
+\textbf{RF-017} &
+Protocolo de encerramento definitivo de prontuário, alta hospitalar e registro de óbito. &
+Bloqueio imediato de escrituração retroativa após validação médica e geração do lote contábil de fechamento do atendimento. &
+Essencial \\
+\midrule
+
+\multicolumn{4}{l}{\textbf{\color{vitalisblue}Bloco 6: Governança de IA, Segurança e Resiliência}} \\
+\midrule
+\textbf{RF-018} &
+Pipeline de sanitização e mascaramento de dados identificáveis (PII) antes do envio a provedores externos de IA. &
+Remoção integral de CPF, CNS, nome completo, telefone e dados de contato de qualquer carga útil transmitida para fora do perímetro seguro. &
+Essencial \\
+\addlinespace
+\textbf{RF-019} &
+Rastreabilidade, auditoria e log imutável de todas as inferências, prompts e respostas de modelos de IA. &
+Persistência estruturada em trilha append-only do modelo utilizado, temperatura, tokens, versão e feedback de aceite/recusa médica. &
+Essencial \\
+\addlinespace
+\textbf{RF-020} &
+Mecanismo de chaveamento de contingência (\textit{Circuit Breaker}) e fallback determinístico para serviços de IA. &
+Comutação transparente para rotinas lógicas tradicionais em caso de latência de IA $> 2{,}0\,\text{s}$ ou erro HTTP $5\text{xx}$, sem travar o sistema. &
+Essencial \\
+\addlinespace
+\textbf{RF-021} &
+Sistema de emissão de alertas multicanal (visual em tela, sinal sonoro e push) para intercorrências críticas. &
+Disparo sonoro imediato e trava visual vermelha no painel central de enfermagem quando um paciente for classificado como Vermelho. &
+Essencial \\
+\addlinespace
+\textbf{RF-022} &
+Exportação estruturada de relatórios epidemiológicos e administrativos em formatos PDF, CSV e JSON HL7 FHIR. &
+Disponibilização de relatórios filtrados por período, especialidade e desfecho clínico gerados em tempo $< 5{,}0\,\text{s}$. &
+Desejável \\
+\end{xltabular}
+\endgroup
+
+% ==============================================================================
+% 5.2 REGRAS DE NEGÓCIO
+% ==============================================================================
+\subsection{Regras de Negócio e Diretrizes Operacionais (RN)}
+
+As regras de negócio delimitam o funcionamento do Vitalis v2.0, convertendo normativas clínicas, resoluções de conselhos profissionais e imperativos legais em restrições lógicas e transacionais invioláveis.
+
+\begin{enumerate}[label=\textbf{RN-\arabic*:}, leftmargin=*]
+    \item \textbf{Prioridade Absoluta para a Classificação Vermelha (Emergência)}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Todo paciente classificado com a cor Vermelha no Protocolo de Manchester possui prioridade assistencial absoluta sobre qualquer outro atendimento na fila médica.
+        \item \textit{Ação Sistêmica}: O sistema realoca instantaneamente o paciente para o topo da lista de espera do pronto atendimento, desconsidera a ordem cronológica de chegada, emite sinal sonoro de alerta no posto de enfermagem e trava a chamada de casos de menor gravidade até que a equipe assuma o atendimento crítico.
+        \item \textit{Fundamentação}: Diretrizes do Protocolo Internacional de Manchester \cite{manchester:2014}, que determinam tempo zero de espera para risco iminente de morte.
+    \end{itemize}
+
+    \item \textbf{Princípio do Human-in-the-Loop em Decisões de IA}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Nenhuma sugestão diagnóstica, escore de deterioração, cálculo posológico ou minuta textual gerada por IA pode ser executada ou registrada como ato médico definitivo de forma autônoma.
+        \item \textit{Ação Sistêmica}: O sistema exige revisão ativa, confirmação expressa, edição ou recusa por profissional de saúde com registro ativo em conselho (CRM ou COREN), antes que qualquer saída de IA produza efeito assistencial.
+        \item \textit{Fundamentação}: Resolução CFM nº 2.299/2021 \cite{cfm_digital:2021} e princípios de responsabilidade clínica em inteligência artificial médica \cite{topol:2019}.
+    \end{itemize}
+
+    \item \textbf{Desidentificação e Anonimização de Dados Sensíveis}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Dados clínicos transmitidos a serviços de inferência de IA não podem conter elementos que permitam a reidentificação direta do paciente no ambiente externo.
+        \item \textit{Ação Sistêmica}: O pipeline de pré-processamento executa tokenização criptográfica e substituição por entidades sintéticas (substituindo nomes próprios por pseudônimos e suprimindo números de CPF, RG, CNS, telefones e endereços) antes de qualquer envio de carga útil via rede.
+        \item \textit{Fundamentação}: Artigos 5º, 11 e 13 da Lei Geral de Proteção de Dados Pessoais (LGPD, Lei nº 13.709/2018) \cite{brasil_lgpd:2018}.
+    \end{itemize}
+
+    \item \textbf{Resiliência Operacional e Chaveamento Circuit Breaker}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: A indisponibilidade, lentidão ou falha de componentes de inteligência artificial não pode paralisar as rotinas assistenciais primárias do hospital.
+        \item \textit{Ação Sistêmica}: O sistema monitora o tempo de resposta das chamadas de IA. Caso o tempo exceda o limite de $2{,}0\,\text{s}$ ou a taxa de erros HTTP $5\text{xx}$ ultrapasse $5\%$ em janela móvel de 1 minuto, o padrão \textit{Circuit Breaker} abre o circuito, comutando para algoritmos determinísticos e mantendo a interface disponível para preenchimento manual imediato.
+        \item \textit{Fundamentação}: Requisitos de engenharia de software para sistemas de missão crítica \cite{sommerville:2019}.
+    \end{itemize}
+
+    \item \textbf{Vedação de Lançamentos Financeiros Retroativos}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Encerrado e faturado contabilmente um episódio de atendimento hospitalar, é terminantemente proibida a inclusão, alteração ou exclusão de itens de consumo, procedimentos médicos ou taxas de diária.
+        \item \textit{Ação Sistêmica}: O banco de dados bloqueia alterações na conta através de restrições transacionais e gatilhos de imutabilidade. Qualquer retificação necessária após o fechamento contábil deve ser realizada por meio de guia suplementar de ajuste com justificativa da auditoria.
+        \item \textit{Fundamentação}: Padrão TISS da Agência Nacional de Saúde Suplementar (ANS) \cite{ans_tiss:2023}.
+    \end{itemize}
+
+    \item \textbf{Sigilo Assistencial, Privilégio Mínimo e Vínculo Ativo}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: O acesso aos dados integrais do Prontuário Eletrônico do Paciente (PEP) é restrito exclusivamente aos profissionais de saúde formalmente vinculados ao episódio de atendimento ativo.
+        \item \textit{Ação Sistêmica}: O motor de controle de acesso (RBAC/ABAC) restringe visualizações completas. Tentativas de acesso por profissionais sem vínculo clínico ativo exigem justificativa formal de emergência registrada em trilha de auditoria imutável, notificando o Encarregado de Proteção de Dados (DPO) da instituição.
+        \item \textit{Fundamentação}: Código de Ética Médica e Resolução CFM nº 1.821/2007 \cite{cfm_prontuario:2007}.
+    \end{itemize}
+
+    \item \textbf{Alocação Exclusiva em Leitos Homologados e Higienizados}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Nenhum paciente pode ser admitido ou transferido para um leito hospitalar cujo estado não esteja formalmente certificado como ``Livre'' e ``Higienizado''.
+        \item \textit{Ação Sistêmica}: A interface de gestão de internação bloqueia a confirmação de transferência caso o leito alvo esteja com status ``Ocupado'', ``Reservado'', ``Em Limpeza'' ou ``Em Manutenção''. A transição para o estado ``Livre'' exige a confirmação digital da equipe de hotelaria hospitalar.
+        \item \textit{Fundamentação}: Protocolos de controle de infecção da Comissão de Controle de Infecção Hospitalar (CCIH) e normas sanitárias da ANVISA.
+    \end{itemize}
+
+    \item \textbf{Validade Jurídica e Autenticidade de Prescrições}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Prescrições de medicamentos, ordens cirúrgicas e solicitações de dietas especiais somente adquirem validade assistencial após assinatura digital com certificado no padrão da Infraestrutura de Chaves Públicas Brasileira (ICP-Brasil).
+        \item \textit{Ação Sistêmica}: O sistema impede a emissão de ordens de dispensação farmacêutica e o aprazamento de enfermagem enquanto a prescrição constar em status de ``Rascunho'' ou contiver assinatura criptográfica inválida ou expirada.
+        \item \textit{Fundamentação}: Lei Federal nº 14.063/2020 e Resolução CFM nº 2.299/2021 \cite{cfm_digital:2021}.
+    \end{itemize}
+
+    \item \textbf{Dupla Checagem para Fármacos de Alta Vigilância}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: A liberação e a administração à beira do leito de medicamentos de alta vigilância (quimioterápicos, eletrólitos concentrados, insulina intravenosa, opioides e sedativos profundos) exigem conferência dupla independente.
+        \item \textit{Ação Sistêmica}: O módulo de aprazamento de enfermagem exige a autenticação sequencial de dois profissionais de enfermagem distintos via leitura biométrica ou credenciais individuais no leito antes de liberar o registro de administração do fármaco.
+        \item \textit{Fundamentação}: Metas Internacionais de Segurança do Paciente da Organização Mundial da Saúde (OMS / Joint Commission).
+    \end{itemize}
+
+    \item \textbf{Integridade Cadastral e Protocolo de Paciente Desconhecido}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: O cadastro regular de pacientes exige consistência obrigatória do número do CPF com a base de dados oficial da Receita Federal do Brasil.
+        \item \textit{Ação Sistêmica}: O sistema rejeita cadastros com dígito verificador inválido. Para casos de emergência em que o paciente dê entrada inconsciente ou sem documentos, o sistema permite acionar o protocolo ``Paciente Desconhecido'', gerando identificador provisório que impede a interrupção do atendimento de urgência.
+        \item \textit{Fundamentação}: Portaria do Ministério da Saúde sobre o Cartão Nacional de Saúde (CNS).
+    \end{itemize}
+
+    \item \textbf{Validação Prévia de Cobertura de Operadora de Saúde (TISS)}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Procedimentos eletivos, exames de alta complexidade e internações cobertas por convênios de saúde suplementar requerem token formal de autorização emitido pela respectiva operadora.
+        \item \textit{Ação Sistêmica}: O agendamento definitivo de salas cirúrgicas e reservas eletivas de leito permanece com status pendente até que a transação eletrônica de elegibilidade e autorização retorne aprovação da operadora via barramento TISS.
+        \item \textit{Fundamentação}: Diretrizes operacionais e regulatórias da Agência Nacional de Saúde Suplementar (ANS) \cite{ans_tiss:2023}.
+    \end{itemize}
+
+    \item \textbf{Imutabilidade do Prontuário Encerrado e Notas de Retificação}:
+    \begin{itemize}[noitemsep]
+        \item \textit{Declaração}: Uma vez homologada a alta médica, a transferência externa definitiva ou o atestado de óbito, o prontuário eletrônico do episódio correspondente é trancado em caráter permanente.
+        \item \textit{Ação Sistêmica}: A aplicação revoga privilégios de escrita ou edição sobre o texto das evoluções clínicas originais. Esclarecimentos posteriores ou correções de fatos clínicos pretéritos só podem ser inseridos sob a forma de notas aditivas assinadas digitalmente, preservando o histórico integral das versões.
+        \item \textit{Fundamentação}: Resolução CFM nº 1.821/2007 \cite{cfm_prontuario:2007}.
+    \end{itemize}
+\end{enumerate}
+
+% ==============================================================================
+% 5.3 REQUISITOS NÃO FUNCIONAIS
+% ==============================================================================
+\subsection{Requisitos Não Funcionais (RNF)}
+
+Os Requisitos Não Funcionais estabelecem os critérios de qualidade técnica, desempenho, confiabilidade e interoperabilidade do Vitalis v2.0. A Tabela \ref{tab:rnf_vitalis} sintetiza as métricas de engenharia estipuladas para a infraestrutura hospitalar.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Matriz Consolidada de Requisitos Não Funcionais do Vitalis v2.0}
+\label{tab:rnf_vitalis}
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Código} & \textbf{Categoria de Qualidade} & \textbf{Métrica / Alvo Mensurável} & \textbf{Mecanismo Arquitetural de Garantia} \\
+\midrule
+\textbf{RNF-001} & Desempenho e Vazão do Banco de Dados & Leitura $< 200\,\text{ms}$; escrita transacional $< 400\,\text{ms}$ sob $2.000$ conexões simultâneas. & Índices B-Tree parciais, particionamento temporal de tabelas do PEP e réplicas de leitura desacopladas. \\
+\addlinespace
+\textbf{RNF-002} & Latência de Inferência de IA & Tempo de resposta no percentil 95 ($\text{P95}$) $< 1{,}5\,\text{s}$; timeout estrito configurado em $2{,}0\,\text{s}$. & Pipeline de RAG com indexação vetorial pré-computada em FAISS/HNSW e microsserviços dedicados. \\
+\addlinespace
+\textbf{RNF-003} & Segurança e Proteção Criptográfica & Trânsito com TLS 1.3 (ECDHE); repouso com algoritmo AES-256 (GCM). & Rotação periódica de certificados, chaves assimétricas em HSM e criptografia nativa no subsistema de armazenamento. \\
+\addlinespace
+\textbf{RNF-004} & Disponibilidade e Tolerância a Falhas & Disponibilidade mensal mínima de $99{,}95\%$ (indisponibilidade máxima de $21{,}9$ minutos/mês). & Topologia multi-zona com \textit{failover} automatizado de banco de dados e balanceamento de carga ativo-ativo. \\
+\addlinespace
+\textbf{RNF-005} & Interoperabilidade em Saúde & Aderência integral aos padrões HL7 v2.5 e HL7 FHIR Release 4 estruturados em JSON. & Camada de adaptação de barramento de integração em conformidade com as especificações da RNDS do Ministério da Saúde. \\
+\addlinespace
+\textbf{RNF-006} & Explicabilidade e Auditoria de Modelos & Rastreabilidade de $100\%$ das chamadas de inferência de IA com registro de contexto e escores. & Persistência em base append-only contendo modelo, versão, temperatura, tokens consumidos e referências clínicas do RAG. \\
+\addlinespace
+\textbf{RNF-007} & Acessibilidade e Ergonomia Clínica & Conformidade com diretrizes WCAG 2.1 nível AA; taxa de erro operacional $< 1\%$ em rounds clínicos. & Contraste tipográfico elevado ($\ge 4{,}5:1$), navegação guiada por teclado e componentes de toque para tablets $\ge 48 \times 48\,\text{dp}$. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Abaixo são detalhadas as especificações de cada requisito não funcional:
+
+\begin{enumerate}[label=\textbf{RNF-\arabic*:}, leftmargin=*]
+    \item \textbf{Desempenho e Vazão de Banco de Dados}:
+    Em operações de pronto atendimento e enfermarias, os tempos de resposta para consultas cadastrais e abertura do PEP não podem ultrapassar $200\,\text{ms}$ em 99\% dos casos. Transações de escrita com garantia estrita de ACID (Atomicidade, Consistência, Isolamento e Durabilidade) devem ser concluídas em tempo inferior a $400\,\text{ms}$ sob carga nominal de $2.000$ requisições simultâneas. O banco de dados PostgreSQL adota conexões multiplexadas com PgBouncer, particionamento mensal das tabelas de auditoria e réplicas de leitura para relatórios e consultas do dashboard.
+
+    \item \textbf{Latência de Inferência de IA}:
+    As chamadas direcionadas aos modelos de linguagem clínica e mecanismos de RAG (\textit{Retrieval-Augmented Generation}) \cite{lewis_rag:2020} devem responder com latência no percentil 95 ($\text{P95}$) inferior a $1{,}5\,\text{s}$. Para assegurar que o profissional não enfrente congelamento de tela durante o ato médico, a camada de aplicação aplica timeout rígido de $2{,}0\,\text{s}$. Caso o modelo não finalize a inferência nesse período, o \textit{Circuit Breaker} encerra a chamada e aciona os algoritmos determinísticos de contingência.
+
+    \item \textbf{Segurança e Criptografia em Trânsito e Repouso}:
+    Toda comunicação interna e externa da arquitetura trafega obrigatoriamente através do protocolo TLS 1.3 com criptografia de ponta a ponta, suportando exclusivamente conjuntos de cifras que implementem sigilo de encaminhamento perfeito (\textit{Perfect Forward Secrecy}). Os volumes de armazenamento do banco de dados relacional, o armazenamento de laudos e imagens radiológicas e os snapshots de backup utilizam criptografia em repouso AES com chaves de 256 bits, gerenciadas por Módulo de Segurança de Hardware (HSM).
+
+    \item \textbf{Disponibilidade e Tolerância a Falhas}:
+    O sistema Vitalis v2.0 opera com nível de disponibilidade mínima garantida de $99{,}95\%$ ao mês, o que admite tempo máximo acumulado de indisponibilidade não planejada de $21{,}9$ minutos por mês. A infraestrutura baseia-se em cluster de orquestração de contêineres distribuído em pelo menos três Zonas de Disponibilidade (AZs) distintas, dotado de autoescalonamento horizontal e transição automática (\textit{failover}) de banco de dados com perda de dados nula ($\text{RPO} = 0$) para transações confirmadas.
+
+    \item \textbf{Interoperabilidade e Padrões em Saúde}:
+    Para viabilizar a comunicação com sistemas de laboratório (LIS), sistemas de arquivamento de imagens (PACS) e o barramento da Rede Nacional de Dados em Saúde (RNDS), a plataforma implementa suporte nativo aos padrões HL7 v2.5 e HL7 FHIR Release 4 \cite{hl7_fhir:2019}. Recursos como \texttt{Patient}, \texttt{Encounter}, \texttt{Condition}, \texttt{MedicationRequest} e \texttt{Observation} são expostos por endpoints RESTful estruturados em JSON.
+
+    \item \textbf{Explicabilidade e Auditoria de Inferências de IA}:
+    Em cumprimento aos princípios éticos da inteligência artificial médica, todas as recomendações emitidas pela IA clínica devem ser acompanhadas de metadados de rastreabilidade. Para cada resposta apresentada na interface, o sistema armazena e disponibiliza para auditoria: identificador e versão do modelo, parâmetro de temperatura, quantitativo de tokens consumidos, percentual de certeza estatística e trechos textuais dos artigos científicos e diretrizes farmacológicas recuperados pela busca vetorial no RAG.
+
+    \item \textbf{Acessibilidade e Ergonomia Clínica}:
+    A interface do usuário foi projetada para minimizar a carga cognitiva sob condições de pressão assistencial, alcançando conformidade com as Diretrizes de Acessibilidade para Conteúdo Web (WCAG 2.1) no nível AA. A tipografia adota taxa de contraste igual ou superior a $4{,}5:1$ para textos regulares, atalhos de teclado para navegação sem necessidade de mouse e componentes táteis para tablets com dimensões mínimas de $48 \times 48\,\text{dp}$, mantendo o índice de erros operacionais abaixo de $1\%$ em simulações clínicas padronizadas.
+\end{enumerate}
+
+% ==============================================================================
+% 5.4 MATRIZ DE RASTREABILIDADE E CONFORMIDADE
+% ==============================================================================
+\subsection{Matriz de Rastreabilidade e Conformidade Regulatória}
+
+A Tabela \ref{tab:rastreabilidade_vitalis} mapeia o alinhamento das regras de negócio e requisitos do Vitalis v2.0 com os marcos legais e as diretrizes normativas da saúde no Brasil.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Matriz de Rastreabilidade entre Requisitos, Diretrizes e Normas Regulatórias}
+\label{tab:rastreabilidade_vitalis}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Norma / Marco} & \textbf{Escopo Regulatório} & \textbf{Requisitos Vinculados} & \textbf{Regras de Negócio Associadas} \\
+\midrule
+CFM nº 1.821/2007 & Guarda, manuseio e descarte de prontuários eletrônicos. & RF-005, RF-009, RF-017 & RN-6 (Sigilo e Vínculo), RN-12 (Imutabilidade do Prontuário). \\
+\addlinespace
+CFM nº 2.299/2021 & Emissão de documentos médicos digitais e assinatura eletrônica. & RF-007, RF-009, RF-010 & RN-2 (Human-in-the-Loop), RN-8 (Validade ICP-Brasil). \\
+\addlinespace
+LGPD (Lei nº 13.709/18) & Proteção de dados pessoais sensíveis de saúde. & RF-001, RF-018, RF-019 & RN-3 (Desidentificação de Dados), RN-6 (Privilégio Mínimo). \\
+\addlinespace
+ANS (Padrão TISS) & Intercâmbio eletrônico de dados em saúde suplementar. & RF-012, RF-013 & RN-5 (Vedação Retroativa), RN-11 (Autorização TISS). \\
+\addlinespace
+Protocolo Manchester & Triagem clínica e estratificação de risco em urgência. & RF-002, RF-003, RF-021 & RN-1 (Prioridade Vermelha Absoluta). \\
+\addlinespace
+HL7 FHIR Release 4 & Interoperabilidade semântica e sintática de dados em saúde. & RF-001, RF-022, RNF-005 & RN-10 (Integridade Cadastral). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+A consolidação estruturada dos requisitos funcionais, regras de negócio e requisitos não funcionais estabelece os critérios objetivos necessários para as etapas de projeto arquitetural, diagramação de processos e implementação técnica dos microsserviços do Vitalis v2.0.
