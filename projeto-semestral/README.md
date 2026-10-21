@@ -1,8 +1,13 @@
 # Projeto Semestral: Sistema de Gestão Hospitalar Vitalis
 ## Disciplina: Tópicos Avançados de Programação (UCSAL 2026)
 **Professor:** Elton Figueiredo da Silva  
-**Acadêmico:** Davi dos Santos Ribeiro  
 **Curso:** Engenharia de Software  
+**Acadêmicos:**  
+- Alisson de Oliveira dos Santos  
+- Davi dos Santos Ribeiro  
+- Larissa da Silva Santana  
+- Maria Fernanda Pereira Barçante Costa  
+- Rafael Farias Castro  
 
 ---
 

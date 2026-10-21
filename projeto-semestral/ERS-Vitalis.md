@@ -2,7 +2,12 @@
 **Universidade Católica de Salvador (UCSAL)**
 Disciplina: Engenharia de Requisitos
 Professor: Elton Figueiredo da Silva
-Acadêmico: Davi Ribeiro
+Acadêmicos:
+- Alisson de Oliveira dos Santos
+- Davi dos Santos Ribeiro
+- Larissa da Silva Santana
+- Maria Fernanda Pereira Barçante Costa
+- Rafael Farias Castro
 
 ## 1. Introdução e Escopo
 

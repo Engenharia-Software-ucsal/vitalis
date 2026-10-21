@@ -5,7 +5,12 @@
 **Curso:** Engenharia de Software  
 **Disciplina:** Tópicos Avançados de Programação  
 **Professor:** Elton Figueiredo da Silva  
-**Acadêmico:** Davi dos Santos Ribeiro  
+**Acadêmicos:**  
+- Alisson de Oliveira dos Santos  
+- Davi dos Santos Ribeiro  
+- Larissa da Silva Santana  
+- Maria Fernanda Pereira Barçante Costa  
+- Rafael Farias Castro  
 
 ---
 
