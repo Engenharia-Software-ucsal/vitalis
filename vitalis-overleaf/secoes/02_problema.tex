@@ -1,0 +1,88 @@
+\section{Identificação e Delimitação do Problema}
+
+A gestão de hospitais gerais e unidades de pronto atendimento opera sob restrições severas de tempo, espaço físico e recursos humanos. Em instituições de alta complexidade, a falta de integração entre recepção, triagem, enfermarias, farmácia e setor financeiro cria barreiras de comunicação que afetam diretamente a segurança dos pacientes e o equilíbrio orçamentário. Unidades hospitalares geram grandes volumes de dados clínicos por minuto; contudo, a maior parte desses registros permanece isolada em prontuários legados sem processamento semântico ou alertas ativos.
+
+O problema estrutura-se em cinco dimensões operacionais e clínicas: fragmentação dos fluxos de urgência, detecção tardia da sepse, sobrecarga na prescrição médica, lentidão no giro de leitos e perdas financeiras por glosas na saúde suplementar.
+
+\subsection{Fragmentação dos Fluxos e Gargalos na Triagem}
+
+O acolhimento de pacientes em unidades de urgência e emergência é a porta de entrada do ambiente hospitalar. Nessa etapa inicial, o Protocolo de Manchester estabelece limites temporais estritos para o primeiro contato médico conforme a gravidade clínica atribuída: imediato para emergências (vermelho), até 10 minutos para casos muito urgentes (laranja), 60 minutos para urgências (amarelo), 120 minutos para casos pouco urgentes (verde) e 240 minutos para quadros não urgentes (azul) \cite{manchester:2014}.
+
+Na prática cotidiana, sistemas fragmentados impõem barreiras operacionais que tornam essas metas inatingíveis durante picos de demanda. A admissão na recepção exige preenchimento manual de dados cadastrais em formulários desconectados da enfermagem. Em seguida, o paciente aguarda em salas de espera sem monitoramento contínuo, compondo uma fila cega até a triagem presencial. Se o paciente apresenta deterioração hemodinâmica súbita durante essa espera, a equipe assistencial raramente detecta o evento a tempo.
+
+Além da lentidão cadastral, a triagem tradicional exige extensa digitação manual do enfermeiro. Ao transcrever queixas orais, coletar valores de pressão arterial, frequência cardíaca e saturação periférica de oxigênio em telas complexas, o profissional divide sua atenção entre o computador e o paciente. Essa sobrecarga retarda o atendimento em cerca de 4 a 7 minutos por pessoa, acumulando atrasos em cascata que ampliam o tempo de espera nas salas de acolhimento.
+
+\subsection{Subnotificação da Deterioração Clínica e a Janela Terapêutica da Sepse}
+
+A deterioração clínica silenciosa em enfermarias e leitos de observação é uma das principais causas de mortalidade evitável no ambiente hospitalar. O atraso na identificação de disfunções orgânicas agudas decorre principalmente do caráter episódico da checagem de sinais vitais, que costuma ocorrer a cada 6 ou 8 horas por meio de anotações em papel ou planilhas não integradas.
+
+O impacto é ainda mais severo nos quadros de sepse e choque séptico. O consenso internacional Sepsis-3 \cite{singer_sepsis:2016} define a sepse como disfunção orgânica potencialmente fatal provocada por uma resposta desregulada do hospedeiro à infecção, recomendando critérios objetivos de triagem à beira do leito por meio do escore qSOFA (\textit{Quick Sequential Organ Failure Assessment}). Esse índice avalia três marcadores: frequência respiratória igual ou superior a 22 incursões por minuto, alteração aguda do nível de consciência na escala de coma de Glasgow e pressão arterial sistólica menor ou igual a 100 mmHg.
+
+A sobrevida do paciente séptico depende da intervenção rápida na primeira hora após o diagnóstico, período no qual a administração de antibióticos de amplo espectro e a reposição volêmica reduzem drasticamente a mortalidade. Estudos clínicos demonstram que cada hora de atraso na administração do antimicrobiano adequado após a instalação da hipotensão eleva a mortalidade em até 7,6\% por hora. No Brasil, levantamentos epidemiológicos registram letalidade hospitalar por sepse superior a 50\% nas unidades de terapia intensiva de hospitais públicos e acima de 30\% na rede privada. A ausência de algoritmos que calculem continuamente escores de risco como qSOFA e NEWS2 (\textit{National Early Warning Score 2}) no próprio prontuário impede o disparo de alertas automáticos ao primeiro sinal de descompensação clínica.
+
+\subsection{Sobrecarga Cognitiva e Falhas na Prescrição Médica}
+
+O trabalho médico em ambientes hospitalares caracteriza-se por decisões rápidas sob alta pressão e interrupções frequentes. Como analisa Topol \cite{topol:2019}, a introdução de sistemas eletrônicos sem preocupação ergonômica aumentou a carga de trabalho administrativo dos profissionais, que passam mais tempo preenchendo campos obrigatórios do que interagindo com os pacientes. Essa fadiga cognitiva degrada a atenção e amplia o risco de falhas técnicas.
+
+O momento da prescrição farmacoterapêutica concentra grande parcela dos eventos adversos evitáveis. Em pacientes idosos ou portadores de múltiplas doenças crônicas submetidos a regimes de polifarmácia (cinco ou mais princípios ativos simultâneos), o médico precisa confrontar mentalmente dezenas de possíveis interações químicas, ajustes de dosagem para função renal ou hepática e registros esparsos de alergias pregressas.
+
+Os sistemas convencionais de prontuário eletrônico limitam-se a registrar o texto da prescrição ou a emitir alertas indiscriminados e genéricos para qualquer combinação de drogas. Esse excesso de avisos irrelevantes provoca o fenômeno de fadiga de alertas, levando os profissionais a desconsiderar as notificações em mais de 80\% das ocorrências. Faltam aos sistemas em uso mecanismos contextuais que cruzem exames laboratoriais recentes (como creatinina e ureia) com a farmacopeia institucional para apontar riscos reais e sugerir posologias seguras.
+
+\subsection{Gargalos Operacionais na Gestão e no Giro de Leitos}
+
+A taxa de ocupação e a capacidade de giro de leitos medem a eficiência operacional de um hospital. Quando os leitos de internação permanecem bloqueados indevidamente, o fluxo de entrada do pronto-socorro entra em colapso, retendo pacientes em macas nos corredores e forçando o cancelamento de procedimentos cirúrgicos programados.
+
+Dois gargalos alimentam esse descompasso. De um lado, a latência entre a assinatura da alta médica e a liberação física do quarto gera um intervalo ocioso médio de 3 a 6 horas, resultante da falta de comunicação em tempo real entre equipe médica, farmácia para dispensação domiciliar e hotelaria hospitalar para limpeza terminal. De outro lado, a ausência de projeções precisas sobre o tempo provável de permanência (\textit{Length of Stay} -- LOS) inviabiliza a regulação preventiva de vagas, gerando variações desnecessárias no tempo de internação para patologias semelhantes e desestabilizando o mapa de vagas de UTI.
+
+Sem ferramentas que monitorem o estado de cada leito (livre, ocupado, reservado, em higienização ou manutenção) por meio de sincronização contínua, as equipes recorrem a planilhas manuais ou telefonemas, elevando os custos operacionais diários e diminuindo a taxa de renovação da capacidade instalada.
+
+\subsection{Inconsistências de Faturamento e o Impacto das Glosas TISS/TUSS}
+
+No âmbito financeiro, a sustentabilidade dos hospitais privados e filantrópicos depende diretamente da liquidação de contas junto às operadoras de planos de saúde. Essas faturas devem obedecer ao Padrão de Troca de Informação de Saúde Suplementar (TISS) e à Terminologia Unificada da Saúde Suplementar (TUSS), instituídos pela Agência Nacional de Saúde Suplementar \cite{ans_tiss:2023}.
+
+A desconexão entre o prontuário clínico e o setor de faturamento é a principal causa de glosas, isto é, a recusa de pagamento pelas operadoras. As glosas administrativas decorrem de inconsistências cadastrais, autorizações ausentes ou codificação divergente de procedimentos e materiais. Já as glosas técnicas derivam de falhas na documentação clínica comprobatória, tais como ausência de justificativa para antibióticos de reserva, prescrições sem registro de administração pela enfermagem ou cobrança de materiais especiais sem o respectivo laudo cirúrgico.
+
+Hospitais brasileiros registram perdas por glosas entre 8\% e 14\% da receita bruta faturada. A contestação dessas pendências exige auditorias retrospectivas lentas e recursos que demoram até 120 dias para resolução, imobilizando o capital de giro da instituição e ampliando os custos com retrabalho administrativo.
+
+\subsection{Síntese dos Impactos Clínicos e Operacionais}
+
+A Tabela \ref{tab:dimensoes_problema} sintetiza as cinco dimensões abordadas, relacionando as falhas operacionais observadas nos hospitais às suas consequências práticas e aos direcionamentos da arquitetura do Vitalis v2.0.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Matriz de dimensões do problema, impactos e direcionamentos da solução}
+\label{tab:dimensoes_problema}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.6cm} >{\raggedright\arraybackslash}p{3.8cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Dimensão} & \textbf{Falha Operacional} & \textbf{Impacto Mensurável} & \textbf{Direcionamento no Vitalis v2.0} \\
+\midrule
+Triagem e Acolhimento &
+Coleta manual e digitação extensiva de dados em telas rígidas. &
+Tempo de acolhimento de 4 a 7 min por paciente; filas cegas no pronto-socorro. &
+Transcrição de queixas por voz e classificação Manchester determinística auxiliada por IA. \\
+\addlinespace
+Deterioração e Sepse &
+Checagem esporádica e manual de sinais vitais a cada 6 ou 8 horas. &
+Mortalidade por choque séptico acima de 50\% no SUS e 30\% na rede privada; perda da janela terapêutica inicial. &
+Cálculo contínuo automatizado dos escores qSOFA e NEWS2 com alertas multicanal. \\
+\addlinespace
+Prescrição Terapêutica &
+Prontuário passivo com alertas genéricos e desconsideração em massa. &
+Erros em regimes de polifarmácia; taxa de descarte de alertas superior a 80\%. &
+Copiloto farmacoterapêutico com checagem contextual de alergias, função renal e interações via RAG. \\
+\addlinespace
+Giro e Ocupação de Leitos &
+Comunicação telefônica e ausência de previsão de alta médica. &
+Intervalo ocioso de 3 a 6 horas para limpeza e liberação; cancelamento cirúrgico. &
+Mapa dinâmico reativo via WebSockets e estimativa preditiva de tempo de permanência (LOS). \\
+\addlinespace
+Faturamento e Glosas &
+Auditoria retrospectiva tardia desconectada do registro em prontuário. &
+Retenção de 8\% a 14\% do faturamento bruto; prazos de conciliação de até 120 dias. &
+Auditoria prévia automatizada de guias TISS/TUSS com detecção de inconsistências antes do envio. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+O mapeamento desses gargalos define os requisitos funcionais e não funcionais detalhados nos capítulos subsequentes, orientando as decisões de engenharia de software e os módulos de inteligência artificial para as prioridades clínicas de maior risco.
