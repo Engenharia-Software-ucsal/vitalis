@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.30)  21 OCT 2026 12:30
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.30)  21 OCT 2026 12:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1001,36 +1001,42 @@ Package hyperref Info: Link coloring ON on input line 7.
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
+<imagens-template/ucsal_logo.png, id=521, 174.6525pt x 77.79062pt>
+File: imagens-template/ucsal_logo.png Graphic file (type png)
+<use imagens-template/ucsal_logo.png>
+Package pdftex.def Info: imagens-template/ucsal_logo.png  used on input line 15
+.
+(pdftex.def)             Requested size: 127.46779pt x 56.7748pt.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 4
-3.
+4.
  (/usr/share/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 4
-3.
+4.
 
 (/usr/share/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-43.
+44.
 
 (/usr/share/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-43.
+44.
 
 (/usr/share/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 43.
+(Font)              <12> on input line 44.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 43.
+(Font)              <8> on input line 44.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 43.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
+(Font)              <6> on input line 44.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 44.
 
 
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -1039,7 +1045,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/share/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 44.
 
 
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -1050,10 +1056,12 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf-dist/fonts
-/enc/dvips/lm/lm-ec.enc}] (./main.toc [1] [2]
+/enc/dvips/lm/lm-ec.enc} <./imagens-template/ucsal_logo.png>] (./main.toc [1] [
+2]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
 20.
- (/usr/share/texmf-dist/tex/latex/lm/t1lmtt.fd
+
+(/usr/share/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic protrusion settings for font family
@@ -1064,8 +1072,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
-
-[3] (./main.lof)
+ [3] (./main.lof)
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
@@ -1073,11 +1080,11 @@ Package microtype Info: Loading generic protrusion settings for font family
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
- [4] (./secoes/01_descritivo.tex
+
+[4] (./secoes/01_descritivo.tex
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
 6.
-
-(/usr/share/texmf-dist/tex/latex/lm/ts1lmr.fd
+ (/usr/share/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
@@ -1236,10 +1243,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: EB48ADB28F8DA2D1BFE88159C36BEF14;39546.
  ) 
 Here is how much of TeX's memory you used:
- 32840 strings out of 469515
- 624877 string characters out of 5470807
- 1506362 words of memory out of 5000000
- 59842 multiletter control sequences out of 15000+600000
+ 32847 strings out of 469515
+ 625142 string characters out of 5470807
+ 1505417 words of memory out of 5000000
+ 59849 multiletter control sequences out of 15000+600000
  802031 words of font info for 424 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  89i,14n,97p,1498b,2279s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1263,10 +1270,10 @@ c/lm/lmtk10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/s
 hare/texmf-dist/fonts/type1/public/lm/lmtt12.pfb></usr/share/texmf-dist/fonts/t
 ype1/public/lm/lmtt8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmtti10.p
 fb></usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (98 pages, 952974 bytes).
+Output written on main.pdf (98 pages, 993039 bytes).
 PDF statistics:
- 1766 PDF objects out of 2073 (max. 8388607)
+ 1767 PDF objects out of 2073 (max. 8388607)
  1565 compressed objects within 16 object streams
  469 named destinations out of 1000 (max. 500000)
- 97853 words of extra memory for PDF output out of 106986 (max. 10000000)
+ 97858 words of extra memory for PDF output out of 106986 (max. 10000000)
 
