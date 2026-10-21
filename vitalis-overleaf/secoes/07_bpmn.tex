@@ -1,0 +1,367 @@
+% ==============================================================================
+% SEÇÃO 7: MODELAGEM DE PROCESSOS DE NEGÓCIO (BPMN 2.0)
+% ==============================================================================
+
+\section{Modelagem de Processos de Negócio (BPMN 2.0)}
+\label{sec:bpmn}
+
+A modelagem de processos em BPMN 2.0 (\textit{Business Process Model and Notation}) \cite{omg_bpmn:2011} define o encadeamento operacional, as responsabilidades de cada ator e os pontos de intervenção algorítmica no Sistema Vitalis v2.0. A formalização abrange três macroprocessos assistenciais integrados: (i) acolhimento, triagem Manchester e rastreamento preditivo de sepse; (ii) atendimento médico com copiloto clínico RAG e dispensação farmacêutica com dupla checagem; e (iii) alocação preditiva de leitos, internação, alta hospitalar e auditoria preventiva de faturamento TISS/TUSS.
+
+% ==============================================================================
+% 7.1 FUNDAMENTAÇÃO METODOLÓGICA E CONVENÇÕES BPMN
+% ==============================================================================
+\subsection{Fundamentação Metodológica e Notação Gráfica}
+\label{subsec:bpmn_fundamentacao}
+
+Os fluxos são estruturados em piscinas (\textit{pools}) e raias de responsabilidade (\textit{swimlanes}) que segregam os papéis de recepcionistas, enfermeiros, médicos, farmacêuticos, operadores de hotelaria e serviços automatizados de inteligência artificial.
+
+Os diagramas adotam cinco construtos sintáticos padronizados:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Eventos de Início e Término (\textit{Start/End Events})}: Círculos verdes indicam o gatilho inicial do processo; círculos de borda dupla vermelha demarcam a conclusão do ciclo assistencial ou administrativo.
+    \item \textbf{Tarefas de Usuário (\textit{User Tasks})}: Retângulos azuis (\texttt{bpmnTask}) representam ações executadas diretamente pelos profissionais nos terminais da plataforma.
+    \item \textbf{Tarefas de IA (\textit{Service/AI Tasks})}: Retângulos roxos (\texttt{bpmnAiTask}) identificam processamentos algorítmicos autônomos, como cálculo de escores clínicos, recuperação vetorial e inferência em linguagem natural.
+    \item \textbf{Desvios Exclusivos (\textit{Gateways XOR})}: Losangos laranjas (\texttt{bpmnGateway}) direcionam o controle para ramificações mutuamente excludentes segundo regras clínicas e operacionais.
+    \item \textbf{Fluxos de Sequência (\textit{Sequence Flows})}: Setas direcionadas contínuas conectam os elementos na ordem estrita de execução.
+\end{itemize}
+
+\destaqueVitalis{Princípio de Supervisão Humana Estrita (\textit{Human-in-the-Loop})}{%
+No Vitalis v2.0, todo componente de inteligência artificial opera como serviço de suporte consultivo à tomada de decisão clínica. Nenhum modelo preditivo ou generativo possui autoridade para prescrever intervenções terapêuticas, alterar leitos de forma compulsória ou expedir altas médicas sem a homologação formal, explícita e assinada digitalmente por profissional devidamente registrado em seu respectivo conselho de classe (CRM, COREN ou CRF).
+}
+
+% ==============================================================================
+% 7.2 FLUXO 1: ACOLHIMENTO, TRIAGEM E SEPSE
+% ==============================================================================
+\subsection{Fluxo 1: Acolhimento, Triagem Manchester e Predição de Sepse}
+\label{subsec:bpmn_fluxo1}
+
+O primeiro fluxo modela a porta de entrada da unidade de urgência e emergência, com foco na identificação precoce de deterioração clínica e sepse. A Figura \ref{fig:bpmn_fluxo1} estrutura as atividades em quatro raias: Recepção/Acolhimento, Enfermagem/Triagem, Motor de IA Clínica e Posto Médico/Sala Vermelha.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=1.5cm, font=\sffamily]
+  % Raias de Responsabilidade (Swimlanes)
+  \draw[vitalisblue!40, fill=vitalisblue!3, rounded corners=2pt] (-0.8, 6.8) rectangle (23.2, 9.4);
+  \draw[vitalisblue!40, fill=vitalisblue!6, rounded corners=2pt] (-0.8, 3.8) rectangle (23.2, 6.8);
+  \draw[purple!40, fill=purple!4, rounded corners=2pt] (-0.8, 0.8) rectangle (23.2, 3.8);
+  \draw[vitalisred!40, fill=vitalisred!4, rounded corners=2pt] (-0.8, -2.2) rectangle (23.2, 0.8);
+
+  % Cabeçalhos das Raias (Faixas Laterais)
+  \draw[vitalisblue!50, fill=vitalisblue!15, rounded corners=2pt] (-2.5, 6.8) rectangle (-0.9, 9.4);
+  \draw[vitalisblue!50, fill=vitalisblue!20, rounded corners=2pt] (-2.5, 3.8) rectangle (-0.9, 6.8);
+  \draw[purple!50, fill=purple!15, rounded corners=2pt] (-2.5, 0.8) rectangle (-0.9, 3.8);
+  \draw[vitalisred!50, fill=vitalisred!15, rounded corners=2pt] (-2.5, -2.2) rectangle (-0.9, 0.8);
+
+  % Identificação das Raias
+  \node[rotate=90, text=vitalisdark, font=\bfseries\scriptsize, align=center] at (-1.7, 8.1) {Recepção /\\Acolhimento};
+  \node[rotate=90, text=vitalisdark, font=\bfseries\scriptsize, align=center] at (-1.7, 5.3) {Enfermagem /\\Triagem};
+  \node[rotate=90, text=purple!90!black, font=\bfseries\scriptsize, align=center] at (-1.7, 2.3) {Motor de IA\\Clínica};
+  \node[rotate=90, text=vitalisred!90!black, font=\bfseries\scriptsize, align=center] at (-1.7, -0.7) {Posto Médico /\\Sala Vermelha};
+
+  % Nós de Atividade e Eventos
+  \node[bpmnStart] (start1) at (0.4, 8.1) {};
+  \node[font=\tiny\bfseries, below=1mm of start1] {Chegada};
+
+  \node[bpmnTask] (t_cad) at (2.8, 8.1) {Cadastro do Paciente\\e Validação CNS/CPF\\{\tiny\color{vitalisblue}[RF-001]}};
+  
+  \node[bpmnTask] (t_sala) at (2.8, 5.3) {Acolhimento na\\Sala de Triagem};
+
+  \node[bpmnTask] (t_vitais) at (5.8, 5.3) {Aferição de Sinais\\Vitais (PA, FC, FR,\\SatO$_2$, Glasgow)};
+
+  \node[bpmnTask] (t_voz) at (8.8, 5.3) {Transcrição por Voz\\e Queixa Principal\\{\tiny\color{vitalisblue}[RF-003]}};
+
+  \node[bpmnAiTask] (t_sepse) at (8.8, 2.3) {Inferência de Risco\\e Sepse (qSOFA/NEWS2)\\{\tiny\color{purple}[RF-004]}};
+
+  \node[bpmnAiTask] (t_manch) at (12.0, 2.3) {Classificação Sugerida\\(Manchester Algorítmico)\\{\tiny\color{purple}[RF-002]}};
+
+  \node[bpmnTask] (t_val) at (12.0, 5.3) {Revisão e Validação\\pelo Enfermeiro\\{\tiny\color{vitalisdark}[Human-in-the-Loop]}};
+
+  \node[bpmnGateway] (gw_grav) at (15.0, 5.3) {\bfseries\large $\times$};
+
+  % Ramo Vermelho (Emergência Absoluta)
+  \node[bpmnTask, draw=vitalisred, fill=vitalisred!10] (t_emerg) at (15.0, -0.7) {Disparo de Alerta\\Sonoro no Posto\\{\tiny\color{vitalisred}[RF-021, RN-1]}};
+  \node[bpmnEnd] (end_emerg) at (18.6, -0.7) {};
+  \node[font=\tiny\bfseries\color{vitalisred}, below=1mm of end_emerg] {Sala Vermelha};
+
+  % Ramo Demais Cores (Fila Ordinária Priorizada)
+  \node[bpmnTask] (t_fila) at (19.2, 5.3) {Inserção na Fila\\Médica Priorizada\\{\tiny\color{vitalisblue}[PEP Vitalis]}};
+  \node[bpmnEnd] (end_fila) at (22.2, 5.3) {};
+  \node[font=\tiny\bfseries, below=1mm of end_fila] {Fila de Espera};
+
+  % Conexões Ortogonais
+  \draw[bpmnArrow] (start1) -- (t_cad);
+  \draw[bpmnArrow] (t_cad) -- (t_sala);
+  \draw[bpmnArrow] (t_sala) -- (t_vitais);
+  \draw[bpmnArrow] (t_vitais) -- (t_voz);
+  \draw[bpmnArrow] (t_voz) -- node[right, font=\tiny\itshape] {Dados brutos} (t_sepse);
+  \draw[bpmnArrow] (t_sepse) -- (t_manch);
+  \draw[bpmnArrow] (t_manch) -- node[right, font=\tiny\itshape] {Sugestão} (t_val);
+  \draw[bpmnArrow] (t_val) -- (gw_grav);
+
+  \draw[bpmnArrow] (gw_grav) -- node[left, align=right, pos=0.25, font=\tiny\bfseries\color{vitalisred}] {Vermelho\\(Emergência)} (t_emerg);
+  \draw[bpmnArrow] (t_emerg) -- (end_emerg);
+
+  \draw[bpmnArrow] (gw_grav) -- node[above, align=center, pos=0.45, font=\tiny\bfseries\color{vitalisdark}] {Amarelo / Verde\\ou Azul} (t_fila);
+  \draw[bpmnArrow] (t_fila) -- (end_fila);
+\end{tikzpicture}%
+}
+\caption{Fluxo BPMN 1: Acolhimento, Triagem Manchester e Predição de Sepse no Vitalis v2.0.}
+\label{fig:bpmn_fluxo1}
+\end{figure}
+
+O fluxo compreende as seguintes etapas sequenciais:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Identificação Cadastral do Paciente}: Na recepção, o atendente registra os dados básicos e valida o número do Cartão Nacional de Saúde (CNS) e CPF em barramento oficial, gerando o identificador unificado de atendimento (RF-001).
+    \item \textbf{Acolhimento e Coleta de Sinais Vitais}: O paciente é direcionado à sala de triagem. O enfermeiro afere pressão arterial sistólica e diastólica (PA), frequência cardíaca (FC), frequência respiratória (FR), saturação periférica de oxigênio ($\text{SatO}_2$), temperatura axilar e nível de consciência pela escala de coma de Glasgow.
+    \item \textbf{Transcrição de Voz com PLN}: Paralelamente ao exame físico, o profissional narra a queixa principal e o histórico recente. O módulo de transcrição converte o áudio em texto estruturado com latência inferior a $2{,}0\,\text{s}$ (RF-003).
+    \item \textbf{Inferência Preditiva de Sepse e Deterioração}: Os dados fisiológicos alimentam o motor de inteligência artificial, que calcula simultaneamente os escores qSOFA e NEWS2 \cite{singer_sepsis:2016} (RF-004), identificando sinais precoces de resposta inflamatória sistêmica antes do choque clínico manifesto.
+    \item \textbf{Sugestão Manchester e Validação Humana}: O algoritmo de triagem projeta a classificação recomendada conforme a árvore de decisão do Protocolo de Manchester \cite{manchester:2014} (RF-002). O enfermeiro avalia o quadro global do paciente, podendo chancelar a recomendação ou elevar a categoria de risco caso constate fatores atípicos não capturados pelos sensores (Regra de Negócio RN-1).
+    \item \textbf{Desvio de Gravidade e Conduta Imediata}:
+    \begin{itemize}
+        \item \textit{Classificação Vermelha (Emergência)}: O sistema emite alerta sonoro no posto médico, exibe notificação visual de bloqueio (RF-021) e mobiliza a equipe para encaminhamento imediato do paciente ao leito de estabilização (sala vermelha), com atendimento imediato.
+        \item \textit{Classificações Laranja, Amarela, Verde e Azul}: O atendimento é posicionado na lista médica do prontuário eletrônico com ordenação decrescente por gravidade clínica e tempo decorrido, respeitando os tempos máximos de espera do protocolo.
+    \end{itemize}
+\end{enumerate}
+
+% ==============================================================================
+% 7.3 FLUXO 2: ATENDIMENTO MÉDICO, RAG E DISPENSAÇÃO
+% ==============================================================================
+\subsection{Fluxo 2: Atendimento Médico, Copiloto RAG e Dispensação Farmacêutica}
+\label{subsec:bpmn_fluxo2}
+
+O segundo fluxo integra a prescrição médica, a análise farmacológica apoiada por inteligência artificial e a dispensação de beira de leito. A modelagem na Figura \ref{fig:bpmn_fluxo2} organiza o fluxo em três raias: Médico Assistente (PEP), Copiloto de IA Clínico e Farmácia Satélite/Leito.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=1.5cm, font=\sffamily]
+  % Raias de Responsabilidade (Swimlanes)
+  \draw[vitalisblue!40, fill=vitalisblue!3, rounded corners=2pt] (-0.8, 4.0) rectangle (23.8, 7.2);
+  \draw[purple!40, fill=purple!4, rounded corners=2pt] (-0.8, 0.8) rectangle (23.8, 4.0);
+  \draw[vitalisblue!40, fill=vitalisblue!6, rounded corners=2pt] (-0.8, -2.4) rectangle (23.8, 0.8);
+
+  % Cabeçalhos das Raias (Faixas Laterais)
+  \draw[vitalisblue!50, fill=vitalisblue!15, rounded corners=2pt] (-2.5, 4.0) rectangle (-0.9, 7.2);
+  \draw[purple!50, fill=purple!15, rounded corners=2pt] (-2.5, 0.8) rectangle (-0.9, 4.0);
+  \draw[vitalisblue!50, fill=vitalisblue!20, rounded corners=2pt] (-2.5, -2.4) rectangle (-0.9, 0.8);
+
+  % Identificação das Raias
+  \node[rotate=90, text=vitalisdark, font=\bfseries\scriptsize, align=center] at (-1.7, 5.6) {Médico Assistente\\(PEP)};
+  \node[rotate=90, text=purple!90!black, font=\bfseries\scriptsize, align=center] at (-1.7, 2.4) {Copiloto de IA\\Clínico (RAG)};
+  \node[rotate=90, text=vitalisdark, font=\bfseries\scriptsize, align=center] at (-1.7, -0.8) {Farmácia Satélite\\/ Leito};
+
+  % Nós de Atividade e Eventos
+  \node[bpmnStart] (start2) at (0.4, 5.6) {};
+  \node[font=\tiny\bfseries, below=1mm of start2] {Início PEP};
+
+  \node[bpmnTask] (t_aval) at (2.8, 5.6) {Avaliação Clínica e\\Anamnese no PEP\\{\tiny\color{vitalisblue}[Prontuário]}};
+  \node[bpmnTask] (t_presc) at (5.7, 5.6) {Elaboração da\\Prescrição Digital\\{\tiny\color{vitalisblue}[RF-006, RF-007]}};
+
+  \node[bpmnAiTask] (t_rag) at (5.7, 2.4) {Consulta ao Copiloto\\RAG (Alergias, Renal,\\Bulário e Diretrizes)\\{\tiny\color{purple}[RF-008]}};
+  
+  \node[bpmnGateway] (gw_inter) at (8.7, 2.4) {\bfseries\large $\times$};
+
+  \node[bpmnTask, draw=orange!80!black, fill=orange!8] (t_just) at (8.7, 5.6) {Exigência de Ajuste\\ou Justificativa\\{\tiny\color{vitalisdark}[RN-7]}};
+
+  \node[bpmnAiTask] (t_lib) at (11.8, 2.4) {Liberação Posológica\\e Recomendação\\{\tiny\color{purple}[Dose Segura]}};
+
+  \node[bpmnTask] (t_assina) at (14.8, 5.6) {Assinatura Digital\\ICP-Brasil (PAdES)\\{\tiny\color{vitalisdark}[RF-009]}};
+
+  \node[bpmnTask] (t_desp) at (17.8, 5.6) {Despacho Eletrônico\\para Farmácia Satélite\\{\tiny\color{vitalisblue}[Barramento]}};
+
+  \node[bpmnTask] (t_farm) at (17.8, -0.8) {Triagem e Dupla\\Checagem Farmacêutica\\{\tiny\color{vitalisblue}[RF-010]}};
+
+  \node[bpmnTask] (t_disp) at (20.6, -0.8) {Dispensação no Leito\\e Baixa no Estoque\\{\tiny\color{vitalisblue}[RF-016]}};
+
+  \node[bpmnEnd] (end2) at (22.8, -0.8) {};
+  \node[font=\tiny\bfseries, below=1mm of end2] {Administrado};
+
+  % Conexões Ortogonais
+  \draw[bpmnArrow] (start2) -- (t_aval);
+  \draw[bpmnArrow] (t_aval) -- (t_presc);
+  \draw[bpmnArrow] (t_presc) -- node[right, font=\tiny\itshape] {Payload} (t_rag);
+  \draw[bpmnArrow] (t_rag) -- (gw_inter);
+
+  \draw[bpmnArrow] (gw_inter) -- node[right, font=\tiny\bfseries\color{orange!90!black}] {Alto Risco} (t_just);
+  \draw[bpmnArrow] (t_just.north) -- ++(0, 0.45) -| node[above, pos=0.3, font=\tiny\itshape] {Revisão de Fármaco} (t_presc.north);
+  \draw[bpmnArrow] (t_just) -- node[above, font=\tiny\itshape] {Justificado} (t_assina);
+
+  \draw[bpmnArrow] (gw_inter) -- node[above, pos=0.45, font=\tiny\bfseries\color{vitalisgreen!80!black}] {Risco Baixo} (t_lib);
+  \draw[bpmnArrow] (t_lib.east) -| node[above, pos=0.25, font=\tiny\itshape] {Aprovado} (t_assina.south);
+
+  \draw[bpmnArrow] (t_assina) -- (t_desp);
+  \draw[bpmnArrow] (t_desp) -- node[right, font=\tiny\itshape] {Prescrição Assinada} (t_farm);
+  \draw[bpmnArrow] (t_farm) -- (t_disp);
+  \draw[bpmnArrow] (t_disp) -- (end2);
+\end{tikzpicture}%
+}
+\caption{Fluxo BPMN 2: Atendimento Médico, Copiloto RAG e Dispensação Farmacêutica no Vitalis v2.0.}
+\label{fig:bpmn_fluxo2}
+\end{figure}
+
+O ciclo de prescrição e dispensação é estruturado nos seguintes passos:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Abertura do PEP e Exame Clínico}: O médico assistente acessa o prontuário do paciente, registrando as queixas evolutivas, achados do exame físico e a hipótese diagnóstica.
+    \item \textbf{Composição da Prescrição Digital}: O profissional seleciona os fármacos, dosagens, diluições, vias de administração e intervalos posológicos via catálogo estruturado (RF-006, RF-007).
+    \item \textbf{Interrogação do Copiloto RAG de Farmacologia}: Conforme os medicamentos são adicionados, o sistema despacha os identificadores farmacológicos ao serviço de inteligência artificial. O modelo realiza busca semântica em bulários oficiais da ANVISA e diretrizes hospitalares \cite{lewis_rag:2020} (RF-008), cruzando os dados com histórico de alergias, \textit{clearance} de creatinina (função renal) e marcadores de função hepática.
+    \item \textbf{Gateway de Interação Medicamentosa}:
+    \begin{itemize}
+        \item \textit{Risco Alto ou Contraindicação Formal}: O sistema suspende a confirmação direta da prescrição, exibe as notas técnicas que fundamentam a restrição e exige substituição do fármaco ou registro de justificativa técnica no prontuário (Regra RN-7).
+        \item \textit{Risco Baixo ou Posologia Compatível}: O copiloto valida os parâmetros e libera a receita para validação documental.
+    \end{itemize}
+    \item \textbf{Assinatura Digital Padrão ICP-Brasil}: O médico assina o documento nos padrões PAdES e PKCS\#7 com carimbo do tempo, atendendo à Resolução CFM nº 2.299/2021 \cite{cfm_digital:2021} (RF-009).
+    \item \textbf{Despacho e Triagem na Farmácia Satélite}: A prescrição assinada é transmitida eletronicamente à farmácia da respectiva ala. O farmacêutico confere os itens e executa a dupla checagem dos medicamentos de alta vigilância antes do fracionamento (RF-010).
+    \item \textbf{Dispensação Beira-Leito e Baixa Automática}: No posto de internação, a enfermagem realiza a checagem cruzada da pulseira do paciente e do código de barras do medicamento. A confirmação registra a administração e decrementa o saldo de estoque (RF-016), mantendo a rastreabilidade do lote.
+\end{enumerate}
+
+% ==============================================================================
+% 7.4 FLUXO 3: LEITOS, ALTA E TISS/TUSS
+% ==============================================================================
+\subsection{Fluxo 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS}
+\label{subsec:bpmn_fluxo3}
+
+O terceiro fluxo abrange a gestão de internação, a alocação dinâmica de capacidade instalada e a governança de faturamento hospitalar. O Vitalis v2.0 combina predição de tempo de internação (\textit{Length of Stay}, LOS), sumarização clínica de alta por modelos de linguagem e auditoria preventiva segundo o padrão TISS da ANS \cite{ans_tiss:2023}. A Figura \ref{fig:bpmn_fluxo3} apresenta as etapas do processo.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=1.5cm, font=\sffamily]
+  % Raias de Responsabilidade (Swimlanes)
+  \draw[vitalisblue!40, fill=vitalisblue!3, rounded corners=2pt] (-0.8, 6.8) rectangle (25.6, 9.4);
+  \draw[vitalisblue!40, fill=vitalisblue!6, rounded corners=2pt] (-0.8, 3.8) rectangle (25.6, 6.8);
+  \draw[purple!40, fill=purple!4, rounded corners=2pt] (-0.8, 0.8) rectangle (25.6, 3.8);
+  \draw[vitalisdark!40, fill=vitalisdark!5, rounded corners=2pt] (-0.8, -2.2) rectangle (25.6, 0.8);
+
+  % Cabeçalhos das Raias (Faixas Laterais)
+  \draw[vitalisblue!50, fill=vitalisblue!15, rounded corners=2pt] (-2.5, 6.8) rectangle (-0.9, 9.4);
+  \draw[vitalisblue!50, fill=vitalisblue!20, rounded corners=2pt] (-2.5, 3.8) rectangle (-0.9, 6.8);
+  \draw[purple!50, fill=purple!15, rounded corners=2pt] (-2.5, 0.8) rectangle (-0.9, 3.8);
+  \draw[vitalisdark!50, fill=vitalisdark!15, rounded corners=2pt] (-2.5, -2.2) rectangle (-0.9, 0.8);
+
+  % Identificação das Raias
+  \node[rotate=90, text=vitalisdark, font=\bfseries\scriptsize, align=center] at (-1.7, 8.1) {Médico Assistente\\/ Internação};
+  \node[rotate=90, text=vitalisdark, font=\bfseries\scriptsize, align=center] at (-1.7, 5.3) {Regulação (NIR)\\e Hotelaria};
+  \node[rotate=90, text=purple!90!black, font=\bfseries\scriptsize, align=center] at (-1.7, 2.3) {Motor de IA\\Clínica};
+  \node[rotate=90, text=vitalisdark, font=\bfseries\scriptsize, align=center] at (-1.7, -0.7) {Faturamento\\(TISS/TUSS)};
+
+  % Nós de Atividade e Eventos
+  \node[bpmnStart] (start3) at (0.4, 8.1) {};
+  \node[font=\tiny\bfseries, below=1mm of start3] {Internação};
+
+  \node[bpmnTask] (t_solic) at (2.6, 8.1) {Solicitação Médica\\de Internação\\{\tiny\color{vitalisblue}[Indicação]}};
+
+  \node[bpmnAiTask] (t_los) at (2.6, 2.3) {Predição de Tempo\\Permanência (LOS)\\{\tiny\color{purple}[RF-006]}};
+
+  \node[bpmnTask] (t_mapa) at (5.5, 5.3) {Consulta ao Mapa\\Dinâmico de Leitos\\{\tiny\color{vitalisblue}[RF-005]}};
+
+  \node[bpmnGateway] (gw_leito) at (7.9, 5.3) {\bfseries\large $\times$};
+
+  \node[bpmnTask, draw=orange!80!black, fill=orange!8] (t_limpeza) at (10.0, 4.1) {Aguardar Limpeza\\Terminal (Hotelaria)};
+
+  \node[bpmnGateway] (gw_join) at (12.1, 5.3) {\bfseries\large $\times$};
+
+  \node[bpmnTask] (t_reserva) at (14.2, 5.3) {Confirmação de Reserva\\e Bloqueio WebSocket\\{\tiny\color{vitalisblue}[Leito Alocado]}};
+
+  \node[bpmnTask] (t_transf) at (14.2, 8.1) {Transferência e\\Evoluções Diárias\\{\tiny\color{vitalisblue}[Internação]}};
+
+  \node[bpmnTask] (t_alta) at (17.0, 8.1) {Decisão de Alta Médica\\e Fechamento Clínico\\{\tiny\color{vitalisblue}[RF-017]}};
+
+  \node[bpmnAiTask] (t_llm) at (17.0, 2.3) {Geração da Minuta do\\Sumário de Alta por LLM\\{\tiny\color{purple}[RF-011]}};
+
+  \node[bpmnTask] (t_homolog) at (19.8, 8.1) {Homologação e Assinatura\\Digital ICP-Brasil\\{\tiny\color{vitalisdark}[Human-in-the-Loop]}};
+
+  \node[bpmnAiTask] (t_audit) at (22.5, 2.3) {Auditoria Preventiva\\de Contas e Regras ANS\\{\tiny\color{purple}[RF-013]}};
+
+  \node[bpmnTask] (t_tiss) at (22.5, -0.7) {Emissão do Lote\\XML TISS sem Glosas\\{\tiny\color{vitalisblue}[RF-012]}};
+
+  \node[bpmnEnd] (end3) at (24.8, -0.7) {};
+  \node[font=\tiny\bfseries, below=1mm of end3] {Conta Faturada};
+
+  % Conexões Ortogonais
+  \draw[bpmnArrow] (start3) -- (t_solic);
+  \draw[bpmnArrow] (t_solic) -- node[right, font=\tiny\itshape] {Dados Clínicos} (t_los);
+  \draw[bpmnArrow] (t_los.east) -| (t_mapa.south);
+  \draw[bpmnArrow] (t_mapa) -- (gw_leito);
+
+  \draw[bpmnArrow] (gw_leito.south) |- (t_limpeza.west);
+  \node[left, align=right, font=\tiny\bfseries\color{orange!90!black}] at (7.7, 4.4) {Em\\Limpeza};
+
+  \draw[bpmnArrow] (t_limpeza.east) -| (gw_join.south);
+  \node[right, font=\tiny\itshape] at (12.2, 4.4) {Higienizado};
+
+  \draw[bpmnArrow] (gw_leito) -- node[above, font=\tiny\bfseries\color{vitalisgreen!80!black}] {Livre} (gw_join);
+  \draw[bpmnArrow] (gw_join) -- (t_reserva);
+
+  \draw[bpmnArrow] (t_reserva) -- (t_transf);
+  \draw[bpmnArrow] (t_transf) -- (t_alta);
+  
+  \draw[bpmnArrow] (t_alta) -- (t_llm);
+  \node[right, font=\tiny\itshape] at (17.1, 5.3) {Gera Minuta};
+
+  \draw[bpmnArrow] (t_llm.east) -| (t_homolog.south);
+  \node[right, font=\tiny\itshape] at (19.9, 5.3) {Minuta Gerada};
+
+  \draw[bpmnArrow] (t_homolog.east) -| (t_audit.north);
+  \node[right, font=\tiny\itshape] at (22.6, 5.3) {Sumário Assinado};
+
+  \draw[bpmnArrow] (t_audit) -- node[right, font=\tiny\itshape] {Conforme} (t_tiss);
+  \draw[bpmnArrow] (t_tiss) -- (end3);
+\end{tikzpicture}%
+}
+\caption{Fluxo BPMN 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS no Vitalis v2.0.}
+\label{fig:bpmn_fluxo3}
+\end{figure}
+
+As etapas constitutivas deste fluxo compreendem:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Indicação Médica de Internação}: O médico assistente conclui que o quadro clínico requer leito hospitalar e registra o pedido no prontuário com CID-10 e justificativa.
+    \item \textbf{Predição de Tempo de Permanência (LOS)}: O modelo de IA processa o perfil clínico do paciente, comorbidades e faixa etária, projetando a estimativa de dias de internação e nível de cuidados (RF-006).
+    \item \textbf{Consulta ao Mapa Dinâmico de Leitos}: O Núcleo Interno de Regulação (NIR) consulta a disponibilidade de vagas em tempo real (RF-005) em enfermarias, leitos semi-intensivos ou UTI.
+    \item \textbf{Gateway de Ocupação e Higienização}:
+    \begin{itemize}
+        \item \textit{Leito em Higienização ou Manutenção}: O sistema emite ordem de serviço para limpeza terminal pela hotelaria hospitalar. O paciente aguarda em observação transitória até a liberação física do quarto.
+        \item \textit{Leito Livre}: O NIR confirma a alocação e bloqueia o leito instantaneamente via conexões WebSocket.
+    \end{itemize}
+    \item \textbf{Transferência e Registro de Evoluções Clínicas}: O paciente é admitido no leito designado. A equipe multidisciplinar registra evoluções diárias, aprazamentos de enfermagem e resultados de exames complementares.
+    \item \textbf{Decisão de Alta Médica e Minuta por LLM}: Finalizado o plano terapêutico, o médico prescreve a alta no sistema (RF-017). O modelo de linguagem processa o prontuário da internação e redige uma minuta estruturada de sumário de alta em menos de $3{,}0\,\text{s}$ (RF-011).
+    \item \textbf{Homologação Médica e Auditoria Preventiva ANS}: O médico revisa a minuta, realiza eventuais ajustes e assina digitalmente com certificado ICP-Brasil (\textit{Human-in-the-Loop}). O motor de auditoria analisa a conta hospitalar, confrontando os itens cobrados com tabelas TUSS, guias de autorização e contratos com operadoras (RF-013).
+    \item \textbf{Emissão do Lote XML TISS}: Confirmada a conformidade documental, o faturamento compila o lote XML no padrão TISS sem glosas (RF-012) e encerra a conta contábil do atendimento.
+\end{enumerate}
+
+% ==============================================================================
+% 7.5 MATRIZ COMPARATIVA DE PROCESSOS, ATORES E IA
+% ==============================================================================
+\subsection{Matriz de Atores, Intervenções de IA e Salvaguardas}
+\label{subsec:bpmn_matriz}
+
+A Tabela \ref{tab:matriz_bpmn} resume os papéis operacionais, as intervenções de IA e os mecanismos de governança humana em cada macroprocesso assistencial.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Fluxo Assistencial} & \textbf{Atores} & \textbf{Intervenção de IA} & \textbf{Salvaguarda de Governança} \\
+\midrule
+\textbf{Fluxo 1:}\newline Acolhimento e Sepse &
+Recepcionista,\newline Enfermeiro Triador,\newline Médico de Urgência. &
+Transcrição de voz em tempo real (RF-003), cálculo preditivo de sepse via qSOFA/NEWS2 (RF-004) e recomendação de cor Manchester (RF-002). &
+O enfermeiro avalia presencialmente o paciente e possui autonomia para manter ou elevar a classificação de gravidade (RN-1). \\
+\midrule
+\textbf{Fluxo 2:}\newline Consulta e Farmácia &
+Médico Assistente,\newline Farmacêutico,\newline Enfermeiro de Leito. &
+Recuperação via RAG para checagem de interações medicamentosas, ajuste por função renal/hepática e bulários (RF-008). &
+Prescrição exclusiva do médico com assinatura ICP-Brasil (RF-009) e justificativa obrigatória para alertas de alto risco (RN-7). Dupla checagem biométrica na dispensação (RF-010). \\
+\midrule
+\textbf{Fluxo 3:}\newline Leitos, Alta e Faturamento &
+Médico Assistente,\newline Analista do NIR,\newline Hotelaria Hospitalar,\newline Faturista. &
+Predição de tempo de permanência hospitalar LOS (RF-006), minuta do sumário de alta por LLM (RF-011) e auditoria preventiva ANS (RF-013). &
+Internação e alta decididas pelo médico assistente, com assinatura digital no sumário (RF-017). Fechamento do lote validado pela equipe de faturamento (RF-012). \\
+\bottomrule
+\end{tabularx}
+\caption{Matriz de Atores, Intervenções de IA e Salvaguardas dos Processos BPMN.}
+\label{tab:matriz_bpmn}
+\end{table}
+
+A modelagem BPMN apresentada confere rastreabilidade técnica e rigor operacional ao Vitalis v2.0, assegurando que o emprego de inteligência artificial eleve a segurança clínica sem comprometer a primazia decisória dos profissionais de saúde.
