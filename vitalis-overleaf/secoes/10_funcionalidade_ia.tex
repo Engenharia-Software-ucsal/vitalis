@@ -1,0 +1,359 @@
+% ==============================================================================
+% SEÇÃO 10: DEFINIÇÃO DA FUNCIONALIDADE INTEGRADA COM INTELIGÊNCIA ARTIFICIAL
+% ==============================================================================
+
+\section{Definição da Funcionalidade Integrada com Inteligência Artificial}
+\label{sec:funcionalidade_ia}
+
+A incorporação de modelos de inteligência artificial no Sistema de Gestão Hospitalar Vitalis (Versão 2.0) tem como finalidade mitigar a sobrecarga cognitiva das equipes multiprofissionais, abreviar o tempo de resposta em cenários de risco iminente de morte e prevenir falhas farmacoterapêuticas e administrativas. Em ambientes de terapia intensiva e emergência, o volume de variáveis fisiológicas geradas continuamente supera a capacidade de correlação manual em tempo hábil. A arquitetura do Vitalis v2.0 integra componentes analíticos e generativos de forma acoplada ao Prontuário Eletrônico do Paciente (PEP), estruturados em torno de duas ferramentas centrais: o \textbf{Copiloto Farmacoterapêutico Baseado em Recuperação Aumentada por Geração (RAG Clínico)} e o \textbf{Motor Preditivo de Sepse e Deterioração Hemodinâmica (qSOFA e NEWS2)}.
+
+Esta seção documenta a arquitetura técnica, os modelos probabilísticos, as estratégias de mitigação de risco algorítmico, o gateway de privacidade de dados sensíveis e os mecanismos de resiliência e auditoria que orientam a operação de IA no Vitalis v2.0.
+
+% ==============================================================================
+\subsection{Visão Geral dos Módulos de IA e Papel Clínico Assistencial}
+\label{subsec:ia_visao_geral}
+
+A operação de inteligência artificial no Vitalis v2.0 é regida pelo paradigma da \textbf{IA Consultiva}, atuando exclusivamente como camada de suporte à decisão clínica (CDSS, \textit{Clinical Decision Support System}). Os modelos implantados não detêm autonomia prescritiva, diagnóstica ou de alta médica.
+
+\subsubsection{Princípio do Human-in-the-Loop (HITL)}
+O sistema implementa o princípio do \textit{Human-in-the-Loop} como exigência funcional e arquitetural (conforme a regra de negócio \textbf{RN-2}). Qualquer inferência computacional, seja um alerta de interação medicamentosa ou uma predição de choque séptico, constitui uma sugestão técnica transitória. Para que produza efeitos no atendimento, a inferência deve ser ativamente analisada por um profissional de saúde legalmente habilitado, que possui três caminhos deliberativos:
+\begin{enumerate}[label=(\alph*), noitemsep]
+    \item \textbf{Aprovação Integral}: O profissional acolhe a recomendação da IA e a subscreve eletronicamente;
+    \item \textbf{Modificação}: O profissional edita parâmetros posológicos, complementa dados clínicos ou ajusta a conduta proposta;
+    \item \textbf{Rejeição com Justificativa}: O profissional descarta a inferência, registrando compulsoriamente a motivação assistencial quando se tratar de alertas de risco classificados como moderados ou graves.
+\end{enumerate}
+
+\subsubsection{Enquadramento Regulatório e Ético}
+A atuação consultiva sem autonomia decisória atende às exigências do Conselho Federal de Medicina, em especial à Resolução CFM nº 2.299/2021 \cite{cfm_digital:2021}, que disciplina a emissão de documentos médicos digitais e atribui responsabilidade intransferível ao médico assistente, e à Resolução CFM nº 1.821/2007 \cite{cfm_prontuario:2007}. A segregação entre processamento probabilístico e validação determinística garante que parâmetros vitais críticos e bloqueios absolutos (como choque por anafilaxia registrado) não dependam da convergência estocástica de redes neurais, sendo resguardados por árvores lógicas determinísticas.
+
+% ==============================================================================
+\subsection{Arquitetura do Copiloto Farmacoterapêutico (RAG Clínico)}
+\label{subsec:ia_copiloto_rag}
+
+O Copiloto Farmacoterapêutico apoia o médico no ato da prescrição eletrônica (requisitos funcionais \textbf{RF-007} e \textbf{RF-008}). O sistema avalia interações medicamentosas, contraindicações associadas ao histórico de comorbidades e adequações de dose para pacientes com comprometimento de função orgânica.
+
+\subsubsection{Pipeline de Recuperação Aumentada por Geração (RAG)}
+Diferentemente de modelos de linguagem de uso geral sujeitos a alucinações factuais, o copiloto baseia-se na técnica de RAG (\textit{Retrieval-Augmented Generation}) \cite{lewis_rag:2020}. O pipeline de ingestão e recuperação é ilustrado nas etapas a seguir:
+
+\begin{enumerate}
+    \item \textbf{Ingestão e Curadoria da Base de Conhecimento}: Documentos de referência clínica são processados e normalizados periodicamente:
+    \begin{itemize}[noitemsep]
+        \item Bulário eletrônico oficial da Agência Nacional de Vigilância Sanitária (ANVISA);
+        \item Monografias farmacoterapêuticas padronizadas de farmacologia clínica;
+        \item Protocolos institucionais de diluição, estabilidade físico-química e profilaxia infecciosa do hospital;
+        \item Diretrizes de ajuste de antimicrobianos para insuficiência renal e hemodiálise.
+    \end{itemize}
+    \item \textbf{Divisão Semântica de Documentos (\textit{Chunking})}: Os textos são segmentados por seções funcionais (Indicações, Posologia, Farmacocinética Renal, Interações Medicamentosas, Contraindicações e Reações Adversas). O tamanho padrão dos blocos é fixado em 512 tokens com sobreposição (\textit{overlap}) de 64 tokens, preservando tabelas de dosagem e limites de depuração de creatinina intactos.
+    \item \textbf{Indexação em Banco de Dados Vetorial}: Os fragmentos textuais são transformados em vetores densos através de um modelo bi-encoder calibrado para o domínio biomédico (vetores de 768 dimensões). Os embeddings são persistidos no PostgreSQL com a extensão \texttt{pgvector}, indexados com listas invertidas HNSW (\textit{Hierarchical Navigable Small World}) com distância de cosseno:
+    \begin{equation}
+        \text{Simil}_{\text{cosseno}}(\mathbf{u}, \mathbf{v}) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|_2 \, \|\mathbf{v}\|_2}
+    \end{equation}
+\end{enumerate}
+
+\subsubsection{Algoritmo de Busca Híbrida e Re-ranking Contextual}
+Nomes de princípios ativos, sais e concentrações numéricas exigem exatidão léxica absoluta, enquanto descrições de mecanismos fisiopatológicos demandam proximidade semântica. Para atender a ambos os requisitos, o Vitalis v2.0 implementa uma busca híbrida que combina recuperação densa e busca esparsa BM25 \cite{robertson_bm25:2009}.
+
+A função de relevância BM25 para um documento $D$ e uma consulta $Q = \{q_1, \dots, q_n\}$ é calculada por:
+\begin{equation}
+    \text{Score}_{\text{BM25}}(D, Q) = \sum_{i=1}^{n} \text{IDF}(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot \left(1 - b + b \cdot \frac{|D|}{\text{avgdl}}\right)}
+\end{equation}
+onde $f(q_i, D)$ é a frequência do termo $q_i$ no documento $D$, $|D|$ é o comprimento do documento em palavras, $\text{avgdl}$ é o comprimento médio dos documentos no corpus, $k_1 = 1{,}2$ e $b = 0{,}75$.
+
+A fusão das pontuações adota o método de \textit{Reciprocal Rank Fusion} (RRF), garantindo que documentos bem ranqueados em qualquer uma das abordagens sejam priorizados:
+\begin{equation}
+    \text{RRF}(d) = \sum_{m \in \{\text{denso}, \text{BM25}\}} \frac{1}{k_{\text{rrf}} + r_m(d)}
+\end{equation}
+adotando-se $k_{\text{rrf}} = 60$. Os 20 fragmentos de maior pontuação são submetidos a um modelo re-ranqueador (\textit{Cross-Encoder}), que processa conjuntamente o par (consulta, trecho) e seleciona os 5 trechos com maior aderência clínica para alimentar a janela de contexto da LLM.
+
+\subsubsection{Engenharia de Prompt Clínico e Restrição de Alucinações}
+A montagem do prompt submetido à inferência segue uma estrutura compartimentada e imutável. A listagem~\ref{lst:prompt_rag} apresenta o modelo de montagem do payload.
+
+\begin{lstlisting}[caption={Estrutura de prompt clínico compartimentado para o RAG (formato JSON)}, label={lst:prompt_rag}]
+{
+  "system_instruction": "Voce e o Copiloto Farmacoterapeutico do Sistema Vitalis v2.0. Sua funcao e exclusivamente consultiva de suporte a prescricao medica. Analise a intencao de prescricao contra o contexto clinico e os documentos oficiais anexados. REGRAS OBRIGATORIAS: 1. Responda apenas com base nos trechos documentais fornecidos (grounding estrito); 2. Nunca deduza condutas ou invente dados ausentes; 3. Para qualquer incompatibilidade identificada, cite expressamente a fonte oficial; 4. Formate a saida em JSON estruturado com os campos: status, nivel_alerta, justificativa, referencia_documental.",
+  "grounding_context": [
+    {
+      "documento": "Monografia ANVISA - Meropenem Tri-hidratado",
+      "trecho": "Em pacientes com insuficiencia renal, a dose deve ser ajustada: ClCr 26-50 mL/min: 1g a cada 12h; ClCr 10-25 mL/min: 500mg a cada 12h; ClCr < 10 mL/min: 500mg a cada 24h."
+    }
+  ],
+  "patient_profile": {
+    "sexo": "M",
+    "idade_anos": 68,
+    "peso_kg": 72.0,
+    "creatinina_serica_mg_dl": 2.4,
+    "clearance_creatinina_calculado_ml_min": 28.3,
+    "alergias_ativas": ["Penicilinas", "Dipirona"],
+    "prescricoes_vigentes": ["Acido Valproico 500mg VO 12/12h", "Furosemida 40mg IV 24/24h"]
+  },
+  "prescricao_solicitada": {
+    "medicamento": "Meropenem",
+    "dose": "1000 mg",
+    "via": "Intravenosa",
+    "intervalo_horas": 8
+  }
+}
+\end{lstlisting}
+
+Para eliminar a variabilidade estocástica e coibir alucinações, o parâmetro de temperatura da inferência é configurado com limite estrito de $\tau \le 0{,}1$ (preferencialmente $\tau = 0{,}0$ para saídas determinísticas) e corte de amostragem por probabilidade acumulada com $\text{top\_p} = 0{,}85$. O sistema rejeita respostas que contenham afirmações desprovidas de vínculo com os fragmentos documentais do contexto (\textit{grounding}).
+
+\subsubsection{Bloqueios Estritos e Ajuste Automático por Função Renal}
+O copiloto integra um motor de regras determinísticas que opera em paralelo ao modelo generativo, assegurando que contraindicações graves não dependam da interpretação textual da LLM:
+\begin{itemize}
+    \item \textbf{Veto por Alergia Conhecida}: Se o princípio ativo pertencer a um grupo farmacológico assinalado como alérgeno no prontuário, a seleção é bloqueada na interface gráfica imediatamente;
+    \item \textbf{Interações Medicamentosas Graves (Categoria X e D)}: Fármacos com risco de toxicidade sinérgica fatal (por exemplo, carbapenem associado a ácido valproico com queda abrupta de concentração plasmática do anticonvulsivante) emitem bloqueio impeditivo, cuja superação exige senha e justificativa clínica formal do médico prescritor;
+    \item \textbf{Ajuste por Função Renal}: A plataforma calcula a depuração de creatinina ($\text{ClCr}$) utilizando a fórmula clássica de Cockcroft-Gault \cite{cockcroft_gault:1976}:
+    \begin{equation}
+        \text{ClCr} = \frac{(140 - \text{idade}) \times \text{peso}}{72 \times \text{Cr}_{\text{sérica}}} \times (0{,}85 \text{ se feminino})
+    \end{equation}
+    onde a idade é expressa em anos, o peso em quilogramas e a creatinina sérica em $\text{mg/dL}$. Quando o $\text{ClCr}$ recai abaixo de $50\,\text{mL/min}$, a interface indica automaticamente a necessidade de ajuste da frequência de aprazamento ou da dosagem unitária.
+\end{itemize}
+
+% ==============================================================================
+\subsection{Motor Preditivo de Sepse e Deterioração (qSOFA e NEWS2)}
+\label{subsec:ia_motor_sepse}
+
+A detecção precoce de deterioração clínica e infecção sistêmica grave é realizada pelo módulo de monitoramento contínuo em tempo real (requisitos \textbf{RF-002} e \textbf{RF-004}).
+
+\subsubsection{Coleta de Telemetria e Sinais Vitais em Tempo Real}
+O módulo de triagem recebe fluxos de eventos alimentados pelas estações de triagem, bombas de infusão conectadas e monitores multiparamétricos de beira de leito. A ingestão ocorre por meio de barramentos de mensageria assíncrona (Redis/BullMQ) que processam as seguintes séries temporais:
+\begin{itemize}[noitemsep]
+    \item Frequência cardíaca (FC, em batimentos por minuto, bpm);
+    \item Pressão arterial sistólica e diastólica (PAS e PAD, em mmHg);
+    \item Frequência respiratória (FR, em incursões por minuto, rpm);
+    \item Saturação periférica de oxigênio ($\text{SpO}_2$, em porcentagem);
+    \item Temperatura axilar ou central ($T$, em ºC);
+    \item Nível de consciência avaliado pela Escala de Coma de Glasgow (ECG, pontuação de 3 a 15) ou escala AVDS (Alerta, Voz, Dor, Sem resposta);
+    \item Fração inspirada de oxigênio ($\text{FiO}_2$) e uso de oxigenoterapia suplementar.
+\end{itemize}
+
+\subsubsection{Algoritmo Preditivo Baseado em Ensemble Calibrado}
+O núcleo preditivo do Vitalis v2.0 opera com um modelo de aprendizado de máquina supervisionado baseado em comitê de árvores de decisão impulsionadas por gradiente (\textit{Gradient Boosted Trees}, como XGBoost e LightGBM), associado a florestas aleatórias (\textit{Random Forest}). O modelo foi treinado sobre conjuntos de dados hospitalares contendo séries temporais de pacientes internados, calibrando os escores padronizados qSOFA \cite{singer_sepsis:2016} e NEWS2 \cite{rcp_news2:2017}.
+
+O escore determinístico de qSOFA (\textit{Quick Sequential Organ Failure Assessment}) é avaliado segundo os critérios:
+\begin{equation}
+    \text{qSOFA} = \mathbb{I}_{(\text{FR} \ge 22)} + \mathbb{I}_{(\text{PAS} \le 100)} + \mathbb{I}_{(\text{Glasgow} < 15)}
+\end{equation}
+onde $\mathbb{I}_{(\cdot)}$ é a função indicadora, resultando em pontuação de 0 a 3. Valores de $\text{qSOFA} \ge 2$ indicam suspeita de desfecho desfavorável em ambiente não intensivo.
+
+O escore NEWS2 (\textit{National Early Warning Score 2}) afere pontuações graduadas (0 a 3 pontos por parâmetro) sobre os sete sinais vitais coletados, totalizando um valor discreto entre 0 e 20:
+\begin{equation}
+    \text{NEWS2} = \sum_{k=1}^7 w_k(\text{sinal}_k)
+\end{equation}
+onde pontuações acumuladas $\ge 5$ representam risco moderado, e valores $\ge 7$ (ou atribuição de 3 pontos em um único parâmetro) demandam intervenção médica de emergência imediata. O algoritmo preditivo processa os escores basais em conjunto com a velocidade de variação ($\frac{\Delta x}{\Delta t}$) das últimas 4 horas e biomarcadores laboratoriais quando disponíveis (lactato sérico, leucometria e proteína C-reativa), estimando a probabilidade contínua de choque séptico nas próximas 6 a 12 horas:
+\begin{equation}
+    P(\text{Sepse} \mid \mathbf{x}) = \sigma\left(\mathbf{w}^T \phi(\mathbf{x}) + b\right)
+\end{equation}
+
+\subsubsection{Janela Terapêutica da Primeira Hora da Sepse}
+O objetivo técnico do motor preditivo fundamenta-se nas diretrizes da \textit{Surviving Sepsis Campaign} e em evidências consolidadas da medicina intensiva. Estudos demonstram que cada hora de retardo na administração do esquema antimicrobiano apropriado após a instalação da hipotensão em choque séptico eleva a taxa de mortalidade em aproximadamente $7{,}6\%$ \cite{kumar_sepsis:2006}.
+
+Ao atingir o limiar de alerta ($P(\text{Sepse}) \ge 0{,}65$ ou $\text{NEWS2} \ge 7$), o Vitalis v2.0 dispara simultaneamente:
+\begin{itemize}[noitemsep]
+    \item Notificação em destaque vermelho no painel central de monitoramento da enfermagem;
+    \item Sugestão automática de abertura do protocolo clínico de sepse no PEP;
+    \item Verificação do pacote da primeira hora (\textit{Bundle} de 1 Hora): coleta de hemoculturas prévias, dosagem de lactato sérico, início de antimicrobiano de amplo espectro e ressuscitação volêmica ($30\,\text{mL/kg}$ de cristaloide em caso de hipotensão persistente ou lactato $\ge 4\,\text{mmol/L}$).
+\end{itemize}
+
+\subsubsection{Explicabilidade Clínica com SHAP (SHapley Additive exPlanations)}
+Sistemas preditivos clínicos do tipo caixa-preta costumam enfrentar resistência de adoção por enfermeiros e médicos, além de induzirem fadiga de alarmes falsos-positivos. Para prover transparência analítica imediata, o Vitalis v2.0 implementa valores SHAP (\textit{SHapley Additive exPlanations}) \cite{lundberg_shap:2017}.
+
+Fundamentado na teoria dos jogos cooperativos, o SHAP decompõe a predição pontual $f(\mathbf{x})$ como uma soma aditiva da expectativa global $E[f(x)]$ com as contribuições individuais $\phi_i$ de cada parâmetro fisiológico:
+\begin{equation}
+    f(\mathbf{x}) = \phi_0 + \sum_{i=1}^{M} \phi_i
+\end{equation}
+A contribuição marginal de cada variável clínica é formalizada por:
+\begin{equation}
+    \phi_i(f, \mathbf{x}) = \sum_{S \subseteq \mathcal{F} \setminus \{i\}} \frac{|S|!(|\mathcal{F}| - |S| - 1)!}{|\mathcal{F}|!} \left[ f_x(S \cup \{i\}) - f_x(S) \right]
+\end{equation}
+onde $\mathcal{F}$ é o conjunto de todas as variáveis de entrada e $S$ são subconjuntos de variáveis.
+
+Na interface do enfermeiro, o alerta de risco não é apresentado como um número isolado, mas acompanhado de um cartão visual explicativo dos três principais fatores determinantes:
+\begin{itemize}[noitemsep]
+    \item Frequência respiratória de $26\,\text{rpm}$ elevou o risco em $+28{,}4\%$;
+    \item Pressão arterial sistólica de $88\,\text{mmHg}$ elevou o risco em $+21{,}1\%$;
+    \item Lactato de $3{,}1\,\text{mmol/L}$ elevou o risco em $+15{,}8\%$.
+\end{itemize}
+Essa apresentação permite que a equipe assistencial interprete a fundamentação fisiológica do modelo em menos de cinco segundos de inspeção visual.
+
+% ==============================================================================
+\subsection{Gateway de Higienização de PII e Conformidade com a LGPD}
+\label{subsec:ia_gateway_pii}
+
+O tráfego de dados para modelos de inferência externos requer salvaguardas técnicas de privacidade e segurança da informação, alinhadas aos mandamentos da Lei Geral de Proteção de Dados Pessoais (LGPD, Lei nº 13.709/2018) \cite{brasil_lgpd:2018} e aos requisitos funcionais \textbf{RF-018} e \textbf{RF-019}.
+
+\subsubsection{Pipeline de Desidentificação Pré-Tráfego Externo}
+Nenhum dado bruto de paciente é despachado fora do perímetro de rede seguro do hospital. O Vitalis v2.0 implementa um \textbf{Gateway de Higienização} dedicado, que intercepta as cargas úteis de inferência e suprime os 18 identificadores diretos preconizados pelo padrão internacional HIPAA Safe Harbor e pelo Artigo 11 da LGPD para dados sensíveis de saúde:
+\begin{enumerate}[noitemsep]
+    \item Nome completo civil e nome social;
+    \item Números de CPF e Registro Geral (RG);
+    \item Número do Cartão Nacional de Saúde (CNS);
+    \item Matrícula funcional ou código identificador interno de prontuário;
+    \item Datas exatas de nascimento, internação e procedimentos (convertidas para idade em anos e intervalos de tempo relativos);
+    \item Telefones celulares, fixos e ramais hospitalares;
+    \item Endereços eletrônicos (\textit{e-mails});
+    \item Logradouros, bairros, municípios e Códigos de Endereçamento Postal (CEP);
+    \item Número de inscrição e matrícula de convênio de saúde suplementar;
+    \item Números de licenças médicas e certificados digitais;
+    \item Placas e identificadores veiculares;
+    \item Números de série de dispositivos médicos implantáveis ou monitores;
+    \item Endereços Uniform Resource Locator (URLs);
+    \item Endereços de protocolo de internet (IP);
+    \item Registros biométricos dactilares ou faciais;
+    \item Fotografias clínicas faciais e imagens diagnósticas com cabeçalho DICOM contendo metadados nominais;
+    \item Qualquer outro identificador unívoco de pessoa natural;
+    \item Perfis genéticos ou sequenciamentos biológicos diretos.
+\end{enumerate}
+
+Para textos clínicos livres (como anotações de evolução), o gateway aciona uma rede de Reconhecimento de Entidades Nomeadas (NER) afinada para a língua portuguesa, substituindo nomes de familiares, médicos ou clínicas por máscaras sintéticas padronizadas (por exemplo, \texttt{[PROFISSIONAL\_MEDICO\_1]}, \texttt{[CIDADE\_1]}).
+
+\subsubsection{Pseudonimização Reversível no Perímetro Hospitalar Seguro}
+A correlação entre a resposta fornecida pelo modelo de IA e o paciente real no leito é realizada por pseudonimização reversível, cujas chaves residem exclusivamente no enclave de infraestrutura interno do hospital. O gateway gera um identificador efêmero criptografado:
+\begin{equation}
+    \text{Token}_{\text{sessao}} = \text{HMAC-SHA256}(K_{\text{hospital}}, \text{ID}_{\text{atendimento}} \parallel \text{Timestamp})
+\end{equation}
+O mapeamento entre o token efêmero e o identificador do prontuário é retido em cache de memória seguro (Redis isolado em rede interna) com tempo de expiração curto (TTL de 120 segundos). Após o retorno da resposta da IA, o gateway substitui o token pelo identificador local do paciente antes de renderizar a interface clínica para o médico, impedindo que o provedor externo de IA reconstrua a identidade dos pacientes atendidos.
+
+\subsubsection{Criptografia de Cargas Úteis em Trânsito e em Repouso}
+Todas as comunicações entre o sistema hospitalar e os serviços de inteligência artificial utilizam canais protegidos por TLS versão 1.3 com autenticação mútua (mTLS) e cifras com segredo direto perfeito (\textit{Perfect Forward Secrecy}, com ECDHE-RSA e ECDHE-ECDSA).
+
+Em repouso, todos os fragmentos documentais, logs de auditoria e bases vetoriais locais são criptografados através do algoritmo AES-256 no modo GCM (\textit{Galois/Counter Mode}), assegurando integridade e confidencialidade. O gerenciamento de chaves mestras adota Módulos de Segurança de Hardware (HSM) dedicados ou serviços gerenciados de KMS corporativo, com rotação anual mandatória de chaves de criptografia.
+
+% ==============================================================================
+\subsection{Mecanismo de Resiliência: Circuit Breaker e Contingência Determinística}
+\label{subsec:ia_circuit_breaker}
+
+Em sistemas hospitalares de missão crítica, a latência de chamadas a serviços de IA ou a instabilidade de conexões externas não pode interromper os processos de triagem e prescrição (requisito \textbf{RF-020} e regra de negócio \textbf{RN-4}).
+
+\subsubsection{Estados do Circuit Breaker}
+O Vitalis v2.0 implementa o padrão arquitetural \textit{Circuit Breaker} \cite{nygard:2018}, organizando a comunicação com os modelos de inteligência artificial em três estados operacionais:
+
+\begin{itemize}
+    \item \textbf{Fechado (\textit{Closed})}: O tráfego de inferência flui normalmente. O sistema registra métricas de latência e taxa de erros. Caso as chamadas sejam concluídas com sucesso e tempo de resposta aceitável, o circuito permanece fechado;
+    \item \textbf{Aberto (\textit{Open})}: Caso a taxa de falhas (erros de rede, respostas inválidas ou estouro de timeout) ultrapasse $5\%$ em uma janela móvel de 60 segundos, ou ocorram 5 falhas consecutivas, o circuito se abre. Todas as requisições subsequentes são imediatamente direcionadas ao motor determinístico local, sem realizar chamadas de rede;
+    \item \textbf{Semiaberto (\textit{Half-Open})}: Após um intervalo de espera de 30 segundos no estado aberto, o sistema permite que um volume restrito de requisições de teste (amostra de 5 chamadas) transite para o provedor de IA. Se todas obtiverem sucesso com tempo de resposta $< 2{,}0\,\text{s}$, o circuito retorna ao estado Fechado; caso qualquer uma falhe, o circuito retorna ao estado Aberto por mais 60 segundos.
+\end{itemize}
+
+\subsubsection{Limite de Timeout Estrito de 2,0 Segundos}
+Para garantir a fluidez de uso em ambientes de emergência, toda chamada de inferência possui um limite de timeout rígido de $2{,}0\,\text{s}$. Caso a resposta do modelo não seja completada dentro desse intervalo temporal, a conexão é interrompida preventivamente e o motor de contingência é ativado.
+
+\subsubsection{Fallback Instantâneo para Motores Determinísticos}
+Quando o circuito se encontra no estado Aberto ou ocorre um evento de timeout, o sistema ativa mecanismos locais de contingência determinística:
+\begin{itemize}
+    \item \textbf{Na Triagem e Risco de Sepse}: O sistema abandona a predição probabilística por árvores impulsionadas e executa o cálculo matricial exato dos escores qSOFA e NEWS2 diretamente em código binário local, alimentando a classificação de risco do Protocolo de Manchester sem qualquer atraso percebido pelo usuário;
+    \item \textbf{No Copiloto Farmacoterapêutico}: O sistema desativa a síntese textual por LLM e recorre a uma tabela relacional local de interações medicamentosas severas e contraindicações formais cadastradas previamente na base de dados do hospital.
+\end{itemize}
+
+A interface gráfica informa ao profissional: \textit{``Modo de Contingência Determinística Ativo: Validação executada por regras locais de segurança''}.
+
+\subsubsection{Diagrama de Fluxo de Inferência com Circuit Breaker}
+A Figura~\ref{fig:fluxo_ia_resiliencia} ilustra o fluxo operacional completo de processamento de inferência no Vitalis v2.0, demonstrando a interação entre a interface do profissional de saúde, o gateway de higienização de PII, o mecanismo de resiliência e o motor determinístico local.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        box/.style={rectangle, rounded corners=3pt, draw=vitalisdark, fill=vitalislight!40, align=center, minimum height=1.0cm, text width=2.3cm, font=\scriptsize\sffamily, line width=0.9pt},
+        aicloud/.style={rectangle, rounded corners=4pt, draw=purple!80!black, fill=purple!10, align=center, minimum height=1.0cm, text width=2.6cm, font=\scriptsize\sffamily\bfseries, line width=1pt},
+        breaker/.style={diamond, aspect=1.5, draw=orange!90!black, fill=orange!15, align=center, font=\scriptsize\sffamily\bfseries, line width=1pt, inner sep=1pt},
+        fallback/.style={rectangle, rounded corners=3pt, draw=vitalisred!80!black, fill=vitalisred!10, align=center, minimum height=1.0cm, text width=2.6cm, font=\scriptsize\sffamily\bfseries, line width=1pt},
+        audit/.style={rectangle, rounded corners=3pt, draw=vitalisgreen!80!black, fill=vitalisgreen!10, align=center, minimum height=1.0cm, text width=2.85cm, font=\scriptsize\sffamily, line width=1pt},
+        arrow/.style={-{Latex[length=2.2mm]}, draw=vitalisdark, line width=0.8pt},
+        redarrow/.style={-{Latex[length=2.2mm]}, draw=vitalisred!90!black, line width=0.9pt, dashed},
+        greenarrow/.style={-{Latex[length=2.2mm]}, draw=vitalisgreen!80!black, line width=0.9pt}
+    ]
+
+        % Linha superior: Ingestão e Decisão
+        \node (ui) [box] {Terminal Clínico\\(Médico / Triagem)};
+        \node (gateway) [box, right=0.8cm of ui] {Gateway Sanitizador\\(Remoção de PII)};
+        \node (circuit) [breaker, right=0.8cm of gateway] {Circuit\\Breaker};
+
+        % Bifurcação: IA Externa vs Motor Determinístico
+        \node (llm) [aicloud, above right=0.3cm and 0.9cm of circuit] {Serviço de IA\\(RAG / XGBoost)\\Timeout $\le 2{,}0\,\text{s}$};
+        \node (determ) [fallback, below right=0.3cm and 0.9cm of circuit] {Contingência Local\\(Regras Manchester\\e Compêndios)};
+
+        % Linha inferior / Saída
+        \node (revert) [box, right=3.8cm of circuit] {Reversor de\\Pseudônimos};
+        \node (resp) [box, below=1.1cm of revert] {Apresentação e\\Validação HITL};
+        \node (log) [audit, left=1.0cm of resp] {Auditoria Imutável\\{\tiny\texttt{LOG\_INFERENCIA\_IA}}};
+
+        % Conexões
+        \draw [arrow] (ui) -- node[above, font=\tiny\sffamily] {Requisição} (gateway);
+        \draw [arrow] (gateway) -- node[above, font=\tiny\sffamily] {Payload Higienizado} (circuit);
+        
+        \draw [greenarrow] (circuit.north) |- node[pos=0.6, above, font=\tiny\sffamily, color=vitalisgreen!80!black] {Fechado} (llm.west);
+        \draw [redarrow] (circuit.south) |- node[pos=0.6, below, font=\tiny\sffamily, color=vitalisred!90!black] {Aberto / Timeout} (determ.west);
+        
+        \draw [arrow] (llm.east) -| (revert.north);
+        \draw [arrow] (determ.east) -| (revert.south);
+        \draw [arrow] (revert) -- node[right, font=\tiny\sffamily] {Desanonimizado} (resp);
+        \draw [arrow] (resp) -- node[above, font=\tiny\sffamily] {Decisão Médica} (log);
+
+    \end{tikzpicture}
+    \caption{Fluxo de inferência clínica com higienização de dados, resiliência por Circuit Breaker e contingência determinística.}
+    \label{fig:fluxo_ia_resiliencia}
+\end{figure}
+
+% ==============================================================================
+\subsection{Auditoria e Explicabilidade: Tabela \texttt{LOG\_INFERENCIA\_IA}}
+\label{subsec:ia_auditoria}
+
+A rastreabilidade integral das operações de inteligência artificial é garantida pela persistência relacional imutável de cada ciclo de inferência na tabela \texttt{LOG\_INFERENCIA\_IA} (requisito \textbf{RF-019}). Essa estrutura fornece respaldo médico-legal, viabiliza auditorias de conformidade com a LGPD e permite a avaliação contínua de degradação (\textit{model drift}) ou viés algorítmico.
+
+\subsubsection{Modelo de Dados Relacional e Trilha Imutável}
+Cada registro gerado reflete uma interação individual de suporte clínico, armazenando métricas de desempenho técnico, a resposta textual/estruturada gerada e a deliberação soberana do profissional de saúde. A Listagem~\ref{lst:ddl_log_inferencia} apresenta o esquema DDL em PostgreSQL com restrições de integridade e regras de imutabilidade.
+
+\begin{lstlisting}[language=SQL, caption={Definição DDL da tabela imutável \texttt{LOG\_INFERENCIA\_IA}}, label={lst:ddl_log_inferencia}]
+-- Tabela imutavel para auditoria de inferencias clinicas de IA
+CREATE TABLE log_inferencia_ia (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    atendimento_id UUID NOT NULL,
+    usuario_id UUID NOT NULL,
+    modulo_ia VARCHAR(40) NOT NULL, -- 'COPILOTO_PRESCRICAO', 'SEPSE_PREDICAO'
+    modelo_ia_versao VARCHAR(60) NOT NULL, -- ex: 'vitalis-rag-med-v2.1', 'xgb-sepsis-v1.4'
+    prompt_sanitizado_hash CHAR(64) NOT NULL, -- Hash SHA-256 do payload enviado
+    tokens_prompt INTEGER NOT NULL DEFAULT 0,
+    tokens_resposta INTEGER NOT NULL DEFAULT 0,
+    latencia_ms INTEGER NOT NULL, -- Tempo de resposta em milissegundos
+    score_confianca NUMERIC(4,3) CHECK (score_confianca >= 0.0 AND score_confianca <= 1.0),
+    modo_contingencia_ativo BOOLEAN NOT NULL DEFAULT FALSE,
+    resposta_ia JSONB NOT NULL,
+    decisao_medica VARCHAR(20) NOT NULL, -- 'ACEITA', 'MODIFICADA', 'REJEITADA'
+    justificativa_humana TEXT, -- Obrigatorio para decisoes 'MODIFICADA' ou 'REJEITADA'
+    criado_em TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    decidido_em TIMESTAMP WITH TIME ZONE,
+    
+    CONSTRAINT fk_log_atendimento FOREIGN KEY (atendimento_id) REFERENCES atendimento(id),
+    CONSTRAINT fk_log_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id),
+    CONSTRAINT chk_justificativa_obrigatoria CHECK (
+        (decisao_medica IN ('MODIFICADA', 'REJEITADA') AND justificativa_humana IS NOT NULL AND LENGTH(TRIM(justificativa_humana)) >= 10)
+        OR (decisao_medica = 'ACEITA')
+    )
+);
+
+-- Indices otimizados para investigacao clinica e relatorios de governanca
+CREATE INDEX idx_log_ia_atendimento ON log_inferencia_ia (atendimento_id);
+CREATE INDEX idx_log_ia_modulo_criacao ON log_inferencia_ia (modulo_ia, criado_em);
+CREATE INDEX idx_log_ia_decisao ON log_inferencia_ia (decisao_medica);
+
+-- Gatilho de seguranca para impedir remocao ou alteracao (imutabilidade estrita)
+CREATE OR REPLACE FUNCTION trg_impedir_mutacao_log_ia()
+RETURNS TRIGGER AS $$
+BEGIN
+    RAISE EXCEPTION 'Operacao negada: registros de LOG_INFERENCIA_IA sao estritamente imutaveis (WORM).';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_bloqueio_modificacao_log_ia
+BEFORE UPDATE OR DELETE ON log_inferencia_ia
+FOR EACH ROW EXECUTE FUNCTION trg_impedir_mutacao_log_ia();
+\end{lstlisting}
+
+\subsubsection{Governança de IA e Monitoramento Pós-Implantação}
+A estrutura de dados da tabela \texttt{LOG\_INFERENCIA\_IA} viabiliza a geração de painéis analíticos contínuos para o Comitê de Ética Médica e a Governança de TI do hospital:
+\begin{itemize}
+    \item \textbf{Taxa de Aderência Clínica (\textit{Acceptance Rate})}: Razão entre decisões aceitas e o total de inferências emitidas por especialidade e por modelo, permitindo identificar precocemente módulos com alta taxa de rejeição;
+    \item \textbf{Análise de Justificativas de Rejeição}: Agrupamento semântico das motivações clínicas apresentadas por médicos ao descartar alertas, identificando hipóteses em que os protocolos institucionais divergem das bulas da ANVISA ou demandam recalibração do re-ranqueador;
+    \item \textbf{Detecção de Desvio Conceitual (\textit{Model Drift})}: Monitoramento contínuo da distribuição estatística de latência, pontuações de confiança e frequência de acionamento do Circuit Breaker, sinalizando a necessidade de re-treinamento dos comitês de árvores do motor de sepse.
+\end{itemize}
+
+Dessa forma, o Vitalis v2.0 articula conformidade regulatória, integridade científica e segurança operacional no aproveitamento dos recursos de inteligência artificial em saúde humana.
