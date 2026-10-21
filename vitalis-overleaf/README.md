@@ -1,4 +1,4 @@
-# Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0)
+# Sistema de Gestão Hospitalar Inteligente Vitalis
 ## Documentação Técnica de Engenharia de Software para Overleaf
 
 **Instituição:** Universidade Católica do Salvador -- UCSAL  
@@ -11,7 +11,7 @@
 
 ## 1. Visão Geral do Projeto
 
-Este repositório contém a suíte completa de documentação formal de engenharia de software, modelagem de processos e arquitetura clínica inteligente para o **Sistema Vitalis v2.0**. Todo o projeto foi arquitetado em LaTeX modular compatível com o **Overleaf** (`pdfLaTeX` e `XeLaTeX`), sem dependência de ferramentas externas para geração de diagramas, que foram codificados nativamente em **TikZ**.
+Este repositório contém a suíte completa de documentação formal de engenharia de software, modelagem de processos e arquitetura clínica inteligente para o **Sistema Vitalis**. Todo o projeto foi arquitetado em LaTeX modular compatível com o **Overleaf** (`pdfLaTeX` e `XeLaTeX`), sem dependência de ferramentas externas para geração de diagramas, que foram codificados nativamente em **TikZ**.
 
 O projeto atende rigorosamente aos 10 itens solicitados:
 1. **Descritivo Detalhado:** Mais de 100 linhas de densidade técnica, cobrindo o ecossistema hospitalar, microsserviços NestJS/BullMQ/PostgreSQL, ciclo assistencial e governança clínica.
@@ -47,7 +47,7 @@ vitalis-overleaf/
 │   ├── 09_diagrama_casos_uso.tex  # Tópico 9: Diagrama de Casos de Uso UML em TikZ
 │   └── 10_funcionalidade_ia.tex   # Tópico 10: Especificação técnica da IA clínica
 ├── anexos/
-│   ├── Documento_de_metrificacao_Vitalis_v2.0.xlsx   # Planilha oficial MFI calculada para o Vitalis
+│   ├── Documento_de_metrificacao_Vitalis.xlsx        # Planilha oficial MFI calculada para o Vitalis
 │   └── Template_Original_Metrificacao_UCSAL.xlsx    # Planilha modelo fornecida pela cátedra
 ├── referencias.bib                # Base bibliográfica (CFM, LGPD, ANS, HL7, Manchester, Topol)
 └── Makefile                       # Automação de compilação local (pdflatex/bibtex)
@@ -72,7 +72,7 @@ vitalis-overleaf/
 
 ## 4. Planilha de Metrificação Oficial da UCSAL
 
-O projeto integra a planilha **`Documento de metrificação - Vitalis v2.0.xlsx`** (localizada em `anexos/`), calculada rigorosamente segundo a **Métrica de Função de Implementação (MFI)** da UCSAL:
+O projeto integra a planilha **`Documento de metrificação - Vitalis.xlsx`** (localizada em `anexos/`), calculada rigorosamente segundo a **Métrica de Função de Implementação (MFI)** da UCSAL:
 
 - **Volume:** 17 programas distribuídos em 8 Macrofunções de Implementação (MFI-01 a MFI-08).
 - **Tamanho Total:** 320 Pontos de Implementação (PI).

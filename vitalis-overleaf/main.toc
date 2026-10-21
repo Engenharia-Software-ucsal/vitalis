@@ -1,4 +1,4 @@
-\contentsline {section}{\numberline {1}Descritivo Detalhado do Sistema Vitalis v2.0}{1}{section.1}%
+\contentsline {section}{\numberline {1}Descritivo Detalhado do Sistema Vitalis}{1}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Contexto Operacional e Visão de Negócio}{1}{subsection.1.1}%
 \contentsline {subsection}{\numberline {1.2}Arquitetura em Microsserviços e Engenharia de Software}{1}{subsection.1.2}%
 \contentsline {subsection}{\numberline {1.3}Ciclo Assistencial Completo do Paciente}{2}{subsection.1.3}%
@@ -17,7 +17,7 @@
 \contentsline {subsection}{\numberline {2.4}Gargalos Operacionais na Gestão e no Giro de Leitos}{8}{subsection.2.4}%
 \contentsline {subsection}{\numberline {2.5}Inconsistências de Faturamento e o Impacto das Glosas TISS/TUSS}{9}{subsection.2.5}%
 \contentsline {subsection}{\numberline {2.6}Síntese dos Impactos Clínicos e Operacionais}{9}{subsection.2.6}%
-\contentsline {section}{\numberline {3}Objetivos do Projeto Vitalis v2.0}{11}{section.3}%
+\contentsline {section}{\numberline {3}Objetivos do Projeto Vitalis}{11}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Objetivo Geral}{11}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Objetivos Específicos}{11}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Matriz de Metas SMART}{12}{subsection.3.3}%
@@ -45,7 +45,7 @@
 \contentsline {subsection}{\numberline {6.3}Estimativa Detalhada por Pacote de Trabalho e Subtarefa}{35}{subsection.6.3}%
 \contentsline {subsection}{\numberline {6.4}Estimativa Paramétrica por Métrica de Função de Implementação (MFI / Modelo UCSAL)}{40}{subsection.6.4}%
 \contentsline {subsubsection}{\numberline {6.4.1}Formulações Matemáticas da Métrica MFI}{40}{subsubsection.6.4.1}%
-\contentsline {subsubsection}{\numberline {6.4.2}Parametrização das Macrofunções do Vitalis v2.0}{41}{subsubsection.6.4.2}%
+\contentsline {subsubsection}{\numberline {6.4.2}Parametrização das Macrofunções do Vitalis}{41}{subsubsection.6.4.2}%
 \contentsline {subsection}{\numberline {6.5}Distribuição de Horas por Perfil Profissional da Equipe}{42}{subsection.6.5}%
 \contentsline {subsection}{\numberline {6.6}Totais Consolidados, Margem de Contingência e Esforço Total}{43}{subsection.6.6}%
 \contentsline {subsection}{\numberline {6.7}Viabilidade Operacional e Alinhamento com o Cronograma}{44}{subsection.6.7}%
@@ -55,9 +55,9 @@
 \contentsline {subsection}{\numberline {7.3}Fluxo 2: Atendimento Médico, Copiloto RAG e Dispensação Farmacêutica}{48}{subsection.7.3}%
 \contentsline {subsection}{\numberline {7.4}Fluxo 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS}{49}{subsection.7.4}%
 \contentsline {subsection}{\numberline {7.5}Matriz de Atores, Intervenções de IA e Salvaguardas}{50}{subsection.7.5}%
-\contentsline {section}{\numberline {8}Diagrama de Classes UML do Sistema Vitalis v2.0}{52}{section.8}%
+\contentsline {section}{\numberline {8}Diagrama de Classes UML do Sistema Vitalis}{52}{section.8}%
 \contentsline {subsection}{\numberline {8.1}Visão Geral da Arquitetura Estática e Separação em Pacotes}{52}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}Diagrama Estrutural do Sistema Vitalis v2.0}{53}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.2}Diagrama Estrutural do Sistema Vitalis}{53}{subsection.8.2}%
 \contentsline {subsection}{\numberline {8.3}Detalhamento do Pacote Clínico-Assistencial}{53}{subsection.8.3}%
 \contentsline {subsubsection}{\numberline {8.3.1}Classe Paciente}{53}{subsubsection.8.3.1}%
 \contentsline {subsubsection}{\numberline {8.3.2}Classe Atendimento}{54}{subsubsection.8.3.2}%

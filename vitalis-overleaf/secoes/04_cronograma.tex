@@ -1,6 +1,6 @@
 \section{Cronograma do Trabalho e Marcos do Projeto}
 
-O desenvolvimento do Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0) compreende um ciclo contínuo de 28 semanas (aproximadamente sete meses de execução técnica). A metodologia de trabalho organiza a construção do software de forma iterativa e incremental \cite{pressman:2016, sommerville:2019}, com as atividades divididas em seis fases estruturadas. Cada ciclo quinzenal de desenvolvimento entrega componentes funcionais avaliados por marcos de controle formais (\textit{milestones}), o que viabiliza a validação contínua dos requisitos clínicos e operacionais.
+O desenvolvimento do Sistema de Gestão Hospitalar Inteligente Vitalis compreende um ciclo contínuo de 28 semanas (aproximadamente sete meses de execução técnica). A metodologia de trabalho organiza a construção do software de forma iterativa e incremental \cite{pressman:2016, sommerville:2019}, com as atividades divididas em seis fases estruturadas. Cada ciclo quinzenal de desenvolvimento entrega componentes funcionais avaliados por marcos de controle formais (\textit{milestones}), o que viabiliza a validação contínua dos requisitos clínicos e operacionais.
 
 As seis fases do cronograma distribuem-se da seguinte forma:
 \begin{enumerate}[leftmargin=*]
@@ -91,7 +91,7 @@ Os marcos de controle definidos para a Fase 5 são:
 A etapa final submete a plataforma hospitalar a verificações de confiabilidade sob estresse:
 \begin{itemize}[leftmargin=*]
     \item \textbf{Semanas 25 e 26}: Bateria de testes de carga com 2.000 conexões concorrentes para certificar a estabilidade transacional do banco de dados e a resposta das APIs. Realização de testes de penetração (\textit{pentests}), auditoria de segurança da informação (criptografia AES-256 e TLS 1.3) e validação da imutabilidade das trilhas de auditoria.
-    \item \textbf{Semanas 27 e 28}: Execução de simulações clínicas em ambiente hospitalar de testes, com reprodução de fluxos de emergência médica, transferências de pacientes e falhas deliberadas de conectividade para testar o chaveamento determinístico. Capacitação técnica de multiplicadores (médicos, enfermeiros e administradores) e liberação formal da versão 2.0 do Vitalis.
+    \item \textbf{Semanas 27 e 28}: Execução de simulações clínicas em ambiente hospitalar de testes, com reprodução de fluxos de emergência médica, transferências de pacientes e falhas deliberadas de conectividade para testar o chaveamento determinístico. Capacitação técnica de multiplicadores (médicos, enfermeiros e administradores) e liberação formal do Sistema Vitalis.
 \end{itemize}
 
 Os marcos de controle definidos para a Fase 6 são:
@@ -107,13 +107,13 @@ A Tabela \ref{tab:cronograma_vitalis} sintetiza a distribuição das 28 semanas 
 \begin{table}[H]
 \centering
 \scriptsize
-\caption{Estrutura analítica de atividades, cronograma e entregáveis do Vitalis v2.0}
+\caption{Estrutura analítica de atividades, cronograma e entregáveis do Vitalis}
 \label{tab:cronograma_vitalis}
 \begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}X c >{\raggedright\arraybackslash}p{3.5cm}}
 \toprule
 \textbf{Fase} & \textbf{Componente} & \textbf{Atividades Principais} & \textbf{Semanas} & \textbf{Entregável Formal} \\
 \midrule
-\multirow{2}{*}{\textbf{Fase 1}} & Elicitação e Requisitos & Entrevistas com especialistas, levantamento de escopo e redação da ERS. & 1 a 2 & Documento formal de ERS v2.0 aprovado. \\
+\multirow{2}{*}{\textbf{Fase 1}} & Elicitação e Requisitos & Entrevistas com especialistas, levantamento de escopo e redação da ERS. & 1 a 2 & Documento formal de ERS  aprovado. \\
 \cmidrule(lr){2-5}
  & Processos e Regulação & Modelagem de processos em BPMN 2.0 e análise de conformidade com a LGPD e CFM. & 3 a 4 & Diagramas BPMN e relatório de conformidade jurídica. \\
 \midrule
@@ -135,7 +135,7 @@ A Tabela \ref{tab:cronograma_vitalis} sintetiza a distribuição das 28 semanas 
 \midrule
 \multirow{2}{*}{\textbf{Fase 6}} & Carga e Segurança & Testes com 2.000 requisições simultâneas, pentests e validação de criptografia. & 25 a 26 & Relatório de conformidade de carga e segurança da informação. \\
 \cmidrule(lr){2-5}
- & Simulações e Release & Ensaios clínicos de emergência, treinamento de usuários e liberação da versão 2.0. & 27 a 28 & Pacote de implantação homologado e manuais técnicos. \\
+ & Simulações e Release & Ensaios clínicos de emergência, treinamento de usuários e homologação do sistema. & 27 a 28 & Pacote de implantação homologado e manuais técnicos. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -167,7 +167,7 @@ A Figura \ref{fig:gantt_vitalis} ilustra a linha temporal das 28 semanas do proj
     milestone height=0.4
 ]{1}{28}
     % Títulos das colunas
-    \gantttitle{Cronograma Global de Desenvolvimento: Sistema Vitalis v2.0 (28 Semanas)}{28} \\
+    \gantttitle{Cronograma Global de Desenvolvimento: Sistema Vitalis (28 Semanas)}{28} \\
     \gantttitle{Fase 1}{4}
     \gantttitle{Fase 2}{4}
     \gantttitle{Fase 3}{6}
@@ -210,10 +210,10 @@ A Figura \ref{fig:gantt_vitalis} ilustra a linha temporal das 28 semanas do proj
     \ganttgroup{Fase 6: Testes, Seguran\c{c}a e Release}{25}{28} \\
     \ganttbar{Testes de Carga e Seguran\c{c}a (Pentest)}{25}{26} \\
     \ganttbar{Simula\c{c}\~oes Cl\'inicas e Capacita\c{c}\~ao}{27}{28} \\
-    \ganttmilestone{M6: Release Final Vitalis v2.0}{28}
+    \ganttmilestone{M6: Release Final Vitalis}{28}
 \end{ganttchart}
 }
-\caption{Gráfico de Gantt representativo das 28 semanas do projeto Vitalis v2.0}
+\caption{Gráfico de Gantt representativo das 28 semanas do projeto Vitalis}
 \label{fig:gantt_vitalis}
 \end{figure}
 
@@ -237,5 +237,5 @@ Para mitigar desvios durante as 28 semanas, foram estabelecidas quatro contingê
 \end{itemize}
 
 \destaqueVitalis{Marco Final e Entrada em Operação Piloto (Semana 28)}{%
-A conclusão bem-sucedida da Semana 28 culmina na entrega formal da versão 2.0 do Vitalis. O sistema entra em operação assistida com a equipe multiprofissional treinada, documentação técnica homologada, cobertura de testes de carga com 2.000 conexões concorrentes e conformidade integral com a LGPD e as resoluções do Conselho Federal de Medicina.
+A conclusão bem-sucedida da Semana 28 culmina na entrega formal e homologação do Sistema Vitalis. O sistema entra em operação assistida com a equipe multiprofissional treinada, documentação técnica homologada, cobertura de testes de carga com 2.000 conexões concorrentes e conformidade integral com a LGPD e as resoluções do Conselho Federal de Medicina.
 }

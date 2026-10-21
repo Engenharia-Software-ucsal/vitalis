@@ -1,18 +1,18 @@
 % ==============================================================================
-% SEÇÃO 8: DIAGRAMA DE CLASSES UML DO SISTEMA VITALIS v2.0
+% SEÇÃO 8: DIAGRAMA DE CLASSES UML DO SISTEMA VITALIS 
 % ==============================================================================
 
-\section{Diagrama de Classes UML do Sistema Vitalis v2.0}
+\section{Diagrama de Classes UML do Sistema Vitalis}
 \label{sec:diagrama_classes}
 
-A modelagem estrutural de um ambiente de missão crítica como o Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0) exige rigor conceitual e alta fidelidade entre a lógica de negócios assistencial e a persistência relacional. Em hospitais gerais e terciários, falhas na integridade de dados podem ocasionar decisões clínicas equivocadas, atrasos terapêuticos e sanções legais severas \cite{sommerville:2019, pressman:2016}.
+A modelagem estrutural de um ambiente de missão crítica como o Sistema de Gestão Hospitalar Inteligente Vitalis exige rigor conceitual e alta fidelidade entre a lógica de negócios assistencial e a persistência relacional. Em hospitais gerais e terciários, falhas na integridade de dados podem ocasionar decisões clínicas equivocadas, atrasos terapêuticos e sanções legais severas \cite{sommerville:2019, pressman:2016}.
 
-Esta seção apresenta o Diagrama de Classes UML do Vitalis v2.0 conforme a especificação OMG UML 2.5.1 \cite{omg_uml:2017}. O modelo organiza as entidades em três grandes pacotes arquiteturais coesos e desacoplados, documentando seus atributos, visibilidades, operações, relacionamentos, multiplicidades e padrões de projeto orientados a objetos \cite{gamma_design_patterns:1994, fowler_patterns:2002}.
+Esta seção apresenta o Diagrama de Classes UML do Vitalis conforme a especificação OMG UML 2.5.1 \cite{omg_uml:2017}. O modelo organiza as entidades em três grandes pacotes arquiteturais coesos e desacoplados, documentando seus atributos, visibilidades, operações, relacionamentos, multiplicidades e padrões de projeto orientados a objetos \cite{gamma_design_patterns:1994, fowler_patterns:2002}.
 
 \subsection{Visão Geral da Arquitetura Estática e Separação em Pacotes}
 \label{subsec:visao_geral_classes}
 
-Para preservar a separação de responsabilidades (princípio SRP) e viabilizar a evolução modular preconizada pela Arquitetura Limpa, as classes nucleares do Vitalis v2.0 são distribuídas em três pacotes conceituais:
+Para preservar a separação de responsabilidades (princípio SRP) e viabilizar a evolução modular preconizada pela Arquitetura Limpa, as classes nucleares do Vitalis são distribuídas em três pacotes conceituais:
 
 \begin{enumerate}[leftmargin=*]
     \item \textbf{Pacote Clínico-Assistencial (\texttt{vitalis.clinico})}: Agrupa as entidades que governam o percurso do paciente no hospital. Inclui o registro cadastral (\texttt{Paciente}), a instância do episódio de internação ou pronto atendimento (\texttt{Atendimento}), a classificação de risco multiparamétrica (\texttt{TriagemManchester}), o repositório médico perene (\texttt{ProntuarioEletronico}), as anotações médicas estruturadas (\texttt{EvolucaoClinica}), os planos terapêuticos (\texttt{PrescricaoMedica}) e as linhas de dosagem e aprazamento farmacológico (\texttt{ItemPrescricao}).
@@ -20,12 +20,12 @@ Para preservar a separação de responsabilidades (princípio SRP) e viabilizar 
     \item \textbf{Pacote de Inteligência Artificial e Auditoria (\texttt{vitalis.ia.auditoria})}: Centraliza os serviços de inferência preditiva, sumarização clínica por RAG e governança ética. Contém as predições de instabilidade hemodinâmica e sepse (\texttt{PredicaoRiscoClinico}), a rastreabilidade detalhada de inferências (\texttt{LogInferenciaIA}), o armazenamento de representações semânticas de diretrizes médicas (\texttt{VetorEmbeddingClinico}) e a trilha de auditoria criptograficamente encadeada (\texttt{TrilhaAuditoria}), projetada para conformidade com a LGPD \cite{brasil_lgpd:2018}.
 \end{enumerate}
 
-A Figura \ref{fig:diagrama_classes_geral} ilustra o diagrama de classes completo do Vitalis v2.0, com seus compartimentos padronizados (nome da classe, atributos privados com visibilidade \texttt{-} e métodos públicos com \texttt{+}), multiplicidades em todas as terminações e semântica rigorosa de relacionamentos (composição forte, agregação, associação dirigida e dependência).
+A Figura \ref{fig:diagrama_classes_geral} ilustra o diagrama de classes completo do Vitalis, com seus compartimentos padronizados (nome da classe, atributos privados com visibilidade \texttt{-} e métodos públicos com \texttt{+}), multiplicidades em todas as terminações e semântica rigorosa de relacionamentos (composição forte, agregação, associação dirigida e dependência).
 
 % ==============================================================================
 % 8.2 DIAGRAMA DE CLASSES ESTRUTURAL COMPLETO EM TIKZ
 % ==============================================================================
-\subsection{Diagrama Estrutural do Sistema Vitalis v2.0}
+\subsection{Diagrama Estrutural do Sistema Vitalis}
 \label{subsec:diagrama_geral_tikz}
 
 \begin{figure}[H]
@@ -405,7 +405,7 @@ A Figura \ref{fig:diagrama_classes_geral} ilustra o diagrama de classes completo
 
 \end{tikzpicture}
 }
-\caption{Diagrama Estrutural de Classes UML do Sistema Vitalis v2.0}
+\caption{Diagrama Estrutural de Classes UML do Sistema Vitalis}
 \label{fig:diagrama_classes_geral}
 \end{figure}
 
@@ -538,7 +538,7 @@ Método & \texttt{+ validarConformidadeCFM() : Bool} & Verifica a presença de C
 \endgroup
 
 \subsubsection{Classe PrescricaoMedica}
-A classe \texttt{PrescricaoMedica} reúne as ordens de administração farmacológica, fluidoterapia e procedimentos profiláticos emitidos pelo médico responsável. No Vitalis v2.0, as prescrições possuem validade máxima parametrizada de 24 horas (exigindo reavaliação médica diária) e compõem uma relação forte com seus itens.
+A classe \texttt{PrescricaoMedica} reúne as ordens de administração farmacológica, fluidoterapia e procedimentos profiláticos emitidos pelo médico responsável. No Vitalis, as prescrições possuem validade máxima parametrizada de 24 horas (exigindo reavaliação médica diária) e compõem uma relação forte com seus itens.
 
 \begingroup
 \small
@@ -684,7 +684,7 @@ Método & \texttt{+ processarRetornoGlosa(xml) : void} & Extrai códigos de glos
 \subsection{Detalhamento do Pacote de Inteligência Artificial e Auditoria}
 \label{subsec:detalhe_ia_auditoria}
 
-O subsistema de inteligência artificial do Vitalis v2.0 atua exclusivamente como ferramenta consultiva de suporte à decisão clínica, operando sob supervisão médica humana estrita (\textit{human-in-the-loop}).
+O subsistema de inteligência artificial do Vitalis atua exclusivamente como ferramenta consultiva de suporte à decisão clínica, operando sob supervisão médica humana estrita (\textit{human-in-the-loop}).
 
 \subsubsection{Classe PredicaoRiscoClinico}
 A classe \texttt{PredicaoRiscoClinico} armazena os resultados inferenciais dos algoritmos de alerta precoce e probabilidade de sepse precoce \cite{singer_sepsis:2016}. Os cálculos baseiam-se em sinais vitais objetivos e contam com matriz de interpretabilidade em formato JSON com valores SHAP \cite{lundberg_shap:2017}, explicitando ao médico os parâmetros que mais contribuíram para o escore de alerta.
@@ -783,12 +783,12 @@ Método & \texttt{+ verificarCadeiaCustodia() : Bool} & Percorre a cadeia de log
 \subsection{Padrões de Projeto e Arquitetura de Software Aplicados}
 \label{subsec:padroes_projeto}
 
-A concepção estática do Vitalis v2.0 adota padrões de projeto catalogados pelo \textit{Gang of Four} (GoF) \cite{gamma_design_patterns:1994} e pela arquitetura de aplicações corporativas \cite{fowler_patterns:2002}. Os padrões selecionados visam atender aos princípios de desacoplamento, testabilidade e resiliência exigidos em sistemas de saúde.
+A concepção estática do Vitalis adota padrões de projeto catalogados pelo \textit{Gang of Four} (GoF) \cite{gamma_design_patterns:1994} e pela arquitetura de aplicações corporativas \cite{fowler_patterns:2002}. Os padrões selecionados visam atender aos princípios de desacoplamento, testabilidade e resiliência exigidos em sistemas de saúde.
 
 \subsubsection{Padrão Strategy para os Módulos de Inteligência Artificial}
 O cálculo de escores clínicos de gravidade varia de acordo com o quadro do paciente e o tipo de unidade hospitalar: enquanto a triagem inicial se beneficia da agilidade do escore qSOFA, enfermarias monitoram pacientes estáveis via NEWS2 e unidades de terapia intensiva demandam recuperação contextual de literatura médica via RAG clínico. Além disso, contingências de rede podem inviabilizar chamadas a modelos externos.
 
-Para solucionar essas variações sem violar o princípio Aberto/Fechado (OCP), o Vitalis v2.0 implementa o padrão \textbf{Strategy} \cite{gamma_design_patterns:1994}. A interface \texttt{IEstrategiaPredicao} estabelece um contrato unificado, implementado por quatro classes especializadas:
+Para solucionar essas variações sem violar o princípio Aberto/Fechado (OCP), o Vitalis implementa o padrão \textbf{Strategy} \cite{gamma_design_patterns:1994}. A interface \texttt{IEstrategiaPredicao} estabelece um contrato unificado, implementado por quatro classes especializadas:
 
 \begin{itemize}[leftmargin=*]
     \item \texttt{SepseStrategy}: Calcula a pontuação qSOFA com base em frequência respiratória ($\ge 22\,\text{irpm}$), pressão sistólica ($\le 100\,\text{mmHg}$) e alteração mental (Glasgow $< 15$) \cite{singer_sepsis:2016}.
@@ -996,4 +996,4 @@ A Tabela \ref{tab:rastreabilidade_classes} correlaciona as 15 classes centrais m
 \end{xltabular}
 \endgroup
 
-A estrutura estática apresentada fornece a fundação necessária para a realização dinâmica dos casos de uso e orquestrações de processo (BPMN), preservando o rigor assistencial, a solidez transacional e a aderência aos padrões de engenharia de software da plataforma Vitalis v2.0.
+A estrutura estática apresentada fornece a fundação necessária para a realização dinâmica dos casos de uso e orquestrações de processo (BPMN), preservando o rigor assistencial, a solidez transacional e a aderência aos padrões de engenharia de software da plataforma Vitalis.

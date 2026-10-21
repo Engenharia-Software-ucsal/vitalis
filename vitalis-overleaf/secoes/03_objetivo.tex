@@ -1,11 +1,11 @@
 % ==============================================================================
-% SEÇÃO 3: OBJETIVOS DO PROJETO VITALIS v2.0
+% SEÇÃO 3: OBJETIVOS DO PROJETO VITALIS 
 % ==============================================================================
 
-\section{Objetivos do Projeto Vitalis v2.0}
+\section{Objetivos do Projeto Vitalis}
 \label{sec:objetivos}
 
-O Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0) responde às deficiências estruturais identificadas na Seção \ref{sec:problema}. A lentidão no acolhimento de urgência, a subnotificação da sepse na janela terapêutica inicial, a sobrecarga cognitiva na prescrição médica, a ociosidade oculta no giro de leitos e as perdas financeiras causadas por glosas na saúde suplementar exigem uma resposta de engenharia integrada. Esta seção formaliza o objetivo geral do sistema, detalha os objetivos específicos divididos por domínios operacionais e estabelece a matriz de metas mensuráveis do projeto segundo a metodologia SMART (\textit{Specific, Measurable, Achievable, Relevant, Time-bound}).
+O Sistema de Gestão Hospitalar Inteligente Vitalis responde às deficiências estruturais identificadas na Seção \ref{sec:problema}. A lentidão no acolhimento de urgência, a subnotificação da sepse na janela terapêutica inicial, a sobrecarga cognitiva na prescrição médica, a ociosidade oculta no giro de leitos e as perdas financeiras causadas por glosas na saúde suplementar exigem uma resposta de engenharia integrada. Esta seção formaliza o objetivo geral do sistema, detalha os objetivos específicos divididos por domínios operacionais e estabelece a matriz de metas mensuráveis do projeto segundo a metodologia SMART (\textit{Specific, Measurable, Achievable, Relevant, Time-bound}).
 
 \subsection{Objetivo Geral}
 \label{subsec:objetivo_geral}
@@ -41,13 +41,13 @@ A governança do projeto adota o método SMART para estabelecer metas que orient
     \item \textbf{Temporais (\textit{Time-bound})}: As entregas dividem-se em marcos cronológicos associados às fases de desenvolvimento do projeto.
 \end{itemize}
 
-A Tabela \ref{tab:matriz_smart} apresenta a matriz SMART detalhada do Vitalis v2.0.
+A Tabela \ref{tab:matriz_smart} apresenta a matriz SMART detalhada do Vitalis.
 
 \begin{table}[!htbp]
 \centering
 \small
 \setlength{\tabcolsep}{4.5pt}
-\caption{Matriz SMART de objetivos, métricas, viabilidade e prazos do Vitalis v2.0}
+\caption{Matriz SMART de objetivos, métricas, viabilidade e prazos do Vitalis}
 \label{tab:matriz_smart}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{2.9cm} >{\raggedright\arraybackslash}p{2.9cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{1.8cm}}
 \toprule
@@ -101,17 +101,17 @@ Meses 1 a 6 \newline (Geral) \\
 \subsection{Critérios de Sucesso e Indicadores de Desempenho (KPIs)}
 \label{subsec:criterios_sucesso}
 
-A validação do Vitalis v2.0 requer a comparação direta entre os indicadores operacionais do cenário hospitalar legado e os resultados alcançados após a implantação do sistema. A Tabela \ref{tab:kpis_projeto} consolida esses indicadores de desempenho (\textit{Key Performance Indicators}, KPIs) com a linha de base de referência, a meta estabelecida e o procedimento formal de aferição técnica.
+A validação do Vitalis requer a comparação direta entre os indicadores operacionais do cenário hospitalar legado e os resultados alcançados após a implantação do sistema. A Tabela \ref{tab:kpis_projeto} consolida esses indicadores de desempenho (\textit{Key Performance Indicators}, KPIs) com a linha de base de referência, a meta estabelecida e o procedimento formal de aferição técnica.
 
 \begin{table}[!htbp]
 \centering
 \small
 \setlength{\tabcolsep}{5pt}
-\caption{Quadro comparativo de KPIs: linha de base, metas do Vitalis v2.0 e validação}
+\caption{Quadro comparativo de KPIs: linha de base, metas do Vitalis e validação}
 \label{tab:kpis_projeto}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}X}
 \toprule
-\textbf{Indicador (KPI)} & \textbf{Linha de Base} & \textbf{Meta Vitalis v2.0} & \textbf{Procedimento de Validação} \\
+\textbf{Indicador (KPI)} & \textbf{Linha de Base} & \textbf{Meta Vitalis} & \textbf{Procedimento de Validação} \\
 \midrule
 Tempo médio de acolhimento e triagem &
 12 a 15 minutos por paciente &
@@ -149,7 +149,7 @@ Monitoramento contínuo por sondas sintéticas externas com cálculo mensal de t
 \subsection{Alinhamento Regulatório e Diretrizes Éticas}
 \label{subsec:alinhamento_regulatorio}
 
-A execução dos objetivos do Vitalis v2.0 subordina-se a três pilares de governança hospitalar, que resguardam a segurança jurídica da instituição e a integridade dos pacientes:
+A execução dos objetivos do Vitalis subordina-se a três pilares de governança hospitalar, que resguardam a segurança jurídica da instituição e a integridade dos pacientes:
 
 \begin{enumerate}[leftmargin=*]
     \item \textbf{Privacidade e Proteção de Dados (LGPD)}: O sistema opera com um gateway anonimizador intermediário. O pipeline remove identificadores diretos (como nome, CPF e endereço) antes do envio para motores de inteligência artificial. O sistema armazena os dados brutos em repositório criptografado com padrão AES-256 e mantém trilha de auditoria transacional imutável \cite{brasil_lgpd:2018}.

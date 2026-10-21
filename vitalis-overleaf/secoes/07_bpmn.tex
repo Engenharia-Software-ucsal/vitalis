@@ -5,7 +5,7 @@
 \section{Modelagem de Processos de Negócio (BPMN 2.0)}
 \label{sec:bpmn}
 
-A modelagem de processos em BPMN 2.0 (\textit{Business Process Model and Notation}) \cite{omg_bpmn:2011} define o encadeamento operacional, as responsabilidades de cada ator e os pontos de intervenção algorítmica no Sistema Vitalis v2.0. A formalização abrange três macroprocessos assistenciais integrados: (i) acolhimento, triagem Manchester e rastreamento preditivo de sepse; (ii) atendimento médico com copiloto clínico RAG e dispensação farmacêutica com dupla checagem; e (iii) alocação preditiva de leitos, internação, alta hospitalar e auditoria preventiva de faturamento TISS/TUSS.
+A modelagem de processos em BPMN 2.0 (\textit{Business Process Model and Notation}) \cite{omg_bpmn:2011} define o encadeamento operacional, as responsabilidades de cada ator e os pontos de intervenção algorítmica no Sistema Vitalis. A formalização abrange três macroprocessos assistenciais integrados: (i) acolhimento, triagem Manchester e rastreamento preditivo de sepse; (ii) atendimento médico com copiloto clínico RAG e dispensação farmacêutica com dupla checagem; e (iii) alocação preditiva de leitos, internação, alta hospitalar e auditoria preventiva de faturamento TISS/TUSS.
 
 % ==============================================================================
 % 7.1 FUNDAMENTAÇÃO METODOLÓGICA E CONVENÇÕES BPMN
@@ -25,7 +25,7 @@ Os diagramas adotam cinco construtos sintáticos padronizados:
 \end{itemize}
 
 \destaqueVitalis{Princípio de Supervisão Humana Estrita (\textit{Human-in-the-Loop})}{%
-No Vitalis v2.0, todo componente de inteligência artificial opera como serviço de suporte consultivo à tomada de decisão clínica. Nenhum modelo preditivo ou generativo possui autoridade para prescrever intervenções terapêuticas, alterar leitos de forma compulsória ou expedir altas médicas sem a homologação formal, explícita e assinada digitalmente por profissional devidamente registrado em seu respectivo conselho de classe (CRM, COREN ou CRF).
+No Vitalis, todo componente de inteligência artificial opera como serviço de suporte consultivo à tomada de decisão clínica. Nenhum modelo preditivo ou generativo possui autoridade para prescrever intervenções terapêuticas, alterar leitos de forma compulsória ou expedir altas médicas sem a homologação formal, explícita e assinada digitalmente por profissional devidamente registrado em seu respectivo conselho de classe (CRM, COREN ou CRF).
 }
 
 % ==============================================================================
@@ -105,7 +105,7 @@ O primeiro fluxo modela a porta de entrada da unidade de urgência e emergência
   \draw[bpmnArrow] (t_fila) -- (end_fila);
 \end{tikzpicture}%
 }
-\caption{Fluxo BPMN 1: Acolhimento, Triagem Manchester e Predição de Sepse no Vitalis v2.0.}
+\caption{Fluxo BPMN 1: Acolhimento, Triagem Manchester e Predição de Sepse no Vitalis.}
 \label{fig:bpmn_fluxo1}
 \end{figure}
 
@@ -195,7 +195,7 @@ O segundo fluxo integra a prescrição médica, a análise farmacológica apoiad
   \draw[bpmnArrow] (t_disp) -- (end2);
 \end{tikzpicture}%
 }
-\caption{Fluxo BPMN 2: Atendimento Médico, Copiloto RAG e Dispensação Farmacêutica no Vitalis v2.0.}
+\caption{Fluxo BPMN 2: Atendimento Médico, Copiloto RAG e Dispensação Farmacêutica no Vitalis.}
 \label{fig:bpmn_fluxo2}
 \end{figure}
 
@@ -220,7 +220,7 @@ O ciclo de prescrição e dispensação é estruturado nos seguintes passos:
 \subsection{Fluxo 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS}
 \label{subsec:bpmn_fluxo3}
 
-O terceiro fluxo abrange a gestão de internação, a alocação dinâmica de capacidade instalada e a governança de faturamento hospitalar. O Vitalis v2.0 combina predição de tempo de internação (\textit{Length of Stay}, LOS), sumarização clínica de alta por modelos de linguagem e auditoria preventiva segundo o padrão TISS da ANS \cite{ans_tiss:2023}. A Figura \ref{fig:bpmn_fluxo3} apresenta as etapas do processo.
+O terceiro fluxo abrange a gestão de internação, a alocação dinâmica de capacidade instalada e a governança de faturamento hospitalar. O Vitalis combina predição de tempo de internação (\textit{Length of Stay}, LOS), sumarização clínica de alta por modelos de linguagem e auditoria preventiva segundo o padrão TISS da ANS \cite{ans_tiss:2023}. A Figura \ref{fig:bpmn_fluxo3} apresenta as etapas do processo.
 
 \begin{figure}[H]
 \centering
@@ -308,7 +308,7 @@ O terceiro fluxo abrange a gestão de internação, a alocação dinâmica de ca
   \draw[bpmnArrow] (t_tiss) -- (end3);
 \end{tikzpicture}%
 }
-\caption{Fluxo BPMN 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS no Vitalis v2.0.}
+\caption{Fluxo BPMN 3: Alocação Preditiva de Leitos, Evolução, Alta e Auditoria TISS/TUSS no Vitalis.}
 \label{fig:bpmn_fluxo3}
 \end{figure}
 
@@ -364,4 +364,4 @@ Internação e alta decididas pelo médico assistente, com assinatura digital no
 \label{tab:matriz_bpmn}
 \end{table}
 
-A modelagem BPMN apresentada confere rastreabilidade técnica e rigor operacional ao Vitalis v2.0, assegurando que o emprego de inteligência artificial eleve a segurança clínica sem comprometer a primazia decisória dos profissionais de saúde.
+A modelagem BPMN apresentada confere rastreabilidade técnica e rigor operacional ao Vitalis, assegurando que o emprego de inteligência artificial eleve a segurança clínica sem comprometer a primazia decisória dos profissionais de saúde.

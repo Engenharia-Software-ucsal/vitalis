@@ -28,7 +28,7 @@
 \newblock Acesso em: 18 out. 2026.
 
 \bibitem{cockcroft_gault:1976}
-Donald~W. Cockcroft and M.~Henry Gault.
+Donald~W. Cockcroft e M.~Henry Gault.
 \newblock Prediction of creatinine clearance from serum creatinine.
 \newblock {\em Nephron}, 16(1):31--41, 1976.
 
@@ -38,7 +38,7 @@ Martin Fowler.
 \newblock Addison-Wesley Professional, Boston, 2002.
 
 \bibitem{gamma_design_patterns:1994}
-Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
+Erich Gamma, Richard Helm, Ralph Johnson, e John Vlissides.
 \newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
 \newblock Addison-Wesley Professional, Reading, MA, 1994.
 
@@ -52,7 +52,7 @@ Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
 \bibitem{kumar_sepsis:2006}
 Anand Kumar, Dan Roberts, Kenneth~E. Wood, Bruce Light, Joseph~E. Parrillo,
   Satendra Sharma, Robert Suppes, Dan Feinstein, Sergio Zanotti, Leo Taiberg,
-  David Gurka, and Amarjit Cheang.
+  David Gurka, e Amarjit Cheang.
 \newblock Duration of hypotension before initiation of effective antimicrobial
   therapy is the critical determinant of survival in human septic shock.
 \newblock {\em Critical Care Medicine}, 34(6):1589--1596, 2006.
@@ -60,26 +60,26 @@ Anand Kumar, Dan Roberts, Kenneth~E. Wood, Bruce Light, Joseph~E. Parrillo,
 \bibitem{lewis_rag:2020}
 Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
   Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
-  Rockt{\"a}schel, Sebastian Riedel, and Douwe Kiela.
+  Rockt{\"a}schel, Sebastian Riedel, e Douwe Kiela.
 \newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
-\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS
-  2020)}, volume~33, pages 9459--9474, 2020.
+\newblock Em {\em Advances in Neural Information Processing Systems (NeurIPS
+  2020)}, volume~33, págs. 9459--9474, 2020.
 
 \bibitem{lundberg_shap:2017}
-Scott~M. Lundberg and Su-In Lee.
+Scott~M. Lundberg e Su-In Lee.
 \newblock A unified approach to interpreting model predictions.
-\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS
-  2017)}, volume~30, pages 4765--4774, 2017.
+\newblock Em {\em Advances in Neural Information Processing Systems (NeurIPS
+  2017)}, volume~30, págs. 4765--4774, 2017.
 
 \bibitem{manchester:2014}
-Kevin Mackway-Jones, Janet Marsden, and Jill Windle.
+Kevin Mackway-Jones, Janet Marsden, e Jill Windle.
 \newblock {\em Emergency Triage: Manchester Triage Group}.
-\newblock John Wiley \& Sons, Oxford, 3 edition, 2014.
+\newblock John Wiley \& Sons, Oxford, 3 ed., 2014.
 
 \bibitem{nygard:2018}
 Michael~T. Nygard.
 \newblock {\em Release It!: Design and Deploy Production-Ready Software}.
-\newblock Pragmatic Bookshelf, Raleigh, NC, 2 edition, 2018.
+\newblock Pragmatic Bookshelf, Raleigh, NC, 2 ed., 2018.
 
 \bibitem{omg_bpmn:2011}
 {OMG - Object Management Group}.
@@ -92,12 +92,12 @@ Michael~T. Nygard.
 \newblock Acesso em: 19 out. 2026.
 
 \bibitem{pressman:2016}
-Roger~S. Pressman and Bruce~R. Maxim.
+Roger~S. Pressman e Bruce~R. Maxim.
 \newblock {\em Engenharia de Software: Uma Abordagem Profissional}.
-\newblock AMGH Editora, Porto Alegre, 8 edition, 2016.
+\newblock AMGH Editora, Porto Alegre, 8 ed., 2016.
 
 \bibitem{robertson_bm25:2009}
-Stephen Robertson and Hugo Zaragoza.
+Stephen Robertson e Hugo Zaragoza.
 \newblock The probabilistic relevance framework: Bm25 and beyond.
 \newblock {\em Foundations and Trends in Information Retrieval}, 3(4):333--389,
   2009.
@@ -120,7 +120,7 @@ Mervyn Singer, Clifford~S. Deutschman, Christopher~Warren Seymour, Manu
 \bibitem{sommerville:2019}
 Ian Sommerville.
 \newblock {\em Engenharia de Software}.
-\newblock Pearson, São Paulo, 10 edition, 2019.
+\newblock Pearson, São Paulo, 10 ed., 2019.
 
 \bibitem{topol:2019}
 Eric Topol.

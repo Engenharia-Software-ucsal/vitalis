@@ -1,11 +1,11 @@
 % ==============================================================================
-% SEÇÃO 1: DESCRITIVO DETALHADO DO SISTEMA VITALIS v2.0
+% SEÇÃO 1: DESCRITIVO DETALHADO DO SISTEMA VITALIS 
 % ==============================================================================
 
-\section{Descritivo Detalhado do Sistema Vitalis v2.0}
+\section{Descritivo Detalhado do Sistema Vitalis}
 \label{sec:descritivo}
 
-O Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0) é uma plataforma integrada de prontuário eletrônico do paciente (PEP), regulação de leitos e suporte à decisão clínica, projetada para atender às demandas de hospitais gerais e de alta complexidade. A solução combina a gestão dos processos administrativos e assistenciais com modelos de inteligência artificial preditiva e generativa, atuando como camada consultiva para médicos, enfermeiros, farmacêuticos e gestores. Esta seção apresenta o contexto operacional da instituição hospitalar, a arquitetura de microsserviços, o ciclo assistencial completo do paciente, os módulos especializados de inteligência artificial e as salvaguardas éticas e legais do projeto.
+O Sistema de Gestão Hospitalar Inteligente Vitalis é uma plataforma integrada de prontuário eletrônico do paciente (PEP), regulação de leitos e suporte à decisão clínica, projetada para atender às demandas de hospitais gerais e de alta complexidade. A solução combina a gestão dos processos administrativos e assistenciais com modelos de inteligência artificial preditiva e generativa, atuando como camada consultiva para médicos, enfermeiros, farmacêuticos e gestores. Esta seção apresenta o contexto operacional da instituição hospitalar, a arquitetura de microsserviços, o ciclo assistencial completo do paciente, os módulos especializados de inteligência artificial e as salvaguardas éticas e legais do projeto.
 
 \subsection{Contexto Operacional e Visão de Negócio}
 \label{subsec:contexto_negocio}
@@ -19,12 +19,12 @@ Ambientes hospitalares terciários operam sob contínua sobrecarga cognitiva, co
     \item Glosas financeiras frequentes provocadas por inconsistências documentais entre as prescrições médicas executadas e os itens faturados nas guias da saúde suplementar.
 \end{itemize}
 
-O Vitalis v2.0 unifica esses domínios em uma plataforma digital integrada. O propósito operacional é reduzir o tempo de espera no acolhimento, maximizar a rotatividade segura dos leitos por meio da antecipação da demanda assistencial e zerar glosas administrativas decorrentes de falhas de preenchimento. A plataforma prioriza a segurança do paciente e o rigor assistencial, de modo que todo modelo preditivo ou generativo atua estritamente como suporte técnico subordinado à homologação do profissional responsável \cite{topol:2019}.
+O Vitalis unifica esses domínios em uma plataforma digital integrada. O propósito operacional é reduzir o tempo de espera no acolhimento, maximizar a rotatividade segura dos leitos por meio da antecipação da demanda assistencial e zerar glosas administrativas decorrentes de falhas de preenchimento. A plataforma prioriza a segurança do paciente e o rigor assistencial, de modo que todo modelo preditivo ou generativo atua estritamente como suporte técnico subordinado à homologação do profissional responsável \cite{topol:2019}.
 
 \subsection{Arquitetura em Microsserviços e Engenharia de Software}
 \label{subsec:arquitetura_software}
 
-Para garantir disponibilidade contínua, tolerância a falhas e isolamento de domínios funcionais, o Vitalis v2.0 adota uma arquitetura orientada a microsserviços fundamentada nas seguintes escolhas de engenharia:
+Para garantir disponibilidade contínua, tolerância a falhas e isolamento de domínios funcionais, o Vitalis adota uma arquitetura orientada a microsserviços fundamentada nas seguintes escolhas de engenharia:
 
 \begin{itemize}
     \item \textbf{Camada de Serviços e APIs}: Cada microsserviço é construído sobre o framework NestJS utilizando o motor de rede Fastify, o que assegura baixa latência sob alta concorrência de conexões. O código adota TypeScript com separação em camadas inspirada na Arquitetura Limpa, isolando entidades de domínio, casos de uso e adaptadores de infraestrutura.
@@ -39,7 +39,7 @@ Para garantir disponibilidade contínua, tolerância a falhas e isolamento de do
 \subsection{Ciclo Assistencial Completo do Paciente}
 \label{subsec:ciclo_assistencial}
 
-O Vitalis v2.0 gerencia todo o percurso assistencial e administrativo do paciente no hospital e assegura a rastreabilidade integral em cada etapa do fluxo.
+O Vitalis gerencia todo o percurso assistencial e administrativo do paciente no hospital e assegura a rastreabilidade integral em cada etapa do fluxo.
 
 \subsubsection{Recepção e Admissão Cadastral}
 O ciclo se inicia com a identificação do paciente na recepção hospitalar. O sistema valida os dígitos verificadores do CPF junto às regras cadastrais da Receita Federal e consulta o número do Cartão Nacional de Saúde (CNS). Em casos de emergência com pacientes inconscientes ou não identificados, o sistema permite a abertura imediata de prontuário sob o protocolo provisório de "Paciente Desconhecido", exigindo regularização cadastral posterior. Para pacientes de saúde suplementar, o módulo executa a verificação eletrônica de elegibilidade da operadora de saúde e gera o token de atendimento, posicionando o paciente na fila de acolhimento.
@@ -47,7 +47,7 @@ O ciclo se inicia com a identificação do paciente na recepção hospitalar. O 
 \subsubsection{Acolhimento e Triagem Aumentada por IA}
 Na sala de classificação de risco, o enfermeiro triador realiza a avaliação do paciente fundamentada no Protocolo de Manchester \cite{manchester:2014}. O sistema disponibiliza entrada via formulário estruturado e módulo de reconhecimento de voz (Speech-to-Text via Whisper), transcrevendo as queixas do paciente e convertendo a linguagem natural em descritores clínicos objetivos.
 
-Enquanto o profissional afere os parâmetros vitais (frequência cardíaca, pressão arterial sistólica e diastólica, saturação periférica de oxigênio, frequência respiratória e escala de coma de Glasgow), o Vitalis v2.0 executa em paralelo o cálculo automatizado de dois escores clínicos de gravidade:
+Enquanto o profissional afere os parâmetros vitais (frequência cardíaca, pressão arterial sistólica e diastólica, saturação periférica de oxigênio, frequência respiratória e escala de coma de Glasgow), o Vitalis executa em paralelo o cálculo automatizado de dois escores clínicos de gravidade:
 \begin{itemize}
     \item \textbf{qSOFA} (\textit{Quick Sequential Organ Failure Assessment}): Pontua alterações em frequência respiratória ($\ge 22\,\text{rpm}$), pressão arterial sistólica ($\le 100\,\text{mmHg}$) e estado neurológico, alertando para risco elevado de sepse em pacientes fora da UTI \cite{singer_sepsis:2016};
     \item \textbf{NEWS2} (\textit{National Early Warning Score 2}): Agrega os parâmetros fisiológicos para mensurar o grau de estresse hemodinâmico e prever risco iminente de colapso respiratório ou necessidade de leito intensivo.
@@ -84,7 +84,7 @@ O motor de auditoria preventiva confronta esses lançamentos com a tabela de cob
 \subsection{Módulos Especializados de Inteligência Artificial e Suporte à Decisão}
 \label{subsec:modulos_ia}
 
-A camada de inteligência do Vitalis v2.0 é organizada em quatro pipelines de processamento focados em pontos críticos do atendimento:
+A camada de inteligência do Vitalis é organizada em quatro pipelines de processamento focados em pontos críticos do atendimento:
 
 \begin{itemize}
     \item \textbf{Processamento de Linguagem Natural e Reconhecimento de Voz}: Responsável por converter o áudio da anamnese em texto estruturado durante a triagem. O módulo utiliza reconhecimento fonético calibrado para terminologia médica em língua portuguesa, identificando entidades clínicas como sintomas, dosagens e tempo de evolução da queixa.
@@ -100,7 +100,7 @@ A aplicação de tecnologias de inteligência artificial em ambientes hospitalar
 
 \begin{itemize}
     \item \textbf{Princípio do Human-in-the-Loop}: O sistema estabelece que nenhuma inferência de IA possui caráter deliberativo autônomo. Diagnósticos, cálculos de risco de sepse, recomendações posológicas e minutas de documentos clínicos funcionam estritamente como ferramentas de auxílio cognitivo. Toda conduta exige a avaliação, confirmação e assinatura expressa do profissional assistente legalmente habilitado.
-    \item \textbf{Conformidade com o Conselho Federal de Medicina (CFM)}: O Vitalis v2.0 observa integralmente as diretrizes da Resolução CFM nº 1.821/2007 \cite{cfm_prontuario:2007}, que rege o uso de sistemas informatizados para a guarda e manuseio de prontuários, e da Resolução CFM nº 2.299/2021 \cite{cfm_digital:2021}, que disciplina a emissão de documentos médicos eletrônicos. Toda evolução clínica, prescrição e sumário de alta é assinado digitalmente com certificados no padrão ICP-Brasil (PAdES com carimbo de tempo). Prontuários encerrados tornam-se imutáveis contra alterações diretas, admitindo apenas a inclusão de notas aditivas de retificação auditadas.
+    \item \textbf{Conformidade com o Conselho Federal de Medicina (CFM)}: O Vitalis observa integralmente as diretrizes da Resolução CFM nº 1.821/2007 \cite{cfm_prontuario:2007}, que rege o uso de sistemas informatizados para a guarda e manuseio de prontuários, e da Resolução CFM nº 2.299/2021 \cite{cfm_digital:2021}, que disciplina a emissão de documentos médicos eletrônicos. Toda evolução clínica, prescrição e sumário de alta é assinado digitalmente com certificados no padrão ICP-Brasil (PAdES com carimbo de tempo). Prontuários encerrados tornam-se imutáveis contra alterações diretas, admitindo apenas a inclusão de notas aditivas de retificação auditadas.
     \item \textbf{Conformidade com a Lei Geral de Proteção de Dados (LGPD)}: O tratamento de dados pessoais sensíveis de saúde é conduzido sob as bases legais da tutela da saúde e da proteção à vida, preconizadas no Artigo 7º, inciso VIII, e no Artigo 11, inciso II, alínea "f", da Lei nº 13.709/2018 \cite{brasil_lgpd:2018}. Antes de qualquer transmissão para APIs de IA, o pipeline de sanitização remove os 18 identificadores diretos de dados pessoais (PII), incluindo nomes, números de documento, endereços e identificadores hospitalares, operando sobre dados pseudonimizados.
     \item \textbf{Interoperabilidade com HL7 FHIR}: O barramento de integração implementa o padrão HL7 FHIR Release 4 \cite{hl7_fhir:2019}, permitindo a comunicação com sistemas de laudos externos (PACS/LIS), operadoras de planos de saúde e redes do Sistema Único de Saúde (RNDS).
     \item \textbf{Trilha de Auditoria e Explicabilidade}: A tabela \texttt{LOG\_INFERENCIA\_IA} armazena o histórico auditável de cada chamada aos motores de inteligência artificial. O registro inclui o identificador do atendimento, modelo e versão utilizados, hash criptográfico do prompt enviado, tempo de resposta em milissegundos, nível de confiança estatística, sugestão emitida e a decisão do profissional (aprovada, rejeitada ou alterada, acompanhada da devida justificativa técnica).

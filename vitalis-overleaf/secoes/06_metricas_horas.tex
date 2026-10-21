@@ -1,6 +1,6 @@
 \section{Metrificação em Horas e Estimativa de Esforço}
 
-O dimensionamento de esforço em projetos de software hospitalar de alta complexidade demanda rigor metodológico, decomposição granular de tarefas e modelos quantitativos de estimativa. O sistema Vitalis v2.0 opera como uma plataforma assistencial e administrativa orientada a microsserviços, integrando regras determinísticas de triagem, prontuário eletrônico e faturamento a pipelines probabilísticos de inteligência artificial clínica. Subestimar o esforço de engenharia gera atrasos em marcos regulatórios, degradação da cobertura de testes de carga e falhas na conformidade com normas sanitárias e de proteção de dados \cite{pressman:2016, sommerville:2019}.
+O dimensionamento de esforço em projetos de software hospitalar de alta complexidade demanda rigor metodológico, decomposição granular de tarefas e modelos quantitativos de estimativa. O sistema Vitalis opera como uma plataforma assistencial e administrativa orientada a microsserviços, integrando regras determinísticas de triagem, prontuário eletrônico e faturamento a pipelines probabilísticos de inteligência artificial clínica. Subestimar o esforço de engenharia gera atrasos em marcos regulatórios, degradação da cobertura de testes de carga e falhas na conformidade com normas sanitárias e de proteção de dados \cite{pressman:2016, sommerville:2019}.
 
 Esta seção formaliza a metrificação do projeto em seis eixos:
 \begin{enumerate}[leftmargin=*]
@@ -17,12 +17,12 @@ Esta seção formaliza a metrificação do projeto em seis eixos:
 % ==============================================================================
 \subsection{Metodologia de Estimativa e Critérios de Dimensionamento}
 
-A estimativa de esforço do Vitalis v2.0 adota o método ascendente (\textit{bottom-up}), baseado nas práticas do PMBOK (\textit{Project Management Body of Knowledge}) e adaptado aos ciclos quinzenais do modelo Scrum \cite{pressman:2016}. Cada pacote de trabalho da EAP decompõe-se em subtarefas técnicas, cujos esforços são quantificados em horas a partir da complexidade de domínio e da experiência prévia da equipe.
+A estimativa de esforço do Vitalis adota o método ascendente (\textit{bottom-up}), baseado nas práticas do PMBOK (\textit{Project Management Body of Knowledge}) e adaptado aos ciclos quinzenais do modelo Scrum \cite{pressman:2016}. Cada pacote de trabalho da EAP decompõe-se em subtarefas técnicas, cujos esforços são quantificados em horas a partir da complexidade de domínio e da experiência prévia da equipe.
 
 O dimensionamento considerou três vetores de complexidade específicos do ambiente hospitalar:
 \begin{itemize}[leftmargin=*]
     \item \textbf{Missão crítica e tolerância nula a falhas}: A operação ininterrupta do pronto-atendimento e das internações exige disponibilidade de 99,9\% (RNF-007), latência de resposta inferior a 2,0 segundos para 500 usuários concorrentes (RNF-001) e recuperação de desastres com RTO máximo de 4 horas e RPO de 1 hora (RNF-013). Esses requisitos ampliam as horas dedicadas à arquitetura de microsserviços, à mensageria distribuída (BullMQ/Redis) e aos testes de carga.
-    \item \textbf{Convivência entre determinismo clínico e IA generativa/preditiva}: O Vitalis v2.0 acopla modelos estatísticos de predição de sepse precoce (escores qSOFA e NEWS2), sumarização clínica via LLMs e copiloto farmacológico baseado em recuperação contextual (RAG com \texttt{pgvector}) a fluxos determinísticos rígidos (Protocolo de Manchester e validações CFM). Essa integração exige esforço direcionado à esteira de MLOps, à mitigação de alucinações, à anonimização de dados pessoais e ao desenho de interfaces voltadas à supervisão médica obrigatória (\textit{Human-in-the-Loop}).
+    \item \textbf{Convivência entre determinismo clínico e IA generativa/preditiva}: O Vitalis acopla modelos estatísticos de predição de sepse precoce (escores qSOFA e NEWS2), sumarização clínica via LLMs e copiloto farmacológico baseado em recuperação contextual (RAG com \texttt{pgvector}) a fluxos determinísticos rígidos (Protocolo de Manchester e validações CFM). Essa integração exige esforço direcionado à esteira de MLOps, à mitigação de alucinações, à anonimização de dados pessoais e ao desenho de interfaces voltadas à supervisão médica obrigatória (\textit{Human-in-the-Loop}).
     \item \textbf{Conformidade regulatória e trilha de auditoria}: A adesão à Lei Geral de Proteção de Dados (LGPD, Lei nº 13.709/2018) \cite{brasil_lgpd:2018}, às resoluções do Conselho Federal de Medicina (CFM nº 1.821/2007 e nº 2.299/2021) \cite{cfm_prontuario:2007, cfm_digital:2021} e ao padrão TISS/TUSS da ANS \cite{ans_tiss:2023} exige o desenvolvimento de mecanismos de criptografia AES-256 em repouso, assinaturas digitais ICP-Brasil e trilha de auditoria transacional imutável (\texttt{LOG\_AUDITORIA}).
 \end{itemize}
 
@@ -33,14 +33,14 @@ Para absorver incertezas em calibração de modelos de IA, refinamento de prompt
 % ==============================================================================
 \subsection{Estrutura Analítica do Projeto (EAP)}
 
-A Estrutura Analítica do Projeto (EAP / WBS) organiza o escopo total do Vitalis v2.0 em entregas gerenciáveis e hierárquicas. O projeto estrutura-se em três níveis funcionais:
+A Estrutura Analítica do Projeto (EAP / WBS) organiza o escopo total do Vitalis em entregas gerenciáveis e hierárquicas. O projeto estrutura-se em três níveis funcionais:
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Nível 1 (Projeto)}: Sistema de Gestão Hospitalar Inteligente Vitalis (Versão 2.0);
+    \item \textbf{Nível 1 (Projeto)}: Sistema de Gestão Hospitalar Inteligente Vitalis;
     \item \textbf{Nível 2 (Pacotes de Trabalho / \textit{Work Packages})}: Sete macrocomponentes de entrega técnica cobrindo todo o ciclo de vida da solução;
     \item \textbf{Nível 3 (Subtarefas Técnicas)}: Trinta e oito atividades operacionais com critérios de aceitação e entregáveis tangíveis.
 \end{itemize}
 
-A Figura \ref{fig:eap_vitalis} esquematiza a árvore hierárquica dos pacotes de trabalho de Nível 2 do projeto Vitalis v2.0.
+A Figura \ref{fig:eap_vitalis} esquematiza a árvore hierárquica dos pacotes de trabalho de Nível 2 do projeto Vitalis.
 
 \begin{figure}[htbp]
 \centering
@@ -51,7 +51,7 @@ A Figura \ref{fig:eap_vitalis} esquematiza a árvore hierárquica dos pacotes de
     line/.style = {draw=vitalisblue!80, line width=0.8pt}
 ]
     % Nó Raiz
-    \node[boxRoot] (root) at (0, 0) {Vitalis v2.0: Gestão Hospitalar com IA};
+    \node[boxRoot] (root) at (0, 0) {Vitalis: Gestão Hospitalar com IA};
 
     % Tronco central
     \draw[line] (root.south) -- (0, -3.8);
@@ -124,7 +124,7 @@ A Tabela \ref{tab:detalhamento_horas} decompõe o esforço base do projeto em 38
 \midrule
 1.1 & Elicitação de requisitos e entrevistas com equipe multiprofissional (médicos, enfermeiros e faturamento). & Atas de entrevistas e matriz de expectativas de stakeholders. & MED & 40 \\
 \addlinespace
-1.2 & Formalização da ERS (22 RFs, 12 RNs e 7 RNFs) com critérios mensuráveis de aceitação. & Documento ERS v2.0 homologado. & TL & 48 \\
+1.2 & Formalização da ERS (22 RFs, 12 RNs e 7 RNFs) com critérios mensuráveis de aceitação. & Documento ERS  homologado. & TL & 48 \\
 \addlinespace
 1.3 & Mapeamento de processos hospitalares em BPMN 2.0 (triagem, internação, prescrição e faturamento). & Modelos de processos BPMN validados. & FRONT & 36 \\
 \addlinespace
@@ -252,7 +252,7 @@ A Tabela \ref{tab:detalhamento_horas} decompõe o esforço base do projeto em 38
 
 Como instrumento normativo e comparativo de estimativa de desenvolvimento de software, o projeto adota a metodologia oficial da Universidade Católica do Salvador (UCSAL), consubstanciada na planilha de cálculo \texttt{Documento de metrificação.xlsx} disponibilizada pela cátedra da disciplina. Essa ferramenta baseia-se no modelo de \textbf{Métrica de Função de Implementação (MFI)}, um método algorítmico paramétrico que correlaciona o tamanho funcional de cada componente de software aos seus atributos internos, à plataforma tecnológica e aos fatores de produtividade da equipe \cite{pressman:2016}.
 
-A planilha parametrizada oficial do projeto Vitalis v2.0 foi incorporada ao repositório institucional sob o nome \texttt{Documento\_de\_metrificacao\_Vitalis\_v2.0.xlsx} (disponível no diretório de anexos do projeto), estruturada nas abas \textit{Estimativa}, \textit{Recursos} e \textit{Instruções}.
+A planilha parametrizada oficial do projeto Vitalis foi incorporada ao repositório institucional sob o nome \texttt{Documento\_de\_metrificacao\_Vitalis.xlsx} (disponível no diretório de anexos do projeto), estruturada nas abas \textit{Estimativa}, \textit{Recursos} e \textit{Instruções}.
 
 \subsubsection{Formulações Matemáticas da Métrica MFI}
 
@@ -283,7 +283,7 @@ O modelo MFI decompõe cada função em atributos de complexidade ponderados:
     \end{equation}
 \end{enumerate}
 
-\subsubsection{Parametrização das Macrofunções do Vitalis v2.0}
+\subsubsection{Parametrização das Macrofunções do Vitalis}
 
 Os 22 Requisitos Funcionais do sistema foram agrupados nas oito macrofunções padronizadas da planilha, calculadas na Tabela \ref{tab:mfi_vitalis}.
 
@@ -291,7 +291,7 @@ Os 22 Requisitos Funcionais do sistema foram agrupados nas oito macrofunções p
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
-\caption{Metrificação de software das funções do Vitalis v2.0 na Métrica MFI (Modelo UCSAL)}
+\caption{Metrificação de software das funções do Vitalis na Métrica MFI (Modelo UCSAL)}
 \label{tab:mfi_vitalis}
 \begin{tabularx}{\textwidth}{c >{\raggedright\arraybackslash}X *{9}{c}}
 \toprule
@@ -318,7 +318,7 @@ A aplicação da métrica paramétrica MFI totaliza \textbf{1.081,31 horas bruta
 % ==============================================================================
 \subsection{Distribuição de Horas por Perfil Profissional da Equipe}
 
-A equipe multidisciplinar (squad) do Vitalis v2.0 conta com sete perfis profissionais especializados, cujas atribuições técnicas cobrem as demandas clínicas, arquiteturais e de qualidade:
+A equipe multidisciplinar (squad) do Vitalis conta com sete perfis profissionais especializados, cujas atribuições técnicas cobrem as demandas clínicas, arquiteturais e de qualidade:
 \begin{enumerate}[leftmargin=*]
     \item \textbf{Tech Lead / Arquiteto de Software (TL)}: Responsável pelas diretrizes arquiteturais, governança de microsserviços, gateway de sanitização de IA, segurança de infraestrutura Kubernetes e esteiras de integração contínua.
     \item \textbf{Desenvolvedor Backend Sênior (DEV-BACK)}: Responsável pela implementação dos microsserviços em NestJS/Fastify, APIs RESTful, WebSockets de alta frequência, regras de negócio clínicas, PEP, prescrição eletrônica e faturamento TISS/TUSS.
@@ -368,7 +368,7 @@ A distribuição de horas reflete as prioridades técnicas da arquitetura:
 % ==============================================================================
 \subsection{Totais Consolidados, Margem de Contingência e Esforço Total}
 
-A mitigação proativa de riscos em projetos de tecnologia em saúde exige a previsão explícita de uma reserva de contingência técnica. A Tabela \ref{tab:consolidado_horas} consolida o esforço base por pacote de trabalho, detalha a reserva de contingência calculada em 15\% e totaliza as horas necessárias para o ciclo de desenvolvimento do Vitalis v2.0.
+A mitigação proativa de riscos em projetos de tecnologia em saúde exige a previsão explícita de uma reserva de contingência técnica. A Tabela \ref{tab:consolidado_horas} consolida o esforço base por pacote de trabalho, detalha a reserva de contingência calculada em 15\% e totaliza as horas necessárias para o ciclo de desenvolvimento do Vitalis.
 
 \begin{table}[H]
 \centering
@@ -387,12 +387,12 @@ A mitigação proativa de riscos em projetos de tecnologia em saúde exige a pre
 6.0 Governança, LGPD e Segurança            & 180  & 8,33\%  & 27,0 & 207,0 \\
 7.0 Implantação, Rollout e Capacitação      & 188  & 8,70\%  & 28,2 & 216,2 \\
 \midrule
-\textbf{Total Geral do Projeto Vitalis v2.0}& \textbf{2160} & \textbf{100,00\%} & \textbf{324,0} & \textbf{2484,0} \\
+\textbf{Total Geral do Projeto Vitalis}& \textbf{2160} & \textbf{100,00\%} & \textbf{324,0} & \textbf{2484,0} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\destaqueVitalis{Síntese do Esforço e Capacidade Produtiva da Equipe Vitalis v2.0}{
+\destaqueVitalis{Síntese do Esforço e Capacidade Produtiva da Equipe Vitalis}{
     O esforço base do projeto totaliza \textbf{2.160 horas}, expandindo-se para \textbf{2.484 horas} com a incorporação da reserva de contingência técnica de 15\% (324 horas). Distribuído ao longo das \textbf{28 semanas} de desenvolvimento ativo descritas no cronograma oficial, o esforço demanda uma dedicação líquida de aproximadamente \textbf{88,7 horas por semana da equipe multidisciplinar}, plenamente compatível com a capacidade instalada do squad alocado.
 }
 

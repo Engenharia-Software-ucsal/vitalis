@@ -5,15 +5,15 @@
 \section{Definição da Funcionalidade Integrada com Inteligência Artificial}
 \label{sec:funcionalidade_ia}
 
-A incorporação de modelos de inteligência artificial no Sistema de Gestão Hospitalar Vitalis (Versão 2.0) tem como finalidade mitigar a sobrecarga cognitiva das equipes multiprofissionais, abreviar o tempo de resposta em cenários de risco iminente de morte e prevenir falhas farmacoterapêuticas e administrativas. Em ambientes de terapia intensiva e emergência, o volume de variáveis fisiológicas geradas continuamente supera a capacidade de correlação manual em tempo hábil. A arquitetura do Vitalis v2.0 integra componentes analíticos e generativos de forma acoplada ao Prontuário Eletrônico do Paciente (PEP), estruturados em torno de duas ferramentas centrais: o \textbf{Copiloto Farmacoterapêutico Baseado em Recuperação Aumentada por Geração (RAG Clínico)} e o \textbf{Motor Preditivo de Sepse e Deterioração Hemodinâmica (qSOFA e NEWS2)}.
+A incorporação de modelos de inteligência artificial no Sistema de Gestão Hospitalar Vitalis tem como finalidade mitigar a sobrecarga cognitiva das equipes multiprofissionais, abreviar o tempo de resposta em cenários de risco iminente de morte e prevenir falhas farmacoterapêuticas e administrativas. Em ambientes de terapia intensiva e emergência, o volume de variáveis fisiológicas geradas continuamente supera a capacidade de correlação manual em tempo hábil. A arquitetura do Vitalis integra componentes analíticos e generativos de forma acoplada ao Prontuário Eletrônico do Paciente (PEP), estruturados em torno de duas ferramentas centrais: o \textbf{Copiloto Farmacoterapêutico Baseado em Recuperação Aumentada por Geração (RAG Clínico)} e o \textbf{Motor Preditivo de Sepse e Deterioração Hemodinâmica (qSOFA e NEWS2)}.
 
-Esta seção documenta a arquitetura técnica, os modelos probabilísticos, as estratégias de mitigação de risco algorítmico, o gateway de privacidade de dados sensíveis e os mecanismos de resiliência e auditoria que orientam a operação de IA no Vitalis v2.0.
+Esta seção documenta a arquitetura técnica, os modelos probabilísticos, as estratégias de mitigação de risco algorítmico, o gateway de privacidade de dados sensíveis e os mecanismos de resiliência e auditoria que orientam a operação de IA no Vitalis.
 
 % ==============================================================================
 \subsection{Visão Geral dos Módulos de IA e Papel Clínico Assistencial}
 \label{subsec:ia_visao_geral}
 
-A operação de inteligência artificial no Vitalis v2.0 é regida pelo paradigma da \textbf{IA Consultiva}, atuando exclusivamente como camada de suporte à decisão clínica (CDSS, \textit{Clinical Decision Support System}). Os modelos implantados não detêm autonomia prescritiva, diagnóstica ou de alta médica.
+A operação de inteligência artificial no Vitalis é regida pelo paradigma da \textbf{IA Consultiva}, atuando exclusivamente como camada de suporte à decisão clínica (CDSS, \textit{Clinical Decision Support System}). Os modelos implantados não detêm autonomia prescritiva, diagnóstica ou de alta médica.
 
 \subsubsection{Princípio do Human-in-the-Loop (HITL)}
 O sistema implementa o princípio do \textit{Human-in-the-Loop} como exigência funcional e arquitetural (conforme a regra de negócio \textbf{RN-2}). Qualquer inferência computacional, seja um alerta de interação medicamentosa ou uma predição de choque séptico, constitui uma sugestão técnica transitória. Para que produza efeitos no atendimento, a inferência deve ser ativamente analisada por um profissional de saúde legalmente habilitado, que possui três caminhos deliberativos:
@@ -51,7 +51,7 @@ Diferentemente de modelos de linguagem de uso geral sujeitos a alucinações fac
 \end{enumerate}
 
 \subsubsection{Algoritmo de Busca Híbrida e Re-ranking Contextual}
-Nomes de princípios ativos, sais e concentrações numéricas exigem exatidão léxica absoluta, enquanto descrições de mecanismos fisiopatológicos demandam proximidade semântica. Para atender a ambos os requisitos, o Vitalis v2.0 implementa uma busca híbrida que combina recuperação densa e busca esparsa BM25 \cite{robertson_bm25:2009}.
+Nomes de princípios ativos, sais e concentrações numéricas exigem exatidão léxica absoluta, enquanto descrições de mecanismos fisiopatológicos demandam proximidade semântica. Para atender a ambos os requisitos, o Vitalis implementa uma busca híbrida que combina recuperação densa e busca esparsa BM25 \cite{robertson_bm25:2009}.
 
 A função de relevância BM25 para um documento $D$ e uma consulta $Q = \{q_1, \dots, q_n\}$ é calculada por:
 \begin{equation}
@@ -70,7 +70,7 @@ A montagem do prompt submetido à inferência segue uma estrutura compartimentad
 
 \begin{lstlisting}[caption={Estrutura de prompt clínico compartimentado para o RAG (formato JSON)}, label={lst:prompt_rag}]
 {
-  "system_instruction": "Voce e o Copiloto Farmacoterapeutico do Sistema Vitalis v2.0. Sua funcao e exclusivamente consultiva de suporte a prescricao medica. Analise a intencao de prescricao contra o contexto clinico e os documentos oficiais anexados. REGRAS OBRIGATORIAS: 1. Responda apenas com base nos trechos documentais fornecidos (grounding estrito); 2. Nunca deduza condutas ou invente dados ausentes; 3. Para qualquer incompatibilidade identificada, cite expressamente a fonte oficial; 4. Formate a saida em JSON estruturado com os campos: status, nivel_alerta, justificativa, referencia_documental.",
+  "system_instruction": "Voce e o Copiloto Farmacoterapeutico do Sistema Vitalis. Sua funcao e exclusivamente consultiva de suporte a prescricao medica. Analise a intencao de prescricao contra o contexto clinico e os documentos oficiais anexados. REGRAS OBRIGATORIAS: 1. Responda apenas com base nos trechos documentais fornecidos (grounding estrito); 2. Nunca deduza condutas ou invente dados ausentes; 3. Para qualquer incompatibilidade identificada, cite expressamente a fonte oficial; 4. Formate a saida em JSON estruturado com os campos: status, nivel_alerta, justificativa, referencia_documental.",
   "grounding_context": [
     {
       "documento": "Monografia ANVISA - Meropenem Tri-hidratado",
@@ -128,7 +128,7 @@ O módulo de triagem recebe fluxos de eventos alimentados pelas estações de tr
 \end{itemize}
 
 \subsubsection{Algoritmo Preditivo Baseado em Ensemble Calibrado}
-O núcleo preditivo do Vitalis v2.0 opera com um modelo de aprendizado de máquina supervisionado baseado em comitê de árvores de decisão impulsionadas por gradiente (\textit{Gradient Boosted Trees}, como XGBoost e LightGBM), associado a florestas aleatórias (\textit{Random Forest}). O modelo foi treinado sobre conjuntos de dados hospitalares contendo séries temporais de pacientes internados, calibrando os escores padronizados qSOFA \cite{singer_sepsis:2016} e NEWS2 \cite{rcp_news2:2017}.
+O núcleo preditivo do Vitalis opera com um modelo de aprendizado de máquina supervisionado baseado em comitê de árvores de decisão impulsionadas por gradiente (\textit{Gradient Boosted Trees}, como XGBoost e LightGBM), associado a florestas aleatórias (\textit{Random Forest}). O modelo foi treinado sobre conjuntos de dados hospitalares contendo séries temporais de pacientes internados, calibrando os escores padronizados qSOFA \cite{singer_sepsis:2016} e NEWS2 \cite{rcp_news2:2017}.
 
 O escore determinístico de qSOFA (\textit{Quick Sequential Organ Failure Assessment}) é avaliado segundo os critérios:
 \begin{equation}
@@ -148,7 +148,7 @@ onde pontuações acumuladas $\ge 5$ representam risco moderado, e valores $\ge 
 \subsubsection{Janela Terapêutica da Primeira Hora da Sepse}
 O objetivo técnico do motor preditivo fundamenta-se nas diretrizes da \textit{Surviving Sepsis Campaign} e em evidências consolidadas da medicina intensiva. Estudos demonstram que cada hora de retardo na administração do esquema antimicrobiano apropriado após a instalação da hipotensão em choque séptico eleva a taxa de mortalidade em aproximadamente $7{,}6\%$ \cite{kumar_sepsis:2006}.
 
-Ao atingir o limiar de alerta ($P(\text{Sepse}) \ge 0{,}65$ ou $\text{NEWS2} \ge 7$), o Vitalis v2.0 dispara simultaneamente:
+Ao atingir o limiar de alerta ($P(\text{Sepse}) \ge 0{,}65$ ou $\text{NEWS2} \ge 7$), o Vitalis dispara simultaneamente:
 \begin{itemize}[noitemsep]
     \item Notificação em destaque vermelho no painel central de monitoramento da enfermagem;
     \item Sugestão automática de abertura do protocolo clínico de sepse no PEP;
@@ -156,7 +156,7 @@ Ao atingir o limiar de alerta ($P(\text{Sepse}) \ge 0{,}65$ ou $\text{NEWS2} \ge
 \end{itemize}
 
 \subsubsection{Explicabilidade Clínica com SHAP (SHapley Additive exPlanations)}
-Sistemas preditivos clínicos do tipo caixa-preta costumam enfrentar resistência de adoção por enfermeiros e médicos, além de induzirem fadiga de alarmes falsos-positivos. Para prover transparência analítica imediata, o Vitalis v2.0 implementa valores SHAP (\textit{SHapley Additive exPlanations}) \cite{lundberg_shap:2017}.
+Sistemas preditivos clínicos do tipo caixa-preta costumam enfrentar resistência de adoção por enfermeiros e médicos, além de induzirem fadiga de alarmes falsos-positivos. Para prover transparência analítica imediata, o Vitalis implementa valores SHAP (\textit{SHapley Additive exPlanations}) \cite{lundberg_shap:2017}.
 
 Fundamentado na teoria dos jogos cooperativos, o SHAP decompõe a predição pontual $f(\mathbf{x})$ como uma soma aditiva da expectativa global $E[f(x)]$ com as contribuições individuais $\phi_i$ de cada parâmetro fisiológico:
 \begin{equation}
@@ -183,7 +183,7 @@ Essa apresentação permite que a equipe assistencial interprete a fundamentaç�
 O tráfego de dados para modelos de inferência externos requer salvaguardas técnicas de privacidade e segurança da informação, alinhadas aos mandamentos da Lei Geral de Proteção de Dados Pessoais (LGPD, Lei nº 13.709/2018) \cite{brasil_lgpd:2018} e aos requisitos funcionais \textbf{RF-018} e \textbf{RF-019}.
 
 \subsubsection{Pipeline de Desidentificação Pré-Tráfego Externo}
-Nenhum dado bruto de paciente é despachado fora do perímetro de rede seguro do hospital. O Vitalis v2.0 implementa um \textbf{Gateway de Higienização} dedicado, que intercepta as cargas úteis de inferência e suprime os 18 identificadores diretos preconizados pelo padrão internacional HIPAA Safe Harbor e pelo Artigo 11 da LGPD para dados sensíveis de saúde:
+Nenhum dado bruto de paciente é despachado fora do perímetro de rede seguro do hospital. O Vitalis implementa um \textbf{Gateway de Higienização} dedicado, que intercepta as cargas úteis de inferência e suprime os 18 identificadores diretos preconizados pelo padrão internacional HIPAA Safe Harbor e pelo Artigo 11 da LGPD para dados sensíveis de saúde:
 \begin{enumerate}[noitemsep]
     \item Nome completo civil e nome social;
     \item Números de CPF e Registro Geral (RG);
@@ -226,7 +226,7 @@ Em repouso, todos os fragmentos documentais, logs de auditoria e bases vetoriais
 Em sistemas hospitalares de missão crítica, a latência de chamadas a serviços de IA ou a instabilidade de conexões externas não pode interromper os processos de triagem e prescrição (requisito \textbf{RF-020} e regra de negócio \textbf{RN-4}).
 
 \subsubsection{Estados do Circuit Breaker}
-O Vitalis v2.0 implementa o padrão arquitetural \textit{Circuit Breaker} \cite{nygard:2018}, organizando a comunicação com os modelos de inteligência artificial em três estados operacionais:
+O Vitalis implementa o padrão arquitetural \textit{Circuit Breaker} \cite{nygard:2018}, organizando a comunicação com os modelos de inteligência artificial em três estados operacionais:
 
 \begin{itemize}
     \item \textbf{Fechado (\textit{Closed})}: O tráfego de inferência flui normalmente. O sistema registra métricas de latência e taxa de erros. Caso as chamadas sejam concluídas com sucesso e tempo de resposta aceitável, o circuito permanece fechado;
@@ -247,7 +247,7 @@ Quando o circuito se encontra no estado Aberto ou ocorre um evento de timeout, o
 A interface gráfica informa ao profissional: \textit{``Modo de Contingência Determinística Ativo: Validação executada por regras locais de segurança''}.
 
 \subsubsection{Diagrama de Fluxo de Inferência com Circuit Breaker}
-A Figura~\ref{fig:fluxo_ia_resiliencia} ilustra o fluxo operacional completo de processamento de inferência no Vitalis v2.0, demonstrando a interação entre a interface do profissional de saúde, o gateway de higienização de PII, o mecanismo de resiliência e o motor determinístico local.
+A Figura~\ref{fig:fluxo_ia_resiliencia} ilustra o fluxo operacional completo de processamento de inferência no Vitalis, demonstrando a interação entre a interface do profissional de saúde, o gateway de higienização de PII, o mecanismo de resiliência e o motor determinístico local.
 
 \begin{figure}[H]
     \centering
@@ -356,4 +356,4 @@ A estrutura de dados da tabela \texttt{LOG\_INFERENCIA\_IA} viabiliza a geraçã
     \item \textbf{Detecção de Desvio Conceitual (\textit{Model Drift})}: Monitoramento contínuo da distribuição estatística de latência, pontuações de confiança e frequência de acionamento do Circuit Breaker, sinalizando a necessidade de re-treinamento dos comitês de árvores do motor de sepse.
 \end{itemize}
 
-Dessa forma, o Vitalis v2.0 articula conformidade regulatória, integridade científica e segurança operacional no aproveitamento dos recursos de inteligência artificial em saúde humana.
+Dessa forma, o Vitalis articula conformidade regulatória, integridade científica e segurança operacional no aproveitamento dos recursos de inteligência artificial em saúde humana.

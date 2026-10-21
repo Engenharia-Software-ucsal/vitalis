@@ -4,9 +4,9 @@
 \section{Diagrama e Especificação de Casos de Uso (UML)}
 \label{sec:casos_uso}
 
-A modelagem de casos de uso estabelece as fronteiras operacionais do sistema Vitalis v2.0, delimitando o escopo funcional e as interações entre os atores humanos, os serviços automatizados de inteligência artificial e os repositórios clínicos centrais. Em ambientes de saúde de alta complexidade, a especificação formal de casos de uso previne ambiguidades de processo, orienta o desenvolvimento orientado a testes e assegura conformidade com os protocolos assistenciais e regulatórios vigentes \cite{pressman:2016, sommerville:2019}.
+A modelagem de casos de uso estabelece as fronteiras operacionais do sistema Vitalis, delimitando o escopo funcional e as interações entre os atores humanos, os serviços automatizados de inteligência artificial e os repositórios clínicos centrais. Em ambientes de saúde de alta complexidade, a especificação formal de casos de uso previne ambiguidades de processo, orienta o desenvolvimento orientado a testes e assegura conformidade com os protocolos assistenciais e regulatórios vigentes \cite{pressman:2016, sommerville:2019}.
 
-No Vitalis v2.0, os serviços de inteligência artificial atuam como agentes cooperativos de suporte à decisão. Conforme o princípio de governança \textit{Human-in-the-Loop} (Regra de Negócio RN-002), nenhuma inferência clínica, prescrição terapêutica ou ajuste de conduta é executado de forma autônoma sem a validação, edição ou recusa expressa de um profissional de saúde habilitado.
+No Vitalis, os serviços de inteligência artificial atuam como agentes cooperativos de suporte à decisão. Conforme o princípio de governança \textit{Human-in-the-Loop} (Regra de Negócio RN-002), nenhuma inferência clínica, prescrição terapêutica ou ajuste de conduta é executado de forma autônoma sem a validação, edição ou recusa expressa de um profissional de saúde habilitado.
 
 % ==============================================================================
 % 9.1 MAPEAMENTO DE ATORES
@@ -14,7 +14,7 @@ No Vitalis v2.0, os serviços de inteligência artificial atuam como agentes coo
 \subsection{Mapeamento e Caracterização dos Atores}
 \label{sec:atores}
 
-Os atores representam papéis desempenhados por entidades externas que interagem diretamente com os serviços do sistema Vitalis v2.0. O sistema compreende atores humanos (equipes assistenciais, administrativas e usuários externos) e um ator secundário de sistema especializado em inferências de IA.
+Os atores representam papéis desempenhados por entidades externas que interagem diretamente com os serviços do sistema Vitalis. O sistema compreende atores humanos (equipes assistenciais, administrativas e usuários externos) e um ator secundário de sistema especializado em inferências de IA.
 
 \begin{itemize}[leftmargin=*]
     \item \textbf{Enfermeiro Triador}: Profissional de enfermagem responsável pelo acolhimento inicial, registro de sinais vitais, aferição de dados biométricos, transcrição verbal de queixas e condução da triagem com suporte preditivo de risco clínico.
@@ -26,12 +26,12 @@ Os atores representam papéis desempenhados por entidades externas que interagem
     \item \textbf{Serviço de IA Vitalis} (Ator de Sistema Secundário): Microsserviço de inteligência artificial clínica e operacional que executa processamento de linguagem natural (transcrição Whisper/Speech), escores preditivos de risco hemodinâmico (qSOFA e NEWS2), recuperação semântica de diretrizes terapêuticas (RAG), síntese de prontuários via LLM e predição estatística de internação e glosas.
 \end{itemize}
 
-A Tabela \ref{tab:mapeamento_atores} apresenta os perfis de acesso, categorias de interação e responsabilidades associadas a cada ator no Vitalis v2.0.
+A Tabela \ref{tab:mapeamento_atores} apresenta os perfis de acesso, categorias de interação e responsabilidades associadas a cada ator no Vitalis.
 
 \begingroup
 \small
 \begin{xltabular}{\textwidth}{l c >{\raggedright\arraybackslash}p{4.8cm} >{\raggedright\arraybackslash}X}
-\caption{Matriz de Caracterização dos Atores do Sistema Vitalis v2.0} \label{tab:mapeamento_atores} \\
+\caption{Matriz de Caracterização dos Atores do Sistema Vitalis} \label{tab:mapeamento_atores} \\
 \toprule
 \textbf{Ator} & \textbf{Tipo} & \textbf{Escopo de Responsabilidade} & \textbf{Casos de Uso Primários / Apoio} \\
 \midrule
@@ -102,7 +102,7 @@ UC-01, UC-02, UC-03, UC-04, UC-05, UC-08 (Secundário) \\
 \subsection{Diagrama de Casos de Uso Geral (TikZ Nativo)}
 \label{sec:diagrama_tikz}
 
-A Figura \ref{fig:diagrama_casos_uso_vitalis} apresenta a modelagem gráfica dos casos de uso do Vitalis v2.0 em padrão UML 2.5, codificada integralmente em TikZ nativo. O diagrama organiza as interações funcionais por meio de fronteira explícita do sistema (\textit{system boundary}), estabelecendo os relacionamentos de associação direta, inclusão compulsória ($\ll$include$\gg$) e extensão condicional ($\ll$extend$\gg$).
+A Figura \ref{fig:diagrama_casos_uso_vitalis} apresenta a modelagem gráfica dos casos de uso do Vitalis em padrão UML 2.5, codificada integralmente em TikZ nativo. O diagrama organiza as interações funcionais por meio de fronteira explícita do sistema (\textit{system boundary}), estabelecendo os relacionamentos de associação direta, inclusão compulsória ($\ll$include$\gg$) e extensão condicional ($\ll$extend$\gg$).
 
 \begin{figure}[htb]
 \centering
@@ -154,13 +154,13 @@ A Figura \ref{fig:diagrama_casos_uso_vitalis} apresenta a modelagem gráfica dos
 \resizebox{0.98\textwidth}{!}{%
 \begin{tikzpicture}[x=1cm, y=1cm]
 
-    % Limites do Sistema Vitalis v2.0 (System Boundary)
+    % Limites do Sistema Vitalis (System Boundary)
     \draw[draw=vitalisblue!75, fill=vitalislight!12, line width=1.3pt, rounded corners=8pt]
         (-0.5, 0.7) rectangle (15.5, -21.6);
     
     % Cabeçalho Institucional do Limite do Sistema
     \node[anchor=north west, fill=vitalisblue!15, draw=vitalisblue!60, rounded corners=3pt, inner sep=4pt, font=\small\bfseries\sffamily, text=vitalisdark]
-        at (0.0, 0.4) {Vitalis v2.0: Sistema de Gest{\~a}o Hospitalar Inteligente};
+        at (0.0, 0.4) {Vitalis: Sistema de Gest{\~a}o Hospitalar Inteligente};
 
     % =========================================================================
     % ATORES HUMANOS - LADO ESQUERDO
@@ -179,7 +179,7 @@ A Figura \ref{fig:diagrama_casos_uso_vitalis} apresenta a modelagem gráfica dos
     % Ator do Sistema / Secundário: Serviço de IA Vitalis (Centralizado à direita)
     \node[umlSysBox] (iaSys) at (17.6, -10.5) {
         $\ll$system$\gg$\\[2pt]
-        Servi{\c{c}}o de IA\\Vitalis v2.0
+        Servi{\c{c}}o de IA\\Vitalis
     };
 
     % =========================================================================
@@ -271,7 +271,7 @@ A Figura \ref{fig:diagrama_casos_uso_vitalis} apresenta a modelagem gráfica dos
 \end{tikzpicture}%
 }
 \endgroup
-\caption{Diagrama Geral de Casos de Uso do Sistema Vitalis v2.0}
+\caption{Diagrama Geral de Casos de Uso do Sistema Vitalis}
 \label{fig:diagrama_casos_uso_vitalis}
 \end{figure}
 
@@ -281,12 +281,12 @@ A Figura \ref{fig:diagrama_casos_uso_vitalis} apresenta a modelagem gráfica dos
 \subsection{Especificação Textual Detalhada dos Casos de Uso}
 \label{sec:especificacao_casos_uso}
 
-A Tabela \ref{tab:resumo_uc} resume os oito casos de uso primários que estruturam a operação assistencial e analítica do Vitalis v2.0, com seus atores, pré-condições, fluxo principal e pós-condições.
+A Tabela \ref{tab:resumo_uc} resume os oito casos de uso primários que estruturam a operação assistencial e analítica do Vitalis, com seus atores, pré-condições, fluxo principal e pós-condições.
 
 \begingroup
 \small
 \begin{xltabular}{\textwidth}{l >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.8cm}}
-\caption{Síntese da Especificação Textual dos Casos de Uso do Vitalis v2.0} \label{tab:resumo_uc} \\
+\caption{Síntese da Especificação Textual dos Casos de Uso do Vitalis} \label{tab:resumo_uc} \\
 \toprule
 \textbf{Código} & \textbf{Ator Primário} & \textbf{Pré-condições} & \textbf{Resumo do Fluxo Principal} & \textbf{Pós-condições} \\
 \midrule
@@ -650,12 +650,12 @@ Regras / Requisitos & RF-018, RF-019, RNF-006, RN-002, RN-003. \\
 \subsection{Matriz de Rastreabilidade entre Casos de Uso e Requisitos}
 \label{sec:rastreabilidade_uc}
 
-A Tabela \ref{tab:rastreabilidade_uc_rf} mapeia as correspondências entre os casos de uso, os requisitos funcionais (RF) e as regras de negócio (RN) do Vitalis v2.0.
+A Tabela \ref{tab:rastreabilidade_uc_rf} mapeia as correspondências entre os casos de uso, os requisitos funcionais (RF) e as regras de negócio (RN) do Vitalis.
 
 \begingroup
 \small
 \begin{xltabular}{\textwidth}{l >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}p{4.0cm} >{\raggedright\arraybackslash}X}
-\caption{Matriz de Rastreabilidade dos Casos de Uso do Vitalis v2.0} \label{tab:rastreabilidade_uc_rf} \\
+\caption{Matriz de Rastreabilidade dos Casos de Uso do Vitalis} \label{tab:rastreabilidade_uc_rf} \\
 \toprule
 \textbf{Caso de Uso} & \textbf{Nome do Caso de Uso} & \textbf{Requisitos Funcionais Cobertos} & \textbf{Regras de Negócio Vinculadas} \\
 \midrule

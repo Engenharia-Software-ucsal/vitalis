@@ -3,14 +3,14 @@
 
 A especificação de requisitos em sistemas hospitalares de missão crítica demanda rigor metodológico, critérios objetivos de aceitação e rastreabilidade integral. Falhas funcionais ou ambiguidades conceituais em saúde comprometem diretamente a integridade física de pacientes, além de acarretarem sanções regulatórias e perdas financeiras às instituições \cite{sommerville:2019, pressman:2016}.
 
-O Vitalis v2.0 combina regras de negócio determinísticas com serviços de inteligência artificial clínica. Para disciplinar a coexistência desses componentes, os requisitos adotam a priorização MoSCoW:
+O Vitalis combina regras de negócio determinísticas com serviços de inteligência artificial clínica. Para disciplinar a coexistência desses componentes, os requisitos adotam a priorização MoSCoW:
 \begin{itemize}[leftmargin=*]
     \item \textbf{Essencial (\textit{Must have})}: Funcionalidades indispensáveis para a continuidade assistencial, segurança do paciente, conformidade com o Conselho Federal de Medicina (CFM) \cite{cfm_prontuario:2007, cfm_digital:2021} e preservação da integridade transacional.
     \item \textbf{Importante (\textit{Should have})}: Capacidades de alto valor que elevam a produtividade médica, previnem glosas e otimizam a ocupação de leitos, contornáveis temporariamente por procedimentos operacionais padrão.
     \item \textbf{Desejável (\textit{Could have})}: Recursos de conveniência analítica, agendamentos avançados e exportações complementares, implementados conforme a disponibilidade do cronograma.
 \end{itemize}
 
-Esta seção estrutura os 22 Requisitos Funcionais (RF), as 12 Regras de Negócio (RN), os 7 Requisitos Não Funcionais (RNF) e a Matriz de Conformidade Regulatória do Vitalis v2.0.
+Esta seção estrutura os 22 Requisitos Funcionais (RF), as 12 Regras de Negócio (RN), os 7 Requisitos Não Funcionais (RNF) e a Matriz de Conformidade Regulatória do Vitalis.
 
 % ==============================================================================
 % 5.1 REQUISITOS FUNCIONAIS
@@ -22,7 +22,7 @@ Os Requisitos Funcionais abrangem desde o acolhimento do paciente na recepção 
 \begingroup
 \small
 \begin{xltabular}{\textwidth}{l >{\raggedright\arraybackslash}p{4.4cm} >{\raggedright\arraybackslash}X c}
-\caption{Matriz Detalhada de Requisitos Funcionais do Vitalis v2.0} \label{tab:rf_vitalis} \\
+\caption{Matriz Detalhada de Requisitos Funcionais do Vitalis} \label{tab:rf_vitalis} \\
 \toprule
 \textbf{Código} & \textbf{Descrição do Requisito} & \textbf{Critério de Aceitação Técnico} & \textbf{Prioridade} \\
 \midrule
@@ -177,7 +177,7 @@ Desejável \\
 % ==============================================================================
 \subsection{Regras de Negócio e Diretrizes Operacionais (RN)}
 
-As regras de negócio delimitam o funcionamento do Vitalis v2.0, convertendo normativas clínicas, resoluções de conselhos profissionais e imperativos legais em restrições lógicas e transacionais invioláveis.
+As regras de negócio delimitam o funcionamento do Vitalis, convertendo normativas clínicas, resoluções de conselhos profissionais e imperativos legais em restrições lógicas e transacionais invioláveis.
 
 \begin{enumerate}[label=\textbf{RN-\arabic*:}, leftmargin=*]
     \item \textbf{Prioridade Absoluta para a Classificação Vermelha (Emergência)}:
@@ -270,12 +270,12 @@ As regras de negócio delimitam o funcionamento do Vitalis v2.0, convertendo nor
 % ==============================================================================
 \subsection{Requisitos Não Funcionais (RNF)}
 
-Os Requisitos Não Funcionais estabelecem os critérios de qualidade técnica, desempenho, confiabilidade e interoperabilidade do Vitalis v2.0. A Tabela \ref{tab:rnf_vitalis} sintetiza as métricas de engenharia estipuladas para a infraestrutura hospitalar.
+Os Requisitos Não Funcionais estabelecem os critérios de qualidade técnica, desempenho, confiabilidade e interoperabilidade do Vitalis. A Tabela \ref{tab:rnf_vitalis} sintetiza as métricas de engenharia estipuladas para a infraestrutura hospitalar.
 
 \begin{table}[H]
 \centering
 \small
-\caption{Matriz Consolidada de Requisitos Não Funcionais do Vitalis v2.0}
+\caption{Matriz Consolidada de Requisitos Não Funcionais do Vitalis}
 \label{tab:rnf_vitalis}
 \begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}X}
 \toprule
@@ -311,7 +311,7 @@ Abaixo são detalhadas as especificações de cada requisito não funcional:
     Toda comunicação interna e externa da arquitetura trafega obrigatoriamente através do protocolo TLS 1.3 com criptografia de ponta a ponta, suportando exclusivamente conjuntos de cifras que implementem sigilo de encaminhamento perfeito (\textit{Perfect Forward Secrecy}). Os volumes de armazenamento do banco de dados relacional, o armazenamento de laudos e imagens radiológicas e os snapshots de backup utilizam criptografia em repouso AES com chaves de 256 bits, gerenciadas por Módulo de Segurança de Hardware (HSM).
 
     \item \textbf{Disponibilidade e Tolerância a Falhas}:
-    O sistema Vitalis v2.0 opera com nível de disponibilidade mínima garantida de $99{,}95\%$ ao mês, o que admite tempo máximo acumulado de indisponibilidade não planejada de $21{,}9$ minutos por mês. A infraestrutura baseia-se em cluster de orquestração de contêineres distribuído em pelo menos três Zonas de Disponibilidade (AZs) distintas, dotado de autoescalonamento horizontal e transição automática (\textit{failover}) de banco de dados com perda de dados nula ($\text{RPO} = 0$) para transações confirmadas.
+    O sistema Vitalis opera com nível de disponibilidade mínima garantida de $99{,}95\%$ ao mês, o que admite tempo máximo acumulado de indisponibilidade não planejada de $21{,}9$ minutos por mês. A infraestrutura baseia-se em cluster de orquestração de contêineres distribuído em pelo menos três Zonas de Disponibilidade (AZs) distintas, dotado de autoescalonamento horizontal e transição automática (\textit{failover}) de banco de dados com perda de dados nula ($\text{RPO} = 0$) para transações confirmadas.
 
     \item \textbf{Interoperabilidade e Padrões em Saúde}:
     Para viabilizar a comunicação com sistemas de laboratório (LIS), sistemas de arquivamento de imagens (PACS) e o barramento da Rede Nacional de Dados em Saúde (RNDS), a plataforma implementa suporte nativo aos padrões HL7 v2.5 e HL7 FHIR Release 4 \cite{hl7_fhir:2019}. Recursos como \texttt{Patient}, \texttt{Encounter}, \texttt{Condition}, \texttt{MedicationRequest} e \texttt{Observation} são expostos por endpoints RESTful estruturados em JSON.
@@ -328,7 +328,7 @@ Abaixo são detalhadas as especificações de cada requisito não funcional:
 % ==============================================================================
 \subsection{Matriz de Rastreabilidade e Conformidade Regulatória}
 
-A Tabela \ref{tab:rastreabilidade_vitalis} mapeia o alinhamento das regras de negócio e requisitos do Vitalis v2.0 com os marcos legais e as diretrizes normativas da saúde no Brasil.
+A Tabela \ref{tab:rastreabilidade_vitalis} mapeia o alinhamento das regras de negócio e requisitos do Vitalis com os marcos legais e as diretrizes normativas da saúde no Brasil.
 
 \begin{table}[H]
 \centering
@@ -354,4 +354,4 @@ HL7 FHIR Release 4 & Interoperabilidade semântica e sintática de dados em saú
 \end{tabularx}
 \end{table}
 
-A consolidação estruturada dos requisitos funcionais, regras de negócio e requisitos não funcionais estabelece os critérios objetivos necessários para as etapas de projeto arquitetural, diagramação de processos e implementação técnica dos microsserviços do Vitalis v2.0.
+A consolidação estruturada dos requisitos funcionais, regras de negócio e requisitos não funcionais estabelece os critérios objetivos necessários para as etapas de projeto arquitetural, diagramação de processos e implementação técnica dos microsserviços do Vitalis.
