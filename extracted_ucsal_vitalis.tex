@@ -1,0 +1,286 @@
+\documentclass[12pt,oneside,a4paper,article]{abntex2}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{authblk}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[alf]{abntex2cite}
+\usepackage[left=3cm,right=2cm,top=3cm,bottom=2cm]{geometry}
+\usepackage{setspace}
+\title{\textbf{ESPECIFICAÇÃO DE REQUISITOS DE SOFTWARE (ERS) -- SISTEMA DE GESTÃO HOSPITALAR INTELIGENTE VITALIS (VERSÃO 2.0 COM SUPORTE CLÍNICO PREDITIVO E GENERATIVO BASEADO EM IA)}}
+\author{Davi dos Santos Ribeiro\thanks{davi.ribeiro@ucsal.edu.br}}
+\affil{
+ Engenharia de Software \par
+ Escola de Tecnologias \par
+ Universidade Católica do Salvador (UCSAL) \par
+ Av. Prof. Pinto de Aguiar, 2589 Pituaçu, CEP: 41740-090 \par
+ Salvador/BA, Brasil
+}
+\affil[1]{\textit{davi.ribeiro@ucsal.edu.br}}
+\date{Agosto de 2026}
+\ifthenelse{\equal{\ABNTEXisarticle}{true}}{%
+\renewcommand{\maketitlehookb}{}
+}{}
+\hypersetup{
+ colorlinks=false,
+ pdfborder={0 0 0},
+}
+\renewcommand*{\Authsep}{, }
+\renewcommand*{\Authand}{, }
+\renewcommand*{\Authands}{, }
+\renewcommand*{\Affilfont}{\normalsize\normalfont}
+\renewcommand*{\Authfont}{\bfseries}
+\setlength{\affilsep}{1.5em}
+\begin{document}
+\begin{center}
+ \includegraphics[width=0.28\textwidth]{imagens-template/ucsal_logo.png}
+\end{center}
+{\let\newpage\relax\maketitle}
+\begin{resumoumacoluna}
+Este documento formaliza a Especificação de Requisitos de Software (ERS) para a evolução do sistema de gestão hospitalar de alta complexidade \textbf{Vitalis (Versão 2.0)}. O sistema integra de forma inovadora APIs de Inteligência Artificial generativa e preditiva ao ecossistema clínico e administrativo hospitalar. A solução aborda a sobrecarga cognitiva da equipe de saúde, a latência assistencial e a fragmentação do fluxo de pacientes por meio de cinco pilares inovadores: (i) triagem clínica aumentada com reconhecimento de fala e predição de deterioração hemodinâmica e sepse precoce (escores qSOFA e NEWS2); (ii) copiloto de prescrição médica com arquitetura RAG (Retrieval-Augmented Generation) para checagem cruzada farmacológica; (iii) otimização preditiva de alocação de leitos baseada em estimativa de tempo de permanência (Length of Stay - LOS); (iv) geração automatizada de sumários de alta e evoluções clínicas estruturadas via Modelos de Linguagem de Larga Escala (LLMs); e (v) auditoria prévia de faturamento hospitalar TISS/TUSS com inteligência artificial para mitigação preventiva de glosas. O projeto atende rigorosamente aos preceitos da LGPD (Lei nº 13.709/2018), padrões de interoperabilidade HL7/FHIR e governança ética com o princípio \textit{Human-in-the-Loop}.
+\vspace{\onelineskip}
+\noindent
+\textbf{Palavras-chave}: Engenharia de Software. Gestão Hospitalar. Inteligência Artificial. ERS. Prontuário Eletrônico. Triagem Preditiva. RAG Clínico. LGPD.
+\end{resumoumacoluna}
+\textual
+\section{Introdução e Escopo do Sistema Vitalis v2.0}
+\subsection{Contexto e Definição do Problema}
+Ambientes hospitalares de alta complexidade operam sob severa pressão temporal e volumetria massiva de dados heterogêneos. A fragmentação de sistemas legados acarreta latência crítica no atendimento, sobrecarga cognitiva (\textit{burnout}) de equipes assistenciais, erros de transcrição manual e elevadas taxas de glosas financeiras. O sistema \textbf{Vitalis v2.0} surge como uma plataforma hospitalar integrada e inteligente, projetada para unificar o fluxo clínico-administrativo em um repositório centralizado, potencializado por serviços de Inteligência Artificial (IA) acessados via API de última geração \cite{topol:2019}.
+\subsection{Objetivo Geral e Inovação Tecnológica}
+O objetivo do Vitalis v2.0 é prover suporte à decisão clínica em tempo real e automação operacional de ponta a ponta, abrangendo desde o acolhimento na recepção até a alta médica e o faturamento hospitalar. A inovação central reside no uso de APIs de Inteligência Artificial Multimodal e Modelos de Linguagem de Larga Escala (LLMs com RAG clínico), operando sob pipelines assíncronos e seguros que executam:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Triagem Aumentada por IA}: Transcrição de queixas por voz (Whisper/Speech API) e predição em tempo real de instabilidade hemodinâmica e sepse (escores qSOFA e NEWS2);
+  \item \textbf{Copiloto Farmacoterapêutico Inteligente}: Validação semântica e contextual de interações medicamentosas, contraindicações orgânicas e ajuste de dosagem personalizado;
+  \item \textbf{Alocação Preditiva de Leitos}: Algoritmos de aprendizado de máquina para previsão de \textit{Length of Stay} (LOS) e demanda de leitos de UTI/Enfermaria;
+  \item \textbf{Síntese Clínica Automatizada}: Geração inteligente de evoluções médicas estruturadas por sistemas e sumários de alta hospitalar;
+  \item \textbf{Auditoria Preventiva de Faturamento}: Análise de conformidade entre prontuário eletrônico e guias TISS/TUSS com detecção proativa de discrepâncias.
+\end{enumerate}
+\subsection{Limites do Escopo}
+Não integram o escopo direto de desenvolvimento do Vitalis v2.0 a gestão de ativos fixos e patrimônio, controle biométrico de ponto dos colaboradores e armazenamento nativo de arquivos de imagem radiológica (PACS), cuja integração é realizada estritamente por barramento de interoperabilidade via protocolo HL7/DICOM \cite{hl7_fhir:2019}.
+\subsection{Mapeamento de Stakeholders}
+Os atores envolvidos no ecossistema e suas responsabilidades compreendem:
+\begin{itemize}[noitemsep]
+  \item \textbf{Engenheiros de Software e DevOps}: Manutenção evolutiva, observabilidade e gerenciamento de pipelines de microsserviços;
+  \item \textbf{Administradores de Banco de Dados (DBA)}: Garantia de integridade referencial, particionamento e rotinas de backup ACID;
+  \item \textbf{Coordenadores Médicos e Farmacêuticos}: Curadoria das bases de conhecimento clínico para o sistema RAG de IA;
+  \item \textbf{Equipe de Enfermagem e Triagem}: Operação da admissão, aprazamento e administração de medicamentos;
+  \item \textbf{Auditores de Contas Médicas}: Homologação de regras de negócio financeiras e parametrização de convênios.
+\end{itemize}
+\section{Arquitetura de Software e Modelagem de Dados}
+\subsection{Arquitetura em Microsserviços e Integração com API de IA}
+O Vitalis v2.0 adota uma arquitetura orientada a microsserviços desacoplados, estruturados com NestJS/Fastify, mensageria distribuída com BullMQ/Redis e persistência relacional otimizada. A integração com a API de IA opera por meio de um \textbf{Gateway de IA Seguro e Anonimizador}, responsável por higienizar qualquer Dado Pessoal Identificável (PII) antes da transmissão externa, em rigorosa conformidade com a LGPD \cite{brasil_lgpd:2018}.
+\subsection{Modelo Relacional Normalizado em Terceira Forma Normal (3NF)}
+A arquitetura de dados segue estritamente a 3NF, assegurando dependência funcional plena e ausência de anomalias de inserção, remoção e atualização \cite{pressman:2016}:
+\begin{itemize}[noitemsep]
+  \item \textbf{PACIENTE}: Armazena CPF, CNS, nome civil, nome social, data de nascimento, sexo e dados de contato. Relação $1:N$ com ATENDIMENTO.
+  \item \textbf{ATENDIMENTO}: Entidade central do fluxo hospitalar, associando o paciente à data/hora de entrada, tipo de admissão, médico responsável e status do atendimento. Relação $1:1$ com LEITO ativo.
+  \item \textbf{EPISODIO\_CUIDADO}: Agrupador lógico que conecta o atendimento ao plano terapêutico global e equipe multiprofissional.
+  \item \textbf{PRONTUARIO\_LOGICO}: Agregação temporal imutável de EVOLUCAO, PRESCRICAO e EXAME.
+  \item \textbf{EVOLUCAO}: Registro clínico estruturado por sistemas orgânicos (Cardiovascular, Respiratório, Neurológico, etc.), assinado digitalmente.
+  \item \textbf{PRESCRICAO e ITEM\_PRESCRICAO}: Ordens médicas contendo princípio ativo, dosagem, via de administração, frequência de aprazamento e validações toxicológicas.
+  \item \textbf{LEITO e ALA}: Representação da infraestrutura física hospitalar, com controle de estados (Livre, Ocupado, Higienização, Manutenção, Isolamento).
+  \item \textbf{FATURAMENTO\_CONTA e GUIA\_TISS}: Itens faturáveis consolidados com regras de precificação parametrizadas por operadora de plano de saúde \cite{ans_tiss:2023}.
+  \item \textbf{LOG\_AUDITORIA}: Registro transacional imutável contendo timestamp UTC, ID do operador, endereço IP, tabela afetada, tipo de operação (INSERT/UPDATE/DELETE) e payload anterior e posterior.
+\end{itemize}
+\subsection{Entidades Especializadas para Módulos de IA}
+\begin{itemize}[noitemsep]
+  \item \textbf{LOG\_INFERENCIA\_IA}: Registra \texttt{id}, \texttt{atendimento\_id}, \texttt{modelo\_ia\_versao}, \texttt{prompt\_sanitizado\_hash}, \texttt{resposta\_ia}, \texttt{latencia\_ms}, \texttt{score\_confianca}, \texttt{decisao\_medica} (Aceito / Rejeitado / Modificado) e \texttt{justificativa\_humana}.
+  \item \textbf{PREDICAO\_RISCO\_CLINICO}: Armazena \texttt{id}, \texttt{paciente\_id}, \texttt{score\_deterioracao}, \texttt{probabilidade\_sepse}, \texttt{probabilidade\_uti}, \texttt{variaveis\_hemodinamicas\_json} e \texttt{data\_hora}.
+  \item \textbf{VETOR\_EMBEDDING\_CLINICO}: Armazena vetores densos (embeddings) de protocolos clínicos institucionais e literatura médica para subsidiar o pipeline RAG do copiloto.
+\end{itemize}
+\section{Casos de Uso Detalhados (Use Cases)}
+\subsection{UC-01: Executar Triagem de Risco Preditiva Assistida por IA}
+\begin{itemize}[noitemsep]
+  \item \textbf{Ator Principal}: Enfermeiro Triador.
+  \item \textbf{Pré-condição}: Paciente registrado na recepção e presente na fila eletrônica de acolhimento.
+  \item \textbf{Fluxo Principal}:
+  \begin{enumerate}[noitemsep]
+    \item O enfermeiro seleciona o paciente no painel de acolhimento;
+    \item O sistema abre o formulário de coleta de sinais vitais (PA, FC, FR, SatO2, Temperatura, Escala de Coma de Glasgow);
+    \item O enfermeiro dita as queixas clínicas do paciente; o microsserviço de voz transcreve o áudio e extrai entidades clínicas (sintomas, tempo de evolução, comorbidades);
+    \item O motor de IA executa a classificação Manchester em paralelo com o cálculo dos escores preditivos de risco (qSOFA e NEWS2);
+    \item O sistema sugere a cor de prioridade com o índice de confiabilidade e os fatores determinantes destacados na tela;
+    \item O enfermeiro revisa, ajusta se necessário, confirma a classificação e assina digitalmente;
+    \item O paciente é inserido automaticamente na fila médica priorizada.
+  \end{enumerate}
+  \item \textbf{Cenários de Exceção}:
+  \begin{itemize}[noitemsep]
+    \item \textit{Exceção 1A (Instabilidade Crítica / Vermelho)}: Sinais vitais indicando risco iminente de morte disparam imediatamente alerta sonoro e visual no posto médico de emergência, abrindo vaga na sala de ressuscitação.
+    \item \textit{Exceção 1B (Indisponibilidade da API de IA)}: O sistema ativa o fallback determinístico local com validação estrita das tabelas tradicionais do Protocolo de Manchester, registrando log de contingência.
+  \end{itemize}
+  \item \textbf{Pós-condição}: Registro de triagem imutável persistido no Prontuário Eletrônico do Paciente (PEP).
+\end{itemize}
+\subsection{UC-02: Gestão Preditiva de Alocação de Leitos com Estimativa de LOS}
+\begin{itemize}[noitemsep]
+  \item \textbf{Ator Principal}: Gestor de Fluxo Hospitalar / Regulador Interno.
+  \item \textbf{Pré-condição}: Indicação médica de internação confirmada no sistema.
+  \item \textbf{Fluxo Principal}:
+  \begin{enumerate}[noitemsep]
+    \item O gestor acessa o mapa dinâmico de ocupação hospitalar;
+    \item O motor de IA analisa o perfil do paciente (idade, diagnóstico CID-10, histórico clínico, suporte ventilatório) e projeta o \textit{Length of Stay} (LOS) provável e a necessidade de isolamento;
+    \item O sistema sugere a melhor alocação de leito por ala e compatibilidade assistencial;
+    \item O gestor confirma a reserva e executa a transferência;
+    \item O status do leito é alterado para ``Ocupado'' com propagação em tempo real via WebSockets para toda a rede hospitalar.
+  \end{enumerate}
+  \item \textbf{Cenários de Exceção}:
+  \begin{itemize}[noitemsep]
+    \item \textit{Exceção 2A (Leito em Higienização)}: O sistema bloqueia a transferência até a confirmação de liberação do leito pela equipe de hotelaria/limpeza via tablet.
+  \end{itemize}
+  \item \textbf{Pós-condição}: Mapa de leitos atualizado globalmente e telemetria de ocupação recalculada.
+\end{itemize}
+\subsection{UC-03: Realizar Prescrição Médica Inteligente com Copiloto de IA Farmacoterapêutico}
+\begin{itemize}[noitemsep]
+  \item \textbf{Ator Principal}: Médico Assistente.
+  \item \textbf{Pré-condição}: Médico autenticado com certificado digital ICP-Brasil e atendimento ativo.
+  \item \textbf{Fluxo Principal}:
+  \begin{enumerate}[noitemsep]
+    \item O médico abre a aba ``Nova Prescrição'' no PEP do paciente;
+    \item O médico digita o nome comercial ou princípio ativo do fármaco;
+    \item O copiloto de IA (RAG) consulta a base de alergias do paciente, função renal/hepática recente nos exames laboratoriais e a farmacopeia institucional;
+    \item O sistema exibe recomendações de dose ajustada ao peso corporal e depuração de creatinina, alertando contra interações medicamentosas de grau moderado ou grave;
+    \item O médico define posologia, via e aprazamento, e assina digitalmente o documento;
+    \item A ordem é despachada automaticamente para a farmácia satélite e para o plano de aprazamento da enfermagem.
+  \end{enumerate}
+  \item \textbf{Cenários de Exceção}:
+  \begin{itemize}[noitemsep]
+    \item \textit{Exceção 3A (Interação Medicamentosa Fatal ou Alergia Severa)}: O sistema bloqueia a gravação imediata do item e exige alteração do fármaco ou emissão de justificativa técnica formal respaldada em protocolo de exceção.
+  \end{itemize}
+  \item \textbf{Pós-condição}: Prescrição eletrônica assinada, gravada no histórico e enviada para dispensação.
+\end{itemize}
+\subsection{UC-04: Geração Automatizada de Sumário de Alta e Síntese Clínica via LLM}
+\begin{itemize}[noitemsep]
+  \item \textbf{Ator Principal}: Médico Assistente.
+  \item \textbf{Pré-condição}: Paciente com critérios clínicos de alta atingidos e exames finais validados.
+  \item \textbf{Fluxo Principal}:
+  \begin{enumerate}[noitemsep]
+    \item O médico solicita a emissão do Sumário de Alta;
+    \item O microsserviço de IA agrega cronologicamente as evoluções diárias, laudos de exames, procedimentos realizados e medicamentos administrados durante a internação;
+    \item O modelo LLM gera uma minuta de sumário de alta estruturada contendo: motivo de internação, principais diagnósticos, evolução do quadro clínico, plano terapêutico domiciliar e orientações de retorno;
+    \item O médico revisa a minuta, edita os trechos que julgar necessários e homologa o documento com assinatura digital;
+    \item O sistema gera o documento em PDF assinado e dispara a rotina de desospitalização.
+  \end{enumerate}
+  \item \textbf{Pós-condição}: Sumário de alta anexado ao prontuário e guia impressa/enviada ao paciente por canal seguro.
+\end{itemize}
+\subsection{UC-05: Auditoria Prévia de Faturamento e Prevenção Ativa de Glosas com IA}
+\begin{itemize}[noitemsep]
+  \item \textbf{Ator Principal}: Auditor de Faturamento / Faturista Hospitalar.
+  \item \textbf{Pré-condição}: Atendimento encerrado clinicamente com todos os lançamentos assistenciais finalizados.
+  \item \textbf{Fluxo Principal}:
+  \begin{enumerate}[noitemsep]
+    \item O sistema compila automaticamente os itens consumidos (materiais, medicamentos, taxas de leito e procedimentos médicos);
+    \item O modelo de IA de auditoria compara os lançamentos com a tabela de cobertura do convênio e as regras da ANS (TISS/TUSS), checando a existência de laudos comprobatórios no PEP;
+    \item O sistema aponta potenciais inconsistências (ex.: medicamento prescrito sem justificativa de antibiograma ou cobrança de taxa de sala incompatível com a duração cirúrgica);
+    \item O auditor visualiza o painel de conformidade e aprova ou solicita complementação antes da emissão da guia XML;
+    \item O lote XML do faturamento TISS é gerado e assinado digitalmente.
+  \end{enumerate}
+  \item \textbf{Pós-condição}: Faturamento fechado sem divergências cadastrais e arquivo TISS pronto para transmissão.
+\end{itemize}
+\section{Requisitos Funcionais (RF) Estruturados}
+A Tabela \ref{tab:rf} consolida o conjunto de 22 Requisitos Funcionais do Vitalis v2.0 com seus critérios de aceitação mensuráveis e prioridade de implementação (MoSCoW).
+\begin{table}[htb]
+\centering
+\small
+\caption{Matriz Detalhada de Requisitos Funcionais do Vitalis v2.0}
+\label{tab:rf}
+\begin{tabularx}{\textwidth}{l p{5.2cm} p{6.5cm} c}
+\toprule
+\textbf{Código} & \textbf{Descrição do Requisito} & \textbf{Critério de Aceitação Técnico} & \textbf{Prioridade} \\
+\midrule
+\textbf{RF-001} & Cadastro de pacientes integrado ao barramento nacional CNS/CPF. & Validação de duplicidade biométrica/cadastral em tempo $< 1.0\,\text{s}$. & Essencial \\
+\textbf{RF-002} & Cálculo de prioridade clínica por algoritmo Manchester com validação hemodinâmica. & Atribuição determinística da cor de risco conforme parâmetros vitais. & Essencial \\
+\textbf{RF-003} & Transcrição por voz e extração de sintomas clínicos via API de IA. & Taxa de erro de palavras ($\text{WER}$) $< 5\%$ para vocabulário médico em português. & Importante \\
+\textbf{RF-004} & Cálculo preditivo de deterioração hemodinâmica e sepse (qSOFA/NEWS2) por IA. & Notificação em tempo real no PEP com índice de risco e score explicável. & Essencial \\
+\textbf{RF-005} & Gestão em tempo real de status de leitos (Livre, Ocupado, Limpeza, Manutenção). & Propagação de eventos via WebSockets com latência $< 200\,\text{ms}$. & Essencial \\
+\textbf{RF-006} & Alocação preditiva de leitos baseada em estimativa de tempo de internação (LOS). & Sugestão automática de leito otimizado por especialidade e ala. & Importante \\
+\textbf{RF-007} & Registro de prescrição médica com checagem cruzada de alergias e comorbidades. & Bloqueio imediato de substâncias contraindicadas no perfil do paciente. & Essencial \\
+\textbf{RF-008} & Copiloto clínico de IA para validação posológica e interações medicamentosas (RAG). & Resposta com embasamento em diretrizes farmacêuticas em $< 1.5\,\text{s}$. & Importante \\
+\textbf{RF-009} & Assinatura digital padrão ICP-Brasil em documentos clínicos (PAdES / PKCS\#7). & Validação criptográfica com carimbo de tempo em conformidade legal. & Essencial \\
+\textbf{RF-010} & Módulo de aprazamento de enfermagem e dupla checagem para fármacos controlados. & Registro biométrico/senha com confirmação em duas etapas no leito. & Essencial \\
+\textbf{RF-011} & Geração automatizada de sumários de alta e evolução clínica estruturada por IA. & Geração de minuta em $< 3.0\,\text{s}$ com obrigatoriedade de revisão médica. & Importante \\
+\textbf{RF-012} & Emissão de guias de faturamento hospitalar automatizadas no padrão TISS/TUSS. & Geração e validação de arquivos XML contra schemas oficiais da ANS. & Essencial \\
+\textbf{RF-013} & Auditoria preventiva de faturamento por IA com detecção de inconformidades e glosas. & Identificação proativa de divergências entre prescrições e contas médicas. & Importante \\
+\textbf{RF-014} & Painel de monitoramento e indicadores de tempo médio de espera e giro de leitos. & Atualização reativa de dados em tela a cada $30\,\text{s}$ sem recarga de página. & Importante \\
+\textbf{RF-015} & Agendamento inteligente de recursos diagnósticos e exames laboratoriais. & Verificação dinâmica de horários, equipamentos e preparo prévio do paciente. & Desejável \\
+\textbf{RF-016} & Gestão de estoque de farmácia satélite com baixa automática na administração. & Disparo de alerta de reposição ao atingir o ponto de pedido de segurança. & Essencial \\
+\textbf{RF-017} & Protocolo seguro de encerramento de prontuário, alta administrativa e registro de óbito. & Bloqueio definitivo de inserções retroativas após a assinatura de término. & Essencial \\
+\textbf{RF-018} & Pipeline de sanitização e mascaramento de PII pré-envio para APIs externas de IA. & Remoção completa de dados identificáveis antes do tráfego externo. & Essencial \\
+\textbf{RF-019} & Rastreabilidade e log imutável de inferências, prompts e respostas de IA. & Armazenamento auditável de parâmetros, latências e feedbacks humanos. & Essencial \\
+\textbf{RF-020} & Mecanismo de Fallback determinístico e Circuit Breaker para serviços de IA. & Continuidade ininterrupta das operações clínicas em caso de queda da IA. & Essencial \\
+\textbf{RF-021} & Sistema de alertas multicanal (Visual, Sonoro, Push) para emergências críticas. & Disparo sonoro automático no posto de enfermagem para triagem Vermelha. & Essencial \\
+\textbf{RF-022} & Exportação de relatórios gerenciais e dados epidemiológicos em PDF, CSV e JSON FHIR. & Filtros customizáveis por período, especialidade e desfecho clínico. & Desejável \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\section{Regras de Negócio (RN) e Diretrizes Operacionais}
+\begin{enumerate}[label=\textbf{RN-\arabic*:}, leftmargin=*]
+  \item \textbf{Prioridade Absoluta para Classificação Vermelha}: Pacientes classificados com a cor Vermelha têm atendimento imediato mandatório. O sistema reorganiza instantaneamente as filas médicas, alocando o paciente no topo sem possibilidade de adiamento.
+  \item \textbf{Princípio do Human-in-the-Loop em Decisões de IA}: Nenhuma sugestão, diagnóstico provável, ajuste de dosagem ou cálculo de risco emitido por modelos de IA tem execução autônoma. É estritamente exigida a validação, alteração ou recusa expressa por profissional de saúde devidamente habilitado.
+  \item \textbf{Higienização Mandatória de Dados (De-identification)}: Nenhum dado assistencial que contenha identificadores diretos (Nome, CPF, CNS, RG, Telefone, Endereço) pode ser transmitido a APIs públicas ou privadas de IA sem prévia tokenização e mascaramento sintético.
+  \item \textbf{Resiliência e Continuidade Operacional (Circuit Breaker)}: Se o tempo de resposta de qualquer API de IA exceder $2.0\,\text{s}$ ou se houver falha de conectividade (código HTTP $5\text{xx}$), o sistema chaveia automaticamente para as regras determinísticas clássicas sem interromper a assistência.
+  \item \textbf{Vedação de Lançamentos Financeiros Retroativos}: É proibida a inclusão ou alteração de procedimentos e medicamentos em atendimentos cujo período contábil de faturamento esteja encerrado.
+  \item \textbf{Sigilo Assistencial e Vínculo Ativo}: O acesso aos dados integrais do PEP é restrito aos profissionais diretamente vinculados ao episódio de cuidado ativo do paciente. Acessos extraordinários exigem justificativa formal registrada em trilha de auditoria.
+  \item \textbf{Alocação Exclusiva em Leitos Homologados}: Um paciente somente pode ser transferido ou admitido em leitos cujo status seja explicitamente ``Livre'' e ``Higienizado'', com confirmação do serviço de hotelaria hospitalar.
+  \item \textbf{Validade Jurídica de Prescrições}: Apenas ordens médicas assinadas com certificado digital padrão ICP-Brasil (A3 ou em nuvem) são elegíveis para dispensação farmacêutica e aprazamento de enfermagem.
+  \item \textbf{Dupla Checagem para Fármacos de Alta Vigilância}: A liberação e administração de medicamentos quimioterápicos, eletrólitos concentrados, opioides e psicotrópicos exigem autenticação cruzada de dois enfermeiros distintos.
+  \item \textbf{Integridade Cadastral da Receita Federal}: O sistema rejeita o cadastro de novos pacientes que possuam dígitos verificadores de CPF inconsistentes, exceto em casos de admissão emergencial de pacientes inconscientes/não identificados (protocolo ``Paciente Desconhecido'').
+  \item \textbf{Validação Prévia de Cobertura de Convênio}: Procedimentos que exijam autorização prévia da operadora de saúde disparam bloqueio de agendamento cirúrgico até o retorno do token de autorização TISS.
+  \item \textbf{Imutabilidade do Prontuário Encerrado}: Após a confirmação da alta médica ou do atestado de óbito, o registro do prontuário é bloqueado contra qualquer modificação textual, permitindo apenas a anexação de notas de retificação aditivas.
+\end{enumerate}
+\section{Requisitos Não Funcionais (RNF)}
+\begin{itemize}[noitemsep]
+  \item \textbf{RNF-001 (Desempenho de Banco de Dados)}: As operações de leitura de prontuário devem responder em tempo $< 200\,\text{ms}$ e as transações de escrita ACID em tempo $< 400\,\text{ms}$ sob carga nominal de $2.000$ requisições concorrentes.
+  \item \textbf{RNF-002 (Latência de Inferência de IA)}: As chamadas às APIs de IA (RAG e sumarização) devem possuir timeout configurado em $2.0\,\text{s}$, com resposta em percentil $95$ ($\text{P95}$) inferior a $1.5\,\text{s}$.
+  \item \textbf{RNF-003 (Criptografia e Segurança em Trânsito e Repouso)}: Toda a comunicação cliente-servidor deve utilizar TLS 1.3 com suites de cifra modernas. O banco de dados e os backups devem utilizar criptografia AES-256 em repouso.
+  \item \textbf{RNF-004 (Disponibilidade e Tolerância a Falhas)}: O sistema deve garantir disponibilidade mínima de $99,95\%$ mensal (equivalente a no máximo $21,9$ minutos de indisponibilidade por mês), com redundância geográfica e failover automático.
+  \item \textbf{RNF-005 (Interoperabilidade e Padrões de Saúde)}: Comunicação com sistemas de terceiros através de mensagens HL7 v2.5 e recursos HL7 FHIR Release 4 estruturados em formato JSON.
+  \item \textbf{RNF-006 (Explicabilidade e Auditoria de IA)}: Toda resposta gerada por IA deve acompanhar a identificação do modelo utilizado, temperatura, tokens consumidos e trechos de diretrizes clínicas recuperadas pelo RAG.
+  \item \textbf{RNF-007 (Acessibilidade e Usabilidade)}: A interface de usuário deve atingir conformidade WCAG 2.1 nível AA, com contraste visual elevado, suporte a teclado e taxa de erro operacional inferior a $1\%$ em simulações clínicas.
+\end{itemize}
+\section{Segurança da Informação, Conformidade com a LGPD e UX Clínico}
+\subsection{Controle de Acesso Baseado em Papéis e Atributos (RBAC / ABAC)}
+O Vitalis v2.0 implementa uma política de segurança de controle de acesso híbrida (RBAC e ABAC). Permissões granulares são vinculadas à especialidade, conselho de classe ativo (CRM, COREN, CRF) e localização física do usuário (IP institucional ou VPN segura). Perfis administrativos não possuem privilégios de visualização de anotações subjetivas de saúde mental ou diagnósticos sigilosos.
+\subsection{Conformidade com a LGPD (Lei nº 13.709/2018)}
+Por tratar de dados pessoais sensíveis de saúde (Art. 5º, II da LGPD), o sistema Vitalis v2.0 implementa salvaguardas técnicas robustas:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Base Legal e Finalidade}: Tratamento fundamentado na tutela da saúde (Art. 7º, VIII e Art. 11, II, ``f'');
+  \item \textbf{Anonimização Automática}: Módulos de inteligência epidemiológica e relatórios gerenciais operam exclusivamente sobre dados anonimizados por técnicas de $k$-anonimato ($k \ge 5$);
+  \item \textbf{Gestão de Consentimento e Direitos do Titular}: Portal de privacidade para emissão do relatório de dados tratados e controle de revogação de consentimentos para usos secundários de pesquisa.
+\end{enumerate}
+\subsection{Design de Experiência do Usuário (UX) para Ambientes Críticos}
+As interfaces gráficas foram desenhadas sob diretrizes de ergonomia cognitiva:
+\begin{itemize}[noitemsep]
+  \item \textbf{Redução de Alertas Falsos}: Os alertas de IA são calibrados para evitar a ``fadiga de alertas'', dividindo-se em Alertas Críticos (bloqueantes, borda vermelha e áudio) e Sugestões Consultivas (discretas, borda azul);
+  \item \textbf{Design Responsivo de Beira de Leito}: Layouts otimizados para tablets de $10''$ utilizados por enfermagem e médicos em rounds clínicos, com botões de toque com área de acionamento de no mínimo $48 \times 48\,\text{dp}$;
+  \item \textbf{Prevenção de Erros de Prescrição}: Uso da técnica de \textit{Tall Man Lettering} na exibição de fármacos com nomes semelhantes (ex.: predniSONA vs prednisoLONA) e confirmação explícita para doses acima do percentil 99.
+\end{itemize}
+\section{Glossário Técnico}
+\begin{enumerate}[noitemsep]
+  \item \textbf{ANS}: Agência Nacional de Saúde Suplementar.
+  \item \textbf{CNS}: Cartão Nacional de Saúde.
+  \item \textbf{PEP}: Prontuário Eletrônico do Paciente.
+  \item \textbf{RBAC / ABAC}: Role-Based / Attribute-Based Access Control.
+  \item \textbf{TISS / TUSS}: Troca de Informação de Saúde Suplementar / Terminologia Unificada da Saúde Suplementar.
+  \item \textbf{HL7 / FHIR}: Health Level Seven / Fast Healthcare Interoperability Resources.
+  \item \textbf{ICP-Brasil}: Infraestrutura de Chaves Públicas Brasileira.
+  \item \textbf{3NF}: Terceira Forma Normal de banco de dados.
+  \item \textbf{Manchester}: Protocolo internacional de triagem clínica por gravidade.
+  \item \textbf{RAG}: Retrieval-Augmented Generation (Geração Aumentada por Recuperação).
+  \item \textbf{qSOFA / NEWS2}: Quick Sequential Organ Failure Assessment / National Early Warning Score 2.
+  \item \textbf{LOS}: Length of Stay (Tempo de Permanência Hospitalar).
+  \item \textbf{PII}: Personally Identifiable Information (Dados Pessoais Identificáveis).
+  \item \textbf{WER}: Word Error Rate (Taxa de Erro de Palavras em reconhecimento de voz).
+\end{enumerate}
+\vspace{2em}
+\noindent
+\rule{0.6\textwidth}{0.4pt} \\
+\textbf{Responsável Técnico}: Davi dos Santos Ribeiro \\
+\textbf{Curso}: Engenharia de Software -- Universidade Católica do Salvador (UCSAL) \\
+\textbf{Data de Emissão}: 15 de Agosto de 2026
+\bibliography{referencias}
+\end{document}
