@@ -39,3 +39,26 @@ Todos os artefatos formais e fontes do projeto encontram-se estruturados no dire
 4. **Fontes Modulares em LaTeX (TikZ Nativo):**  
    [`projeto-semestral/vitalis-overleaf/`](./projeto-semestral/vitalis-overleaf/)  
    Diretório com todo o código-fonte LaTeX, incluindo diagramas BPMN e UML compilados diretamente via código vetorial.
+
+---
+
+### Sistema (MVP)
+
+Back-end em Java 21 + Spring Boot, organizado em microsserviços atrás de um API Gateway. Arquitetura e diagramas C4 em [`docs/arquitetura.md`](./docs/arquitetura.md).
+
+```
+backend/
+├── gateway/           # Spring Cloud Gateway (porta 8080)
+├── servico-clinico/   # pacientes
+└── servico-leitos/    # leitos
+docker-compose.yml     # Postgres + os 3 serviços
+```
+
+**Como rodar** (requer apenas Docker):
+
+```bash
+docker compose up -d --build
+curl localhost:8080/api/leitos/leitos
+```
+
+O Postgres fica exposto na porta `5433` (usuário/senha `vitalis`) para acesso por DBeaver/pgAdmin.

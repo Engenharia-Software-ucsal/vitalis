@@ -1,0 +1,20 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: servico-leitos
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/vitalis_leitos}
+    username: ${DB_USER:vitalis}
+    password: ${DB_PASSWORD:vitalis}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
