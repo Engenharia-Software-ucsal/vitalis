@@ -1,0 +1,64 @@
+name: vitalis
+
+x-db-env: &db-env
+  DB_USER: ${POSTGRES_USER:-vitalis}
+  DB_PASSWORD: ${POSTGRES_PASSWORD:-vitalis}
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-vitalis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vitalis}
+      POSTGRES_DB: vitalis
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  servico-clinico:
+    build:
+      context: ./backend
+      args:
+        MODULE: servico-clinico
+    environment:
+      <<: *db-env
+      DB_URL: jdbc:postgresql://postgres:5432/vitalis_clinico
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  servico-leitos:
+    build:
+      context: ./backend
+      args:
+        MODULE: servico-leitos
+    environment:
+      <<: *db-env
+      DB_URL: jdbc:postgresql://postgres:5432/vitalis_leitos
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  gateway:
+    build:
+      context: ./backend
+      args:
+        MODULE: gateway
+    environment:
+      CLINICO_URL: http://servico-clinico:8081
+      LEITOS_URL: http://servico-leitos:8082
+    ports:
+      - "8080:8080"
+    depends_on:
+      - servico-clinico
+      - servico-leitos
+
+volumes:
+  pgdata:
