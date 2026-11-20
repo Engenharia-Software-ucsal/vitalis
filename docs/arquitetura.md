@@ -37,8 +37,8 @@ C4Container
     System_Boundary(vitalis, "Vitalis") {
         Container(front, "Front-end", "React", "Telas de recepção e mapa de leitos")
         Container(gateway, "API Gateway", "Spring Cloud Gateway", "Roteia /api/clinico e /api/leitos")
-        Container(clinico, "Serviço Clínico", "Spring Boot", "Pacientes (depois: triagem, prontuário)")
-        Container(leitos, "Serviço de Leitos", "Spring Boot", "Cadastro e status de leitos")
+        Container(clinico, "Serviço Clínico", "Spring Boot", "Pacientes e persistência clínica (APIs em expansão)")
+        Container(leitos, "Serviço de Leitos", "Spring Boot", "Cadastro, alocações e histórico de leitos")
         ContainerDb(dbClinico, "vitalis_clinico", "PostgreSQL")
         ContainerDb(dbLeitos, "vitalis_leitos", "PostgreSQL")
     }
@@ -51,6 +51,17 @@ C4Container
 ```
 
 Cada serviço tem **seu próprio banco** (database-per-service): um serviço nunca acessa as tabelas do outro. No Docker Compose os dois bancos ficam na mesma instância do Postgres para economizar recursos, mas estão isolados.
+
+### Modelo de dados persistente
+
+As migrations `V2` expandem o modelo além do cadastro de pacientes e leitos:
+
+- **Serviço clínico:** usuários e papéis; contatos de emergência; convênios e versões imutáveis de pacotes de assistência; agendamentos e atendimentos; triagens; prontuário e evoluções; alergias; medicamentos, estoque, prescrições e dispensações; pedidos e resultados de exames; faturamento e auditoria de acesso.
+- **Serviço de leitos:** alocações e histórico de alterações de status. `atendimento_id` e `responsavel_id` são referências lógicas, sem chave estrangeira para o banco clínico. A alocação permite no máximo um leito aberto por atendimento e uma alocação aberta por leito.
+
+Os registros de auditoria e as versões de pacotes são append-only no banco (triggers impedem `UPDATE`, `DELETE` e `TRUNCATE`). Arquivos de exames devem ser armazenados fora do banco; `resultado_exame.arquivo_uri` guarda a referência. A gravação dos eventos de auditoria, o controle de acesso e a sincronização entre atendimento e alocação ainda dependem da camada de aplicação.
+
+Essas migrations criam a estrutura de persistência; elas não implementam, por si só, os endpoints e fluxos de negócio para os novos domínios.
 
 ## C4 — Nível 3: Componentes (dentro de cada serviço)
 
@@ -82,7 +93,9 @@ Regras de negócio implementadas:
 
 ## Próximos passos
 
-1. Triagem Manchester no serviço clínico, com cálculo determinístico de qSOFA/NEWS2.
-2. Front-end React consumindo o gateway.
-3. Ligar leito ↔ atendimento (o serviço de leitos guarda só o id do atendimento).
-4. Nível 4 do C4 (código): diagrama de classes gerado a partir dos pacotes acima.
+1. Implementar entidades JPA, repositórios e APIs para os domínios incluídos nas migrations V2.
+2. Coordenar atendimento e alocação de leito entre serviços, incluindo a confirmação da alta e da higienização.
+3. Implementar triagem Manchester e cálculo determinístico de qSOFA/NEWS2.
+4. Completar autorização, auditoria de consultas e atualização transacional de estoque na camada de aplicação.
+5. Front-end React consumindo o gateway.
+6. Nível 4 do C4 (código): diagrama de classes gerado a partir dos pacotes acima.
