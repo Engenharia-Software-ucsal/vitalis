@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.30)  21 OCT 2026 12:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.10.22)  21 NOV 2026 19:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1001,7 +1001,7 @@ Package hyperref Info: Link coloring ON on input line 7.
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-<imagens-template/ucsal_logo.png, id=521, 174.6525pt x 77.79062pt>
+<imagens-template/ucsal_logo.png, id=585, 174.6525pt x 77.79062pt>
 File: imagens-template/ucsal_logo.png Graphic file (type png)
 <use imagens-template/ucsal_logo.png>
 Package pdftex.def Info: imagens-template/ucsal_logo.png  used on input line 15
@@ -1068,11 +1068,18 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-)
+ [3])
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
- [3] (./main.lof)
+ [4] (./main.lof
+Overfull \hbox (82.13719pt too wide) in paragraph at lines 28--28
+ [][] [][][]\T1/lmr/m/n/12 (-20) Prescrição Médica As-sis-tida pelo Copi-loto d
+e IA (\T1/lmtt/m/n/12 ollama / qwen2.5:7b-instruct-q5_K_M\T1/lmr/m/n/12 (-20) )
+ 
+ []
+
+[5])
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
@@ -1080,11 +1087,11 @@ Package microtype Info: Loading generic protrusion settings for font family
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
-
-[4] (./secoes/01_descritivo.tex
+ [6] (./secoes/01_descritivo.tex
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
 6.
- (/usr/share/texmf-dist/tex/latex/lm/ts1lmr.fd
+
+(/usr/share/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
@@ -1234,20 +1241,332 @@ File: lstlang1.sty 2025/11/14 1.11b listings language file
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 307.
  [89]) [90] [91]
-(./main.bbl [92]) [93] (./main.aux)
+(./secoes/11_repositorio_e_backend.tex
+Overfull \hbox (9.75192pt too wide) in paragraph at lines 27--29
+[]\T1/lmr/bx/n/12 (-20) Serviço Clínico (\T1/lmtt/b/n/12 backend/servico-clinic
+o\T1/lmr/bx/n/12 (-20) , porta \T1/lmtt/b/n/12 8081\T1/lmr/bx/n/12 (-20) , banc
+o \T1/lmtt/b/n/12 vitalis_clinico\T1/lmr/bx/n/12 (-20) )\T1/lmr/m/n/12 (-20) :
+ []
+
+
+Overfull \hbox (26.61153pt too wide) in paragraph at lines 33--34
+[]\T1/lmtt/m/n/12 triagem/\T1/lmr/m/n/12 (-20) : mo-tor de-ter-minís-tico do Pr
+o-to-colo de Manch-ester (\T1/lmtt/m/n/12 CalculadoraManchester\T1/lmr/m/n/12 (
+-20) )
+ []
+
+[92]
+Overfull \hbox (7.75276pt too wide) in paragraph at lines 38--40
+[]\T1/lmr/bx/n/12 (-20) Serviço de Leitos (\T1/lmtt/b/n/12 backend/servico-leit
+os\T1/lmr/bx/n/12 (-20) , porta \T1/lmtt/b/n/12 8082\T1/lmr/bx/n/12 (-20) , ban
+co \T1/lmtt/b/n/12 vitalis_leitos\T1/lmr/bx/n/12 (-20) )\T1/lmr/m/n/12 (-20) :
+ []
+
+
+Overfull \hbox (14.46022pt too wide) in paragraph at lines 41--42
+[]\T1/lmtt/m/n/12 leito/\T1/lmr/m/n/12 (-20) : máquina de es-ta-dos do leito (\
+T1/lmtt/m/n/12 LIVRE\T1/lmr/m/n/12 (-20) , \T1/lmtt/m/n/12 RESERVADO\T1/lmr/m/n
+/12 (-20) , \T1/lmtt/m/n/12 OCUPADO\T1/lmr/m/n/12 (-20) , \T1/lmtt/m/n/12 EM_HI
+GIENIZACAO\T1/lmr/m/n/12 (-20) ,
+ []
+
+
+Overfull \hbox (31.61882pt too wide) in paragraph at lines 41--42
+\T1/lmtt/m/n/12 MANUTENCAO\T1/lmr/m/n/12 (-20) , \T1/lmtt/m/n/12 ISOLAMENTO\T1/
+lmr/m/n/12 (-20) ) com blo-queio de ocu-pação di-reta a par-tir de \T1/lmtt/m/n
+/12 EM_HIGIENIZACAO
+ []
+
+
+Overfull \hbox (11.17897pt too wide) in paragraph at lines 42--43
+\T1/lmr/m/n/12 (-20) fer-ên-cia in-terna atômica (\T1/lmr/bx/n/12 (-20) RF-019\
+T1/lmr/m/n/12 (-20) ) que move o leito de origem para \T1/lmtt/m/n/12 EM_HIGIEN
+IZACAO
+ []
+
+
+Overfull \hbox (8.2518pt too wide) in paragraph at lines 48--49
+[]\T1/lmtt/m/n/12 provider/\T1/lmr/m/n/12 (-20) : in-ter-face \T1/lmtt/m/n/12 L
+lmProvider \T1/lmr/m/n/12 (-20) com adap-ta-dor \T1/lmtt/m/n/12 OpenAiCompatibl
+eLlmProvider
+ []
+
+
+Overfull \hbox (0.89178pt too wide) in paragraph at lines 49--50
+[]\T1/lmtt/m/n/12 privacidade/\T1/lmr/m/n/12 (-20) : gate-way \T1/lmtt/m/n/12 S
+anitizadorPiiService \T1/lmr/m/n/12 (-20) (\T1/lmr/bx/n/12 (-20) RF-018 / RN-3\
+T1/lmr/m/n/12 (-20) ) que suprime
+ []
+
+
+Overfull \hbox (2.52814pt too wide) in paragraph at lines 49--50
+\T1/lmr/m/n/12 (-20) CPF, CNS, nome civil, tele-fone, e-mail e CEP, gerando to-
+ken de sessão \T1/lmtt/m/n/12 HMAC-SHA256
+ []
+
+
+Overfull \hbox (32.89687pt too wide) in paragraph at lines 50--51
+[]\T1/lmtt/m/n/12 rag/ \T1/lmr/m/n/12 (-20) e \T1/lmtt/m/n/12 deterministico/\T
+1/lmr/m/n/12 (-20) : porta \T1/lmtt/m/n/12 KnowledgeRetriever \T1/lmr/m/n/12 (-
+20) (\T1/lmtt/m/n/12 PostgresKnowledgeRetriever\T1/lmr/m/n/12 (-20) )
+ []
+
+
+Overfull \hbox (18.52145pt too wide) in paragraph at lines 51--52
+[]\T1/lmtt/m/n/12 copiloto/ \T1/lmr/m/n/12 (-20) e \T1/lmtt/m/n/12 auditoria/\T
+1/lmr/m/n/12 (-20) : orques-tração pro-te-gida por \T1/lmr/m/it/12 (-20) Cir-cu
+it Breaker \T1/lmr/m/n/12 (-20) (\T1/lmtt/m/n/12 Resilience4j\T1/lmr/m/n/12 (-2
+0) )
+ []
+
+
+Overfull \hbox (63.1767pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/pacientes/{id}/contatos-emergencia|  
+ []
+
+
+Overfull \hbox (97.1767pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/atendimentos/{id}/elegibilidade-internacao|  
+ []
+
+
+Overfull \hbox (12.1767pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/atendimentos/{id}/alta|  
+ []
+
+
+Overfull \hbox (29.1767pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/atendimentos/{id}/triagens|  
+ []
+
+
+Overfull \hbox (24.9267pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/pacientes/{id}/prontuario|  
+ []
+
+
+Overfull \hbox (67.4267pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/pacientes/{id}/prontuario/evolucoes|  
+ []
+
+
+Overfull \hbox (16.4267pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/pacientes/{id}/alergias|  
+ []
+
+
+Overfull \hbox (41.9267pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/clinico/atendimentos/{id}/prescricoes|  
+ []
+
+
+Overfull \hbox (7.9267pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/leitos/leitos/{id}/higienizar|  
+ []
+
+
+Overfull \hbox (3.6767pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/leitos/leitos/{id}/historico|  
+ []
+
+
+Overfull \hbox (20.6767pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/leitos/alocacoes/{id}/transferir|  
+ []
+
+
+Overfull \hbox (58.9267pt too wide) in paragraph at lines 95--95
+[]|\T1/lmtt/m/n/8 /api/leitos/alocacoes/atendimento/{id}/liberar|  
+ []
+
+) [93] [94] (./secoes/12_modelo_c4.tex [95]
+Overfull \hbox (34.11227pt too wide) in paragraph at lines 97--98
+\T1/lmr/m/n/12 (-20) O Nível 3 (Figura [][]12[][]) de-com-põe in-ter-na-mente o
+s três mi-crosserviços de negó-cio (\T1/lmtt/m/n/12 servico-clinico\T1/lmr/m/n/
+12 (-20) ,
+ []
+
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <8> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 146.
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <6> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 146.
+
+Overfull \hbox (2.95605pt too wide) in paragraph at lines 155--156
+\T1/lmtt/m/n/12 br.ucsal.vitalis.clinico\T1/lmr/m/n/12 (-20) , \T1/lmtt/m/n/12 
+br.ucsal.vitalis.leitos \T1/lmr/m/n/12 (-20) e \T1/lmtt/m/n/12 br.ucsal.vitalis
+.ia\T1/lmr/m/n/12 (-20) , desta-
+ []
+
+[96]) [97] (./secoes/13_telas_frontend.tex
+<imagens-telas/01-login.png, id=1706, 1445.4pt x 903.375pt>
+File: imagens-telas/01-login.png Graphic file (type png)
+<use imagens-telas/01-login.png>
+Package pdftex.def Info: imagens-telas/01-login.png  used on input line 17.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+<imagens-telas/02-pacientes-lista.png, id=1711, 1445.4pt x 903.375pt>
+File: imagens-telas/02-pacientes-lista.png Graphic file (type png)
+<use imagens-telas/02-pacientes-lista.png>
+Package pdftex.def Info: imagens-telas/02-pacientes-lista.png  used on input li
+ne 29.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+ [98 <./imagens-telas/01-login.png (PNG copy)>]
+<imagens-telas/03-pacientes-novo-modal.png, id=1716, 1445.4pt x 903.375pt>
+File: imagens-telas/03-pacientes-novo-modal.png Graphic file (type png)
+<use imagens-telas/03-pacientes-novo-modal.png>
+Package pdftex.def Info: imagens-telas/03-pacientes-novo-modal.png  used on inp
+ut line 36.
+(pdftex.def)             Requested size: 400.61703pt x 250.37938pt.
+<imagens-telas/04-pacientes-contatos-emergencia.png, id=1717, 1445.4pt x 903.37
+5pt>
+File: imagens-telas/04-pacientes-contatos-emergencia.png Graphic file (type png
+)
+<use imagens-telas/04-pacientes-contatos-emergencia.png>
+Package pdftex.def Info: imagens-telas/04-pacientes-contatos-emergencia.png  us
+ed on input line 43.
+(pdftex.def)             Requested size: 400.61703pt x 250.37938pt.
+ [99 <./imagens-telas/02-pacientes-lista.png (PNG copy)> <./imagens-telas/03-pa
+cientes-novo-modal.png (PNG copy)>]
+<imagens-telas/05-pacientes-abrir-atendimento.png, id=1722, 1445.4pt x 903.375p
+t>
+File: imagens-telas/05-pacientes-abrir-atendimento.png Graphic file (type png)
+<use imagens-telas/05-pacientes-abrir-atendimento.png>
+Package pdftex.def Info: imagens-telas/05-pacientes-abrir-atendimento.png  used
+ on input line 50.
+(pdftex.def)             Requested size: 400.61703pt x 250.37938pt.
+ [100 <./imagens-telas/04-pacientes-contatos-emergencia.png (PNG copy)> <./imag
+ens-telas/05-pacientes-abrir-atendimento.png (PNG copy)>]
+<imagens-telas/06-triagem-formulario-manchester-sepse.png, id=1729, 1445.4pt x 
+903.375pt>
+File: imagens-telas/06-triagem-formulario-manchester-sepse.png Graphic file (ty
+pe png)
+<use imagens-telas/06-triagem-formulario-manchester-sepse.png>
+Package pdftex.def Info: imagens-telas/06-triagem-formulario-manchester-sepse.p
+ng  used on input line 62.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+<imagens-telas/07-triagem-fila-alerta-vermelho.png, id=1730, 1445.4pt x 903.375
+pt>
+File: imagens-telas/07-triagem-fila-alerta-vermelho.png Graphic file (type png)
+
+<use imagens-telas/07-triagem-fila-alerta-vermelho.png>
+Package pdftex.def Info: imagens-telas/07-triagem-fila-alerta-vermelho.png  use
+d on input line 69.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+ [101 <./imagens-telas/06-triagem-formulario-manchester-sepse.png (PNG copy)> <
+./imagens-telas/07-triagem-fila-alerta-vermelho.png (PNG copy)>]
+<imagens-telas/08-leitos-mapa-por-ala.png, id=1739, 1445.4pt x 1136.245pt>
+File: imagens-telas/08-leitos-mapa-por-ala.png Graphic file (type png)
+<use imagens-telas/08-leitos-mapa-por-ala.png>
+Package pdftex.def Info: imagens-telas/08-leitos-mapa-por-ala.png  used on inpu
+t line 81.
+(pdftex.def)             Requested size: 418.82375pt x 329.24254pt.
+<imagens-telas/09-leitos-modal-alocacao.png, id=1740, 1445.4pt x 1160.335pt>
+File: imagens-telas/09-leitos-modal-alocacao.png Graphic file (type png)
+<use imagens-telas/09-leitos-modal-alocacao.png>
+Package pdftex.def Info: imagens-telas/09-leitos-modal-alocacao.png  used on in
+put line 88.
+(pdftex.def)             Requested size: 400.61703pt x 321.5984pt.
+ [102 <./imagens-telas/08-leitos-mapa-por-ala.png (PNG copy)>]
+<imagens-telas/10-leitos-modal-transferencia.png, id=1746, 1445.4pt x 1198.4775
+pt>
+File: imagens-telas/10-leitos-modal-transferencia.png Graphic file (type png)
+<use imagens-telas/10-leitos-modal-transferencia.png>
+Package pdftex.def Info: imagens-telas/10-leitos-modal-transferencia.png  used 
+on input line 95.
+(pdftex.def)             Requested size: 400.61703pt x 332.16998pt.
+ [103 <./imagens-telas/09-leitos-modal-alocacao.png (PNG copy)>]
+<imagens-telas/11-leitos-historico-higienizacao.png, id=1751, 1445.4pt x 1198.4
+775pt>
+File: imagens-telas/11-leitos-historico-higienizacao.png Graphic file (type png
+)
+<use imagens-telas/11-leitos-historico-higienizacao.png>
+Package pdftex.def Info: imagens-telas/11-leitos-historico-higienizacao.png  us
+ed on input line 102.
+(pdftex.def)             Requested size: 400.61703pt x 332.16998pt.
+ [104 <./imagens-telas/10-leitos-modal-transferencia.png (PNG copy)>]
+<imagens-telas/12-prontuario-linha-do-tempo.png, id=1761, 1445.4pt x 903.375pt>
+
+File: imagens-telas/12-prontuario-linha-do-tempo.png Graphic file (type png)
+<use imagens-telas/12-prontuario-linha-do-tempo.png>
+Package pdftex.def Info: imagens-telas/12-prontuario-linha-do-tempo.png  used o
+n input line 114.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+ [105 <./imagens-telas/11-leitos-historico-higienizacao.png (PNG copy)>]
+<imagens-telas/13-prontuario-nova-evolucao.png, id=1766, 1445.4pt x 903.375pt>
+File: imagens-telas/13-prontuario-nova-evolucao.png Graphic file (type png)
+<use imagens-telas/13-prontuario-nova-evolucao.png>
+Package pdftex.def Info: imagens-telas/13-prontuario-nova-evolucao.png  used on
+ input line 121.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+<imagens-telas/14-prontuario-alergias.png, id=1767, 1445.4pt x 903.375pt>
+File: imagens-telas/14-prontuario-alergias.png Graphic file (type png)
+<use imagens-telas/14-prontuario-alergias.png>
+Package pdftex.def Info: imagens-telas/14-prontuario-alergias.png  used on inpu
+t line 128.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+ [106 <./imagens-telas/12-prontuario-linha-do-tempo.png (PNG copy)> <./imagens-
+telas/13-prontuario-nova-evolucao.png (PNG copy)>]
+<imagens-telas/15-prontuario-prescricao-copiloto-ia.png, id=1772, 1445.4pt x 10
+60.96375pt>
+File: imagens-telas/15-prontuario-prescricao-copiloto-ia.png Graphic file (type
+ png)
+<use imagens-telas/15-prontuario-prescricao-copiloto-ia.png>
+Package pdftex.def Info: imagens-telas/15-prontuario-prescricao-copiloto-ia.png
+  used on input line 135.
+(pdftex.def)             Requested size: 432.48051pt x 317.44975pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--136
+[]\T1/lmr/m/n/12 (+20) Figura 28: []Prescrição Médica As-sis-tida pelo Copi-lot
+o de IA (\T1/lmtt/m/n/12 ollama /
+ []
+
+
+Underfull \hbox (badness 2027) in paragraph at lines 136--136
+\T1/lmtt/m/n/12 qwen2.5:7b-instruct-q5_K_M\T1/lmr/m/n/12 (+20) ) com Citação da
+ Mono-grafia AN-VISA e De-lib-er-
+ []
+
+<imagens-telas/16-prontuario-modal-alergia-rn008.png, id=1773, 1445.4pt x 1034.
+86626pt>
+File: imagens-telas/16-prontuario-modal-alergia-rn008.png Graphic file (type pn
+g)
+<use imagens-telas/16-prontuario-modal-alergia-rn008.png>
+Package pdftex.def Info: imagens-telas/16-prontuario-modal-alergia-rn008.png  u
+sed on input line 142.
+(pdftex.def)             Requested size: 409.71692pt x 293.34508pt.
+[107 <./imagens-telas/14-prontuario-alergias.png (PNG copy)> <./imagens-telas/1
+5-prontuario-prescricao-copiloto-ia.png (PNG copy)>]
+<imagens-telas/17-prontuario-modal-alta-minuta-ia.png, id=1780, 1445.4pt x 903.
+375pt>
+File: imagens-telas/17-prontuario-modal-alta-minuta-ia.png Graphic file (type p
+ng)
+<use imagens-telas/17-prontuario-modal-alta-minuta-ia.png>
+Package pdftex.def Info: imagens-telas/17-prontuario-modal-alta-minuta-ia.png  
+used on input line 154.
+(pdftex.def)             Requested size: 409.71692pt x 256.07233pt.
+ [108 <./imagens-telas/16-prontuario-modal-alergia-rn008.png (PNG copy)>]
+<imagens-telas/18-prontuario-encerrado-rn12.png, id=1786, 1445.4pt x 903.375pt>
+
+File: imagens-telas/18-prontuario-encerrado-rn12.png Graphic file (type png)
+<use imagens-telas/18-prontuario-encerrado-rn12.png>
+Package pdftex.def Info: imagens-telas/18-prontuario-encerrado-rn12.png  used o
+n input line 161.
+(pdftex.def)             Requested size: 418.82375pt x 261.76527pt.
+) [109 <./imagens-telas/17-prontuario-modal-alta-minuta-ia.png (PNG copy)> <./i
+magens-telas/18-prontuario-encerrado-rn12.png (PNG copy)>] (./main.bbl [110]) [
+111] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: EB48ADB28F8DA2D1BFE88159C36BEF14;39546.
+(rerunfilecheck)             Checksum: 4FDAB81963B0A94CCE88943ED1D490E2;45035.
  ) 
 Here is how much of TeX's memory you used:
- 32847 strings out of 469515
- 625142 string characters out of 5470807
- 1505417 words of memory out of 5000000
- 59849 multiletter control sequences out of 15000+600000
- 802031 words of font info for 424 fonts, out of 8000000 for 9000
+ 33519 strings out of 469515
+ 640619 string characters out of 5470806
+ 1512235 words of memory out of 5000000
+ 60418 multiletter control sequences out of 15000+600000
+ 812944 words of font info for 445 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  89i,14n,97p,1498b,2279s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf-dis
@@ -1256,24 +1575,25 @@ t/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/lm
 exmf-dist/fonts/type1/public/lm/lmbxi10.pfb></usr/share/texmf-dist/fonts/type1/
 public/lm/lmex10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></
 usr/share/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf-dist/fo
-nts/type1/public/lm/lmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmr1
-0.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf-
-dist/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf-dist/fonts/type1/public/l
-m/lmr8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/share/
-texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf-dist/fonts/type1/
-public/lm/lmri7.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmss10.pfb></u
-sr/share/texmf-dist/fonts/type1/public/lm/lmss8.pfb></usr/share/texmf-dist/font
-s/type1/public/lm/lmssbx10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lms
-y10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/share/texm
-f-dist/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/lm/lmtk10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/s
-hare/texmf-dist/fonts/type1/public/lm/lmtt12.pfb></usr/share/texmf-dist/fonts/t
-ype1/public/lm/lmtt8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmtti10.p
-fb></usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (98 pages, 993039 bytes).
+nts/type1/public/lm/lmmi6.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmmi
+8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf-
+dist/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf-dist/fonts/type1/public/
+lm/lmr6.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/share/t
+exmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf-dist/fonts/type1/p
+ublic/lm/lmri12.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmri7.pfb></us
+r/share/texmf-dist/fonts/type1/public/lm/lmss10.pfb></usr/share/texmf-dist/font
+s/type1/public/lm/lmss8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmssbx
+10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/share/texm
+f-dist/fonts/type1/public/lm/lmsy6.pfb></usr/share/texmf-dist/fonts/type1/publi
+c/lm/lmsy8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf-dist/fonts/ty
+pe1/public/lm/lmtt12.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmtt8.pfb
+></usr/share/texmf-dist/fonts/type1/public/lm/lmtti10.pfb></usr/share/texmf-dis
+t/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on main.pdf (118 pages, 3751307 bytes).
 PDF statistics:
- 1767 PDF objects out of 2073 (max. 8388607)
- 1565 compressed objects within 16 object streams
- 469 named destinations out of 1000 (max. 500000)
- 97858 words of extra memory for PDF output out of 106986 (max. 10000000)
+ 2058 PDF objects out of 2073 (max. 8388607)
+ 1813 compressed objects within 19 object streams
+ 532 named destinations out of 1000 (max. 500000)
+ 105756 words of extra memory for PDF output out of 106986 (max. 10000000)
 

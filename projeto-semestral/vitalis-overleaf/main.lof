@@ -7,3 +7,25 @@
 \contentsline {figure}{\numberline {7}{\ignorespaces Diagrama UML do Padrão Strategy para Inferência e Predição Clínica}}{64}{figure.7}%
 \contentsline {figure}{\numberline {8}{\ignorespaces Diagrama Geral de Casos de Uso do Sistema Vitalis}}{69}{figure.8}%
 \contentsline {figure}{\numberline {9}{\ignorespaces Fluxo de inferência clínica com higienização de dados, resiliência por Circuit Breaker e contingência determinística.}}{89}{figure.9}%
+\contentsline {figure}{\numberline {10}{\ignorespaces C4 Nível 1 --- Diagrama de Contexto do Sistema Vitalis}}{95}{figure.10}%
+\contentsline {figure}{\numberline {11}{\ignorespaces C4 Nível 2 --- Diagrama de Contêineres e Persistência Isolada (\textit {Database-per-Service})}}{96}{figure.11}%
+\contentsline {figure}{\numberline {12}{\ignorespaces C4 Nível 3 --- Diagrama de Componentes Internos dos Microsserviços}}{96}{figure.12}%
+\contentsline {figure}{\numberline {13}{\ignorespaces C4 Nível 4 --- Diagrama de Classes e Interfaces Implementadas no Código-Fonte Java 21}}{97}{figure.13}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Tela de Login Institucional e Seleção Rápida de Perfis RBAC (\texttt {/login})}}{98}{figure.14}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Listagem e Busca de Pacientes com Ações de Contatos, Atendimento e Prontuário}}{99}{figure.15}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Modal de Cadastro Unificado de Paciente com Validação de CPF e CNS (RF-002)}}{99}{figure.16}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Gestão de Contatos de Emergência Vinculados ao Paciente (RF-002)}}{100}{figure.17}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Modal de Abertura de Atendimento nas Modalidades Emergência, Hospitalar e Ambulatorial}}{100}{figure.18}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Formulário de Triagem com Prévia Instantânea de Manchester (Vermelha), qSOFA (3/3), NEWS2 e Suspeita de Sepse}}{101}{figure.19}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Fila Prioritária Reativa com Alerta de Emergência Imediata no Topo e Badge de Alerta Sepse (RN-001)}}{101}{figure.20}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Mapa Visual de Leitos Agrupado por Ala com Atualização Automática (RF-004)}}{102}{figure.21}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Modal de Alocação de Paciente em Leito com Validação Síncrona de Triagem Prévia (RN-004)}}{103}{figure.22}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Modal de Transferência Interna entre Leitos e Alas (RF-019)}}{104}{figure.23}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Histórico Auditável de Alterações de Status e Higienização do Leito (RN-010)}}{105}{figure.24}%
+\contentsline {figure}{\numberline {25}{\ignorespaces Prontuário Eletrônico (PEP) com Faixa de Alergias Graves e Linha do Tempo Consolidada (RF-005 / RF-018)}}{106}{figure.25}%
+\contentsline {figure}{\numberline {26}{\ignorespaces Editor de Evolução Clínica com Contador para até 8.000 Caracteres (RF-010)}}{106}{figure.26}%
+\contentsline {figure}{\numberline {27}{\ignorespaces Aba de Cadastro e Histórico de Alergias e Contraindicações no PEP (RF-018)}}{107}{figure.27}%
+\contentsline {figure}{\numberline {28}{\ignorespaces Prescrição Médica Assistida pelo Copiloto de IA (\texttt {ollama / qwen2.5:7b-instruct-q5\_K\_M}) com Citação da Monografia ANVISA e Deliberação Human-in-the-Loop (RF-008 / RN-2)}}{107}{figure.28}%
+\contentsline {figure}{\numberline {29}{\ignorespaces Modal Obrigatório de Reconhecimento Explícito de Alergias na Prescrição (RN-008)}}{108}{figure.29}%
+\contentsline {figure}{\numberline {30}{\ignorespaces Modal de Alta Hospitalar com Geração de Minuta de Sumário de Alta por IA (RF-011 / RF-012)}}{109}{figure.30}%
+\contentsline {figure}{\numberline {31}{\ignorespaces Prontuário Encerrado após a Alta Médica com Bloqueio de Escrituração Retroativa (RN-12)}}{109}{figure.31}%

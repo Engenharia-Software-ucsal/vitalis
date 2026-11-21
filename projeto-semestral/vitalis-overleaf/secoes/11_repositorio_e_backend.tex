@@ -1,0 +1,96 @@
+% ==============================================================================
+% SEÇÃO 11: REPOSITÓRIO VERSIONADO E CÓDIGO-FONTE DO BACK-END (ITENS 11 E 14)
+% ==============================================================================
+
+\section{Repositório Versionado e Arquitetura do Back-End}
+\label{sec:repositorio_backend}
+
+Em cumprimento aos entregáveis da II Unidade da disciplina de Tópicos Avançados de Programação, esta seção documenta o repositório oficial de controle de versão (Item 11) e a estrutura de implementação do código-fonte do servidor da aplicação Vitalis (Item 14).
+
+\subsection{Repositório Git e Controle de Versão (Item 11)}
+
+O código-fonte integral do ecossistema Vitalis --- abrangendo os quatro módulos de back-end em Java~21 com Spring Boot~3.5, as migrações versionadas de banco de dados em PostgreSQL~17, a aplicação front-end em React~19 com TypeScript, os contêineres Docker e a documentação técnica --- encontra-se versionado sob o padrão \textit{Conventional Commits} (\texttt{feat:}, \texttt{fix:}, \texttt{chore:}, \texttt{docs:}) no repositório institucional da equipe no GitHub:
+
+\destaqueVitalis{Repositório Oficial do Sistema Vitalis (GitHub)}{%
+\textbf{URL:} \url{https://github.com/Engenharia-Software-ucsal/vitalis}\\
+\textbf{Orquestração Unificada:} \texttt{docker compose up -d --build} (sobe automaticamente o PostgreSQL~17 com três bancos isolados, os quatro serviços Java e o Front-End Nginx).
+}
+
+\subsection{Organização Modular do Código do Back-End (Item 14)}
+
+O back-end foi construído como um projeto Maven multimódulo (\texttt{backend/pom.xml}) em \textbf{Java~21} e \textbf{Spring Boot~3.5.7}, adotando o padrão arquitetural de microsserviços com isolamento estrito de persistência (\textit{database-per-service}) e comunicação protegida por tokens JWT assinados com HMAC-SHA256:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{API Gateway (\texttt{backend/gateway}, porta \texttt{8080})}:
+    Implementado sobre o \textit{Spring Cloud Gateway Server WebFlux} com \textit{Spring Security OAuth2 Resource Server}. Atua como ponto único de entrada (\textit{Single Entry Point}), validando centralmente a assinatura criptográfica e a expiração de 15 minutos (\textbf{RNF-011}) dos tokens JWT, aplicando a política de CORS e roteando as requisições pelos prefixos \texttt{/api/clinico/**}, \texttt{/api/leitos/**} e \texttt{/api/ia/**}.
+
+    \item \textbf{Serviço Clínico (\texttt{backend/servico-clinico}, porta \texttt{8081}, banco \texttt{vitalis\_clinico})}:
+    Implementa o núcleo assistencial e de segurança:
+    \begin{itemize}[noitemsep]
+        \item \texttt{auth/} e \texttt{security/}: autenticação com \texttt{BCryptPasswordEncoder}, emissão de pares \texttt{accessToken} (15 min) e \texttt{refreshToken} (8h) via \texttt{NimbusJwtEncoder}, e controle de acesso baseado em papéis (\textit{RBAC} com \texttt{@PreAuthorize}) para os perfis \texttt{ADMINISTRADOR}, \texttt{RECEPCIONISTA}, \texttt{ENFERMEIRO}, \texttt{MEDICO} e \texttt{GESTOR\_LEITOS};
+        \item \texttt{paciente/}: cadastro unificado de pacientes com validação algorítmica dos dígitos verificadores do CPF e formato de 15 dígitos do CNS (\texttt{ValidadorCpf}), criação transacional automática do prontuário 1:1 e gerenciamento de contatos de emergência;
+        \item \texttt{atendimento/}: ciclo de vida do episódio clínico (\texttt{ABERTO}, \texttt{EM\_ANDAMENTO}, \texttt{ALTA}, \texttt{CANCELADO}), fila prioritária ordenada pela gravidade de Manchester com casos \texttt{VERMELHA} no topo (\textbf{RN-001}), endpoint inter-serviço de verificação de elegibilidade para internação (\textbf{RN-004}) e concessão de alta médica integrada via \texttt{RestClient} ao serviço de leitos (\textbf{RF-012});
+        \item \texttt{triagem/}: motor determinístico do Protocolo de Manchester (\texttt{CalculadoraManchester}) acoplado ao cálculo contínuo dos escores hemodinâmicos \textbf{qSOFA} (0 a 3) e \textbf{NEWS2} (0 a 20) (\texttt{CalculadoraEscoresClinicos}), com disparo automático da flag \texttt{alertaSepse};
+        \item \texttt{prontuario/}, \texttt{alergia/} e \texttt{prescricao/}: consolidação cronológica do Prontuário Eletrônico do Paciente (PEP), evoluções clínicas de até 8.000 caracteres com bloqueio estrito de escrituração pós-alta (\textbf{RN-12}), gestão de alergias e bloqueio de prescrição sem reconhecimento explícito de alergias ativas (\textbf{RN-008});
+        \item \texttt{auditoria/}: gravação automática de eventos \texttt{LEITURA}, \texttt{CRIACAO} e \texttt{ALTERACAO} na tabela \texttt{auditoria\_acesso}, protegida por entidade \texttt{@Immutable} no Hibernate e gatilhos PostgreSQL que impedem \texttt{UPDATE}, \texttt{DELETE} e \texttt{TRUNCATE}.
+    \end{itemize}
+
+    \item \textbf{Serviço de Leitos (\texttt{backend/servico-leitos}, porta \texttt{8082}, banco \texttt{vitalis\_leitos})}:
+    Gerencia a ocupação hospitalar, reservas, transferências e hotelaria:
+    \begin{itemize}[noitemsep]
+        \item \texttt{leito/}: máquina de estados do leito (\texttt{LIVRE}, \texttt{RESERVADO}, \texttt{OCUPADO}, \texttt{EM\_HIGIENIZACAO}, \texttt{MANUTENCAO}, \texttt{ISOLAMENTO}) com bloqueio de ocupação direta a partir de \texttt{EM\_HIGIENIZACAO} (\textbf{RN-010}) e trilha histórica completa (\texttt{HistoricoStatusLeito});
+        \item \texttt{alocacao/} e \texttt{integracao/}: alocação de pacientes com consulta síncrona ao \texttt{servico-clinico} (\texttt{ClinicoClient}) para exigir triagem prévia (\textbf{RN-004}), transferência interna atômica (\textbf{RF-019}) que move o leito de origem para \texttt{EM\_HIGIENIZACAO} e o de destino para \texttt{OCUPADO}, e liberação idempotente no encerramento da alta médica.
+    \end{itemize}
+
+    \item \textbf{Serviço de IA Clínica (\texttt{backend/servico-ia}, porta \texttt{8083}, banco \texttt{vitalis\_ia})}:
+    Implementa a arquitetura da Seção~\ref{sec:funcionalidade_ia} de forma agnóstica a provedor ou modelo (\textit{Ports \& Adapters}):
+    \begin{itemize}[noitemsep]
+        \item \texttt{provider/}: interface \texttt{LlmProvider} com adaptador \texttt{OpenAiCompatibleLlmProvider} (compatível sem alteração de código com \textbf{Ollama local}, \textbf{OpenRouter}, \textbf{OpenAI}, \textbf{Groq} e \textbf{vLLM} via \texttt{/v1/chat/completions}) e \texttt{MockLlmProvider};
+        \item \texttt{privacidade/}: gateway \texttt{SanitizadorPiiService} (\textbf{RF-018 / RN-3}) que suprime CPF, CNS, nome civil, telefone, e-mail e CEP, gerando token de sessão \texttt{HMAC-SHA256} e hash \texttt{SHA-256} do prompt sanitizado;
+        \item \texttt{rag/} e \texttt{deterministico/}: porta \texttt{KnowledgeRetriever} (\texttt{PostgresKnowledgeRetriever}) sobre monografias da ANVISA e protocolo \textit{Surviving Sepsis}, combinada à calculadora de depuração renal de \textbf{Cockcroft-Gault} e verificação determinística de interações graves Categoria~X e D;
+        \item \texttt{copiloto/} e \texttt{auditoria/}: orquestração protegida por \textit{Circuit Breaker} (\texttt{Resilience4j}) com fallback determinístico instantâneo (\textbf{RF-020 / RN-4}) e persistência imutável \textit{WORM} nas tabelas \texttt{log\_inferencia\_ia} e \texttt{decisao\_humana\_ia} (\textbf{RF-019 / RN-2}).
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Catálogo Consolidado de Endpoints REST do Back-End}
+
+A Tabela~\ref{tab:endpoints_backend} sintetiza os endpoints REST expostos através do API Gateway e validados por testes unitários e testes integrados ponta a ponta.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Catálogo de Endpoints REST Implementados no Back-End do Vitalis}
+\label{tab:endpoints_backend}
+\begin{tabularx}{\textwidth}{l l >{\raggedright\arraybackslash}p{4.8cm} >{\raggedright\arraybackslash}X l}
+\toprule
+\textbf{Serviço} & \textbf{Método} & \textbf{Rota no API Gateway} & \textbf{Responsabilidade / Regra de Negócio} & \textbf{Requisito} \\
+\midrule
+Clínico & \texttt{POST} & \texttt{/api/clinico/auth/login} & Autenticação BCrypt e emissão de JWT (15m + Refresh) & RF-001 \\
+Clínico & \texttt{POST} & \texttt{/api/clinico/auth/refresh} & Renovação de sessão com refresh token & RNF-011 \\
+Clínico & \texttt{GET} & \texttt{/api/clinico/auth/me} & Dados e papéis RBAC do usuário autenticado & RF-001 \\
+Clínico & \texttt{GET/POST} & \texttt{/api/clinico/pacientes} & Busca e cadastro com validação de CPF/CNS e PEP 1:1 & RF-002 \\
+Clínico & \texttt{GET/POST} & \texttt{/api/clinico/pacientes/\{id\}/contatos-emergencia} & Gestão de contatos de emergência do paciente & RF-002 \\
+Clínico & \texttt{POST} & \texttt{/api/clinico/atendimentos} & Abertura de episódio clínico (Emergência/Hospitalar) & RF-003 \\
+Clínico & \texttt{GET} & \texttt{/api/clinico/atendimentos/fila} & Fila prioritária com classificação Vermelha no topo & RN-001 \\
+Clínico & \texttt{GET} & \texttt{/api/clinico/atendimentos/\{id\}/elegibilidade-internacao} & Validação inter-serviço de triagem prévia obrigatória & RN-004 \\
+Clínico & \texttt{POST} & \texttt{/api/clinico/atendimentos/\{id\}/alta} & Alta médica, bloqueio do PEP e liberação do leito & RF-012 \\
+Clínico & \texttt{GET/POST} & \texttt{/api/clinico/atendimentos/\{id\}/triagens} & Triagem Manchester determinística + qSOFA e NEWS2 & RF-004 \\
+Clínico & \texttt{GET} & \texttt{/api/clinico/pacientes/\{id\}/prontuario} & Linha do tempo completa do PEP + auditoria \texttt{LEITURA} & RF-005 \\
+Clínico & \texttt{POST} & \texttt{/api/clinico/pacientes/\{id\}/prontuario/evolucoes} & Evolução clínica (8.000 chars) bloqueada pós-alta & RN-12 \\
+Clínico & \texttt{GET/POST} & \texttt{/api/clinico/pacientes/\{id\}/alergias} & Cadastro e inativação de alergias e contraindicações & RF-018 \\
+Clínico & \texttt{GET/POST} & \texttt{/api/clinico/atendimentos/\{id\}/prescricoes} & Prescrição digital com bloqueio de alergia ativa & RN-008 \\
+\midrule
+Leitos & \texttt{GET/POST} & \texttt{/api/leitos/leitos} & Mapa visual por ala/status com alocação corrente & RF-004 \\
+Leitos & \texttt{PATCH} & \texttt{/api/leitos/leitos/\{id\}/higienizar} & Certificação de higienização (\texttt{EM\_HIGIENIZACAO} $\to$ \texttt{LIVRE}) & RN-010 \\
+Leitos & \texttt{GET} & \texttt{/api/leitos/leitos/\{id\}/historico} & Trilha histórica auditável de mudanças de status & RF-004 \\
+Leitos & \texttt{POST} & \texttt{/api/leitos/alocacoes} & Alocação de leito após verificação síncrona de triagem & RN-004 \\
+Leitos & \texttt{POST} & \texttt{/api/leitos/alocacoes/\{id\}/transferir} & Transferência interna atômica entre leitos/alas & RF-019 \\
+Leitos & \texttt{POST} & \texttt{/api/leitos/alocacoes/atendimento/\{id\}/liberar} & Encerramento de alocação e envio para higienização & RF-012 \\
+\midrule
+IA & \texttt{POST} & \texttt{/api/ia/copiloto/prescricao} & Copiloto RAG + Sanitizador PII + Cockcroft-Gault + CB & RF-008 \\
+IA & \texttt{POST} & \texttt{/api/ia/sumario-alta} & Geração assistida de minuta de sumário de alta & RF-011 \\
+IA & \texttt{POST} & \texttt{/api/ia/inferencias/\{id\}/decisao} & Registro WORM da deliberação médica HITL & RN-2 \\
+IA & \texttt{GET} & \texttt{/api/ia/governanca/metricas} & Indicadores de aderência HITL e Circuit Breaker & RF-019 \\
+\bottomrule
+\end{tabularx}
+\end{table}

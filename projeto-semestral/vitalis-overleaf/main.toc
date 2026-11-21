@@ -120,3 +120,19 @@
 \contentsline {subsection}{\numberline {10.6}Auditoria e Explicabilidade: Tabela \texttt {LOG\_INFERENCIA\_IA}}{89}{subsection.10.6}%
 \contentsline {subsubsection}{\numberline {10.6.1}Modelo de Dados Relacional e Trilha Imutável}{89}{subsubsection.10.6.1}%
 \contentsline {subsubsection}{\numberline {10.6.2}Governança de IA e Monitoramento Pós-Implantação}{90}{subsubsection.10.6.2}%
+\contentsline {section}{\numberline {11}Repositório Versionado e Arquitetura do Back-End}{92}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Repositório Git e Controle de Versão (Item 11)}{92}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Organização Modular do Código do Back-End (Item 14)}{92}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Catálogo Consolidado de Endpoints REST do Back-End}{93}{subsection.11.3}%
+\contentsline {section}{\numberline {12}Modelo C4 da Arquitetura de Software (Item 12)}{95}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Nível 1: Diagrama de Contexto do Sistema}{95}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Nível 2: Diagrama de Contêineres}{95}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Nível 3: Diagrama de Componentes}{96}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Nível 4: Diagrama de Código (Classes e Portas Implementadas)}{97}{subsection.12.4}%
+\contentsline {section}{\numberline {13}Telas do Front-End e Fluxos Assistenciais da Aplicação (Item 13)}{98}{section.13}%
+\contentsline {subsection}{\numberline {13.1}Autenticação Institucional e Controle de Acesso (RBAC)}{98}{subsection.13.1}%
+\contentsline {subsection}{\numberline {13.2}Módulo de Recepção, Pacientes e Abertura de Atendimento}{98}{subsection.13.2}%
+\contentsline {subsection}{\numberline {13.3}Triagem de Manchester, Escores qSOFA/NEWS2 e Fila Prioritária}{100}{subsection.13.3}%
+\contentsline {subsection}{\numberline {13.4}Mapa Visual de Leitos, Alocação, Transferência e Higienização}{102}{subsection.13.4}%
+\contentsline {subsection}{\numberline {13.5}Prontuário Eletrônico (PEP), Prescrição e Copiloto de IA com RAG}{105}{subsection.13.5}%
+\contentsline {subsection}{\numberline {13.6}Alta Hospitalar Assistida por IA e Imutabilidade Pós-Alta}{108}{subsection.13.6}%

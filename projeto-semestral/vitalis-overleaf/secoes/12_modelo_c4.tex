@@ -1,0 +1,190 @@
+% ==============================================================================
+% SEÇÃO 12: MODELO C4 DA ARQUITETURA (CONTEXTO, CONTÊINERES, COMPONENTES E CÓDIGO)
+% ==============================================================================
+
+\section{Modelo C4 da Arquitetura de Software (Item 12)}
+\label{sec:modelo_c4}
+
+Para representar a arquitetura do Sistema Vitalis em diferentes níveis de abstração técnica, adota-se o \textbf{Modelo C4} (\textit{Context, Containers, Components, Code}), proposto por Simon Brown. As subseções a seguir detalham os quatro níveis hierárquicos construídos sobre a implementação real dos microsserviços.
+
+% ==============================================================================
+\subsection{Nível 1: Diagrama de Contexto do Sistema}
+\label{subsec:c4_contexto}
+
+O Nível~1 (Figura~\ref{fig:c4_nivel1}) delimita a fronteira do Sistema Vitalis, os cinco perfis de usuários hospitalares que operam a plataforma e a comunicação externa com provedores de modelos de linguagem (Ollama local ou OpenRouter via protocolo compatível com OpenAI), que recebem exclusivamente cargas úteis anonimizadas pelo gateway de privacidade.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[
+    person/.style={rectangle, rounded corners=4pt, draw=vitalisdark, fill=vitalisblue!15, line width=1pt, minimum width=2.8cm, minimum height=1.2cm, align=center, font=\scriptsize\sffamily},
+    system/.style={rectangle, rounded corners=6pt, draw=vitalisdark, fill=vitalisblue!90, text=white, line width=1.4pt, minimum width=6.2cm, minimum height=1.8cm, align=center, font=\footnotesize\sffamily\bfseries},
+    extsys/.style={rectangle, rounded corners=5pt, draw=purple!80!black, fill=purple!10, line width=1.1pt, minimum width=5.6cm, minimum height=1.5cm, align=center, font=\scriptsize\sffamily},
+    c4arrow/.style={-{Latex[length=2.3mm]}, draw=vitalisdark, line width=0.9pt}
+]
+    % Atores superiores
+    \node[person] (rec) at (-6.4, 2.8) {\textbf{Recepcionista}\\{\tiny Cadastro e Abertura}\\{\tiny de Atendimento}};
+    \node[person] (enf) at (-3.2, 2.8) {\textbf{Enfermeiro(a)}\\{\tiny Triagem Manchester}\\{\tiny e qSOFA / NEWS2}};
+    \node[person] (med) at (0.0, 2.8) {\textbf{Médico(a)}\\{\tiny PEP, Prescrição,}\\{\tiny Copiloto IA e Alta}};
+    \node[person] (lei) at (3.2, 2.8) {\textbf{Gestor de Leitos}\\{\tiny Alocação, Transferência}\\{\tiny e Higienização}};
+    \node[person] (adm) at (6.4, 2.8) {\textbf{Administrador}\\{\tiny Gestão Global e}\\{\tiny Governança de IA}};
+
+    % Sistema central
+    \node[system] (vitalis) at (0, 0) {SISTEMA DE GESTÃO HOSPITALAR VITALIS\\[2pt]{\scriptsize\normalfont\sffamily Acolhimento, Triagem Manchester, PEP, Copiloto IA com RAG e Gestão de Leitos}};
+
+    % Sistema externo de IA
+    \node[extsys] (llm) at (0, -2.8) {\textbf{Provedor de IA Agnóstico (Ollama Local / OpenRouter / OpenAI)}\\{\tiny Protocolo \texttt{/v1/chat/completions} --- Recebe apenas payloads sanitizados sem PII (Timeout $\le 2{,}0\,\text{s}$)}};
+
+    % Relações
+    \draw[c4arrow] (rec.south) -- node[left, font=\tiny\sffamily] {HTTPS} (vitalis.north west);
+    \draw[c4arrow] (enf.south) -- (vitalis.north);
+    \draw[c4arrow] (med.south) -- node[right, font=\tiny\sffamily] {HTTPS / JWT} (vitalis.north);
+    \draw[c4arrow] (lei.south) -- (vitalis.north);
+    \draw[c4arrow] (adm.south) -- node[right, font=\tiny\sffamily] {HTTPS} (vitalis.north east);
+    \draw[c4arrow] (vitalis.south) -- node[right, font=\tiny\sffamily] {REST/JSON (Circuit Breaker + Fallback Determinístico)} (llm.north);
+\end{tikzpicture}%
+}
+\caption{C4 Nível 1 --- Diagrama de Contexto do Sistema Vitalis}
+\label{fig:c4_nivel1}
+\end{figure}
+
+% ==============================================================================
+\subsection{Nível 2: Diagrama de Contêineres}
+\label{subsec:c4_conteineres}
+
+O Nível~2 (Figura~\ref{fig:c4_nivel2}) detalha as unidades de execução e armazenamento orquestradas pelo Docker Compose: a SPA em React servida pelo Nginx, o API Gateway e os três microsserviços Spring Boot, cada um conectado ao seu próprio banco de dados relacional no PostgreSQL~17.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    cont/.style={rectangle, rounded corners=4pt, draw=vitalisdark, fill=vitalislight!70, line width=1pt, minimum width=4.0cm, minimum height=1.5cm, align=center, font=\scriptsize\sffamily},
+    aicont/.style={rectangle, rounded corners=4pt, draw=purple!80!black, fill=purple!10, line width=1pt, minimum width=4.0cm, minimum height=1.5cm, align=center, font=\scriptsize\sffamily},
+    db/.style={cylinder, shape border rotate=90, aspect=0.25, draw=vitalisdark, fill=vitalisblue!18, line width=1pt, minimum width=3.4cm, minimum height=1.4cm, align=center, font=\scriptsize\sffamily},
+    c4arrow/.style={-{Latex[length=2.2mm]}, draw=vitalisdark, line width=0.85pt}
+]
+    \node[cont, fill=vitalisblue!20] (spa) at (-4.2, 4.0) {\textbf{Front-End Web (SPA)}\\{\tiny React 19 + TypeScript + Tailwind}\\{\tiny Container Nginx (\texttt{:3000})}};
+    \node[cont, fill=vitalisblue!25] (gw) at (2.8, 4.0) {\textbf{API Gateway}\\{\tiny Spring Cloud Gateway WebFlux (\texttt{:8080})}\\{\tiny Validação JWT HS256 e CORS}};
+
+    \node[cont] (clin) at (-5.2, 1.0) {\textbf{Serviço Clínico}\\{\tiny Java 21 / Spring Boot 3.5 (\texttt{:8081})}\\{\tiny Auth, Pacientes, Triagem, PEP,}\\{\tiny Prescrição, Alta e Auditoria}};
+    \node[cont] (leit) at (0.0, 1.0) {\textbf{Serviço de Leitos}\\{\tiny Java 21 / Spring Boot 3.5 (\texttt{:8082})}\\{\tiny Mapa por Ala, Alocações,}\\{\tiny Transferência e Higienização}};
+    \node[aicont] (ia) at (5.2, 1.0) {\textbf{Serviço de IA Clínica}\\{\tiny Java 21 / Spring Boot 3.5 (\texttt{:8083})}\\{\tiny Sanitizador PII, RAG, Cockcroft-Gault,}\\{\tiny Circuit Breaker e WORM}};
+
+    \node[db] (dbclin) at (-5.2, -2.0) {\textbf{vitalis\_clinico}\\{\tiny PostgreSQL 17}\\{\tiny Flyway V1..V4}};
+    \node[db] (dbleit) at (0.0, -2.0) {\textbf{vitalis\_leitos}\\{\tiny PostgreSQL 17}\\{\tiny Flyway V1..V3}};
+    \node[db, fill=purple!15, draw=purple!80!black] (dbia) at (5.2, -2.0) {\textbf{vitalis\_ia}\\{\tiny PostgreSQL 17}\\{\tiny Flyway V1..V2 (WORM)}};
+
+    \draw[c4arrow] (spa.east) -- node[above, font=\tiny\sffamily] {REST / Bearer JWT (\texttt{/api/**})} (gw.west);
+    \draw[c4arrow] (gw.south) -- node[above left, font=\tiny\sffamily] {\texttt{/api/clinico/**}} (clin.north);
+    \draw[c4arrow] (gw.south) -- node[right, font=\tiny\sffamily] {\texttt{/api/leitos/**}} (leit.north);
+    \draw[c4arrow] (gw.south) -- node[above right, font=\tiny\sffamily] {\texttt{/api/ia/**}} (ia.north);
+
+    \draw[c4arrow, <->] (clin.east) -- node[above, font=\tiny\sffamily] {RN-004 / RF-012} node[below, font=\tiny\sffamily] {RestClient + JWT} (leit.west);
+
+    \draw[c4arrow] (clin.south) -- node[left, font=\tiny\sffamily] {JDBC} (dbclin.north);
+    \draw[c4arrow] (leit.south) -- node[left, font=\tiny\sffamily] {JDBC} (dbleit.north);
+    \draw[c4arrow] (ia.south) -- node[left, font=\tiny\sffamily] {JDBC} (dbia.north);
+\end{tikzpicture}%
+}
+\caption{C4 Nível 2 --- Diagrama de Contêineres e Persistência Isolada (\textit{Database-per-Service})}
+\label{fig:c4_nivel2}
+\end{figure}
+
+% ==============================================================================
+\subsection{Nível 3: Diagrama de Componentes}
+\label{subsec:c4_componentes}
+
+O Nível~3 (Figura~\ref{fig:c4_nivel3}) decompõe internamente os três microsserviços de negócio (\texttt{servico-clinico}, \texttt{servico-leitos} e \texttt{servico-ia}) em seus controladores REST, serviços de aplicação, motores determinísticos, portas de adaptação e repositórios de auditoria imutável.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    comp/.style={rectangle, rounded corners=3pt, draw=vitalisdark, fill=white, line width=0.8pt, minimum width=3.5cm, minimum height=1.05cm, align=center, font=\tiny\sffamily},
+    aicomp/.style={rectangle, rounded corners=3pt, draw=purple!80!black, fill=white, line width=0.8pt, minimum width=3.5cm, minimum height=1.05cm, align=center, font=\tiny\sffamily},
+    bound/.style={rectangle, rounded corners=6pt, draw=vitalisblue!80, fill=vitalislight!35, line width=1pt, inner sep=8pt},
+    c4arrow/.style={-{Latex[length=1.8mm]}, draw=vitalisdark, line width=0.75pt}
+]
+    % Coluna 1: servico-clinico
+    \node[font=\scriptsize\sffamily\bfseries, color=vitalisdark] at (-5.2, 4.3) {Componentes: \texttt{servico-clinico}};
+    \node[comp] (c1) at (-5.2, 3.3) {\textbf{AuthController \& SecurityConfig}\\JWT HS256 (15m) + RBAC \texttt{@PreAuthorize}};
+    \node[comp] (c2) at (-5.2, 2.0) {\textbf{PacienteController \& ValidadorCpf}\\Pacientes, Contatos e Prontuário 1:1};
+    \node[comp] (c3) at (-5.2, 0.7) {\textbf{AtendimentoService \& TriagemService}\\Fila Prioritária (RN-001) e Alta (RF-012)};
+    \node[comp] (c4) at (-5.2, -0.6) {\textbf{CalculadoraManchester \& Escores}\\Manchester, qSOFA (0--3) e NEWS2 (0--20)};
+    \node[comp] (c5) at (-5.2, -1.9) {\textbf{ProntuarioService \& PrescricaoService}\\Evoluções (RN-12) e Alergias (RN-008)};
+    \node[comp, fill=vitalisgreen!10] (c6) at (-5.2, -3.2) {\textbf{AuditoriaService (\texttt{@Immutable})}\\Trilha append-only \texttt{auditoria\_acesso}};
+
+    % Coluna 2: servico-leitos
+    \node[font=\scriptsize\sffamily\bfseries, color=vitalisdark] at (0.0, 4.3) {Componentes: \texttt{servico-leitos}};
+    \node[comp] (l1) at (0.0, 2.7) {\textbf{LeitoController}\\Mapa por Ala, Status e Higienização (RN-010)};
+    \node[comp] (l2) at (0.0, 1.1) {\textbf{AlocacaoController \& AlocacaoService}\\Alocação (RN-004) e Transferência (RF-019)};
+    \node[comp] (l3) at (0.0, -0.5) {\textbf{ClinicoClient (RestClient)}\\Consulta síncrona de elegibilidade};
+    \node[comp, fill=vitalisgreen!10] (l4) at (0.0, -2.1) {\textbf{HistoricoStatusLeitoRepository}\\Registro cronológico de transições};
+
+    % Coluna 3: servico-ia
+    \node[font=\scriptsize\sffamily\bfseries, color=purple!80!black] at (5.2, 4.3) {Componentes: \texttt{servico-ia}};
+    \node[aicomp] (i1) at (5.2, 3.3) {\textbf{IaController \& CopilotoClinicoService}\\Copiloto, Sumário de Alta e Governança};
+    \node[aicomp] (i2) at (5.2, 2.0) {\textbf{SanitizadorPiiService (LGPD)}\\Remoção de PII + HMAC-SHA256 + SHA-256};
+    \node[aicomp] (i3) at (5.2, 0.7) {\textbf{CalculadoraCockcroftGault \& Interações}\\ClCr Renal e Interações Categoria X/D};
+    \node[aicomp] (i4) at (5.2, -0.6) {\textbf{KnowledgeRetriever (Port RAG)}\\Busca em Monografias ANVISA};
+    \node[aicomp] (i5) at (5.2, -1.9) {\textbf{LlmProvider + CircuitBreaker (2s)}\\OpenAiCompatible (Ollama/OpenRouter) / Mock};
+    \node[aicomp, fill=vitalisgreen!10] (i6) at (5.2, -3.2) {\textbf{LogInferenciaIa \& DecisaoHumanaIa}\\Persistência WORM e Deliberação HITL (RN-2)};
+
+    % Ligações internas e cruzadas
+    \draw[c4arrow] (c3) -- (c4);
+    \draw[c4arrow] (c5) -- (c6);
+    \draw[c4arrow] (l2) -- (l3);
+    \draw[c4arrow] (l2) -- (l4);
+    \draw[c4arrow] (l3.west) -- node[above, font=\tiny\sffamily] {RN-004} (c3.east);
+    \draw[c4arrow] (c3.east) -- node[below, font=\tiny\sffamily] {RF-012} (l2.west);
+    \draw[c4arrow] (i1) -- (i2);
+    \draw[c4arrow] (i2) -- (i3);
+    \draw[c4arrow] (i3) -- (i4);
+    \draw[c4arrow] (i4) -- (i5);
+    \draw[c4arrow] (i5) -- (i6);
+\end{tikzpicture}%
+}
+\caption{C4 Nível 3 --- Diagrama de Componentes Internos dos Microsserviços}
+\label{fig:c4_nivel3}
+\end{figure}
+
+% ==============================================================================
+\subsection{Nível 4: Diagrama de Código (Classes e Portas Implementadas)}
+\label{subsec:c4_codigo}
+
+O Nível~4 (Figura~\ref{fig:c4_nivel4}) mapeia as classes Java~21 efetivamente codificadas nos pacotes \texttt{br.ucsal.vitalis.clinico}, \texttt{br.ucsal.vitalis.leitos} e \texttt{br.ucsal.vitalis.ia}, destacando o padrão \textit{Ports \& Adapters} (\texttt{LlmProvider} e \texttt{KnowledgeRetriever}) que torna o serviço de IA agnóstico ao modelo ou fornecedor.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    cls/.style={rectangle, draw=vitalisdark, fill=vitalislight!45, line width=0.9pt, text width=4.1cm, align=left, font=\tiny\ttfamily, inner sep=4pt},
+    aicls/.style={rectangle, draw=purple!80!black, fill=purple!6, line width=0.9pt, text width=4.3cm, align=left, font=\tiny\ttfamily, inner sep=4pt},
+    rel/.style={-{Latex[length=2mm]}, draw=vitalisdark, line width=0.8pt},
+    impl/.style={-{Triangle[open, length=2.2mm]}, dashed, draw=purple!80!black, line width=0.8pt}
+]
+    \node[cls] (pac) at (-5.4, 3.0) {\textbf{\sffamily Paciente}\\\rule{\linewidth}{0.4pt}\\+ id: Long\\+ nome, cpf, cns: String\\+ dataNascimento: LocalDate};
+    \node[cls] (atend) at (-5.4, 0.8) {\textbf{\sffamily Atendimento}\\\rule{\linewidth}{0.4pt}\\+ id, pacienteId: Long\\+ tipo: TipoAtendimento\\+ status: StatusAtendimento\\\rule{\linewidth}{0.4pt}\\+ assumir(profissionalId)\\+ concederAlta(motivo)};
+    \node[cls] (tri) at (-5.4, -1.6) {\textbf{\sffamily Triagem}\\\rule{\linewidth}{0.4pt}\\+ prioridade: PrioridadeManchester\\+ escoreQsofa, escoreNews2: short\\+ alertaSepse: boolean\\\rule{\linewidth}{0.4pt}\\+ CalculadoraManchester.calcular()\\+ CalculadoraEscoresClinicos()};
+    \node[cls] (pep) at (-0.6, 3.0) {\textbf{\sffamily Prontuario \& EvolucaoClinica}\\\rule{\linewidth}{0.4pt}\\+ prontuarioId, pacienteId: Long\\+ texto: String (max 8000)\\\rule{\linewidth}{0.4pt}\\+ ProntuarioService.obterCompleto()\\+ registrarEvolucao() [RN-12]};
+    \node[cls] (presc) at (-0.6, 0.6) {\textbf{\sffamily Prescricao \& Alergia}\\\rule{\linewidth}{0.4pt}\\+ alergiasReconhecidas: boolean\\+ itens: List<ItemPrescricao>\\\rule{\linewidth}{0.4pt}\\+ PrescricaoService.criar() [RN-008]};
+    \node[cls] (leito) at (-0.6, -1.8) {\textbf{\sffamily Leito \& AlocacaoLeito}\\\rule{\linewidth}{0.4pt}\\+ codigo, ala: String\\+ status: StatusLeito\\\rule{\linewidth}{0.4pt}\\+ alterarStatus() [RN-010]\\+ AlocacaoService.alocar() [RN-004]\\+ transferir() [RF-019]};
+
+    \node[aicls] (port) at (4.6, 3.0) {\textbf{\sffamily <<interface>> LlmProvider}\\\rule{\linewidth}{0.4pt}\\+ providerName(): String\\+ modelName(): String\\+ completar(LlmRequest): LlmResponse};
+    \node[aicls] (adap) at (4.6, 0.9) {\textbf{\sffamily OpenAiCompatibleLlmProvider}\\\rule{\linewidth}{0.4pt}\\- restClient: RestClient\\\rule{\linewidth}{0.4pt}\\+ completar() [Ollama / OpenRouter]};
+    \node[aicls] (cop) at (4.6, -1.2) {\textbf{\sffamily CopilotoClinicoService}\\\rule{\linewidth}{0.4pt}\\- circuitBreaker: CircuitBreaker\\- sanitizadorPii: SanitizadorPiiService\\- retriever: KnowledgeRetriever\\\rule{\linewidth}{0.4pt}\\+ analisarPrescricao()\\+ gerarSumarioAlta()\\+ registrarDecisaoHitl() [RN-2]};
+    \node[aicls] (worm) at (4.6, -3.4) {\textbf{\sffamily <<Immutable>> LogInferenciaIa}\\\textbf{\sffamily <<Immutable>> DecisaoHumanaIa}\\\rule{\linewidth}{0.4pt}\\+ promptSanitizadoHash: char(64)\\+ modoContingenciaAtivo: boolean\\+ decisaoMedica: DecisaoMedica};
+
+    \draw[rel] (pac) -- (atend);
+    \draw[rel] (atend) -- (tri);
+    \draw[rel] (pac) -- (pep);
+    \draw[rel] (atend) -- (presc);
+    \draw[rel] (atend) -- (leito);
+    \draw[impl] (adap) -- (port);
+    \draw[rel] (cop) -- (adap);
+    \draw[rel] (cop) -- (worm);
+\end{tikzpicture}%
+}
+\caption{C4 Nível 4 --- Diagrama de Classes e Interfaces Implementadas no Código-Fonte Java 21}
+\label{fig:c4_nivel4}
+\end{figure}
