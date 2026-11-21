@@ -425,7 +425,7 @@ classDiagram
     }
 
     class LogInferenciaIa {
-        <<Immutable / WORM>>
+        <<Immutable>>
         +Long id
         +Long atendimentoId
         +Long usuarioId
@@ -438,7 +438,7 @@ classDiagram
     }
 
     class DecisaoHumanaIa {
-        <<Immutable / WORM>>
+        <<Immutable>>
         +Long id
         +Long logInferenciaId
         +Long usuarioId
