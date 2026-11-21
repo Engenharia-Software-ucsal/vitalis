@@ -44,7 +44,10 @@ Todos os artefatos formais e fontes do projeto encontram-se estruturados no dire
 
 ### Sistema (MVP + Serviço de IA Clínica)
 
-Back-end em Java 21 + Spring Boot 3.5 (microsserviços atrás do Spring Cloud Gateway com JWT + RBAC) e front-end em React + TypeScript + Vite + Tailwind CSS. Arquitetura e diagramas C4 em [`docs/arquitetura.md`](./docs/arquitetura.md) e **guia passo a passo de navegação por perfil** em [`docs/guia-de-uso.md`](./docs/guia-de-uso.md).
+Back-end em Java 21 + Spring Boot 3.5 (microsserviços atrás do Spring Cloud Gateway com JWT + RBAC) e front-end em React + TypeScript + Vite + Tailwind CSS.
+- **Arquitetura e Modelo C4 Completo (Níveis 1 a 4):** [`docs/arquitetura.md`](./docs/arquitetura.md)
+- **Catálogo de Telas e Fluxos (Screenshots Playwright):** [`docs/telas/telas-e-fluxos.md`](./docs/telas/telas-e-fluxos.md)
+- **Guia Passo a Passo de Navegação por Perfil:** [`docs/guia-de-uso.md`](./docs/guia-de-uso.md)
 
 ```
 backend/
