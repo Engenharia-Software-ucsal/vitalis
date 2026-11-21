@@ -8,5 +8,9 @@ public interface LeitoRepository extends JpaRepository<Leito, Long> {
 
     List<Leito> findByStatus(StatusLeito status);
 
+    List<Leito> findByAlaIgnoreCase(String ala);
+
+    List<Leito> findByStatusAndAlaIgnoreCase(StatusLeito status, String ala);
+
     boolean existsByCodigo(String codigo);
 }

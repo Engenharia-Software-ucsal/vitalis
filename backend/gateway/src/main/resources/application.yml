@@ -21,6 +21,18 @@ spring:
                 - Path=/api/leitos/**
               filters:
                 - StripPrefix=2
+            - id: ia
+              uri: ${IA_URL:http://localhost:8083}
+              predicates:
+                - Path=/api/ia/**
+              filters:
+                - StripPrefix=2
+
+vitalis:
+  jwt:
+    secret: ${JWT_SECRET:vitalis-dev-secret-key-256-bits-minimum-length-2026!}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
 
 management:
   endpoints:

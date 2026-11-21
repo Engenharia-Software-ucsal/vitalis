@@ -18,3 +18,10 @@ management:
     web:
       exposure:
         include: health,info
+
+vitalis:
+  jwt:
+    secret: ${JWT_SECRET:vitalis-dev-secret-key-256-bits-minimum-length-2026!}
+    access-ttl-seconds: 900
+    refresh-ttl-seconds: 28800
+  leitos-url: ${LEITOS_URL:http://localhost:8082}

@@ -21,6 +21,7 @@
         <module>gateway</module>
         <module>servico-clinico</module>
         <module>servico-leitos</module>
+        <module>servico-ia</module>
     </modules>
 
     <properties>
