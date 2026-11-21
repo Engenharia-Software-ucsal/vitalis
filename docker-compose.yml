@@ -4,6 +4,9 @@ x-db-env: &db-env
   DB_USER: ${POSTGRES_USER:-vitalis}
   DB_PASSWORD: ${POSTGRES_PASSWORD:-vitalis}
 
+x-common-env: &common-env
+  JWT_SECRET: ${JWT_SECRET:-vitalis-dev-secret-key-256-bits-minimum-length-2026!}
+
 services:
   postgres:
     image: postgres:17
@@ -28,11 +31,18 @@ services:
       args:
         MODULE: servico-clinico
     environment:
-      <<: *db-env
+      <<: [*db-env, *common-env]
       DB_URL: jdbc:postgresql://postgres:5432/vitalis_clinico
+      LEITOS_URL: http://servico-leitos:8082
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   servico-leitos:
     build:
@@ -40,11 +50,45 @@ services:
       args:
         MODULE: servico-leitos
     environment:
-      <<: *db-env
+      <<: [*db-env, *common-env]
       DB_URL: jdbc:postgresql://postgres:5432/vitalis_leitos
+      CLINICO_URL: http://servico-clinico:8081
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8082/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  servico-ia:
+    build:
+      context: ./backend
+      args:
+        MODULE: servico-ia
+    environment:
+      <<: [*db-env, *common-env]
+      DB_URL: jdbc:postgresql://postgres:5432/vitalis_ia
+      AI_PROVIDER: ${AI_PROVIDER:-openai-compatible}
+      AI_BASE_URL: ${AI_BASE_URL:-http://host.docker.internal:11434/v1}
+      AI_API_KEY: ${AI_API_KEY:-ollama}
+      AI_MODEL: ${AI_MODEL:-llama3.1:8b}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-2000}
+      AI_EXTRA_HEADERS_REFERER: ${AI_EXTRA_HEADERS_REFERER:-https://vitalis.ucsal.br}
+      AI_EXTRA_HEADERS_TITLE: ${AI_EXTRA_HEADERS_TITLE:-Vitalis Hospitalar}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8083/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   gateway:
     build:
@@ -52,13 +96,35 @@ services:
       args:
         MODULE: gateway
     environment:
+      <<: *common-env
       CLINICO_URL: http://servico-clinico:8081
       LEITOS_URL: http://servico-leitos:8082
+      IA_URL: http://servico-ia:8083
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000}
     ports:
-      - "8080:8080"
+      - "${GATEWAY_PORT:-8080}:8080"
     depends_on:
-      - servico-clinico
-      - servico-leitos
+      servico-clinico:
+        condition: service_healthy
+      servico-leitos:
+        condition: service_healthy
+      servico-ia:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      gateway:
+        condition: service_healthy
 
 volumes:
   pgdata:

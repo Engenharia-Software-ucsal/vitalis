@@ -42,23 +42,119 @@ Todos os artefatos formais e fontes do projeto encontram-se estruturados no dire
 
 ---
 
-### Sistema (MVP)
+### Sistema (MVP + Serviço de IA Clínica)
 
-Back-end em Java 21 + Spring Boot, organizado em microsserviços atrás de um API Gateway. Arquitetura e diagramas C4 em [`docs/arquitetura.md`](./docs/arquitetura.md).
+Back-end em Java 21 + Spring Boot 3.5 (microsserviços atrás do Spring Cloud Gateway com JWT + RBAC) e front-end em React + TypeScript + Vite + Tailwind CSS. Arquitetura e diagramas C4 em [`docs/arquitetura.md`](./docs/arquitetura.md) e **guia passo a passo de navegação por perfil** em [`docs/guia-de-uso.md`](./docs/guia-de-uso.md).
 
 ```
 backend/
-├── gateway/           # Spring Cloud Gateway (porta 8080)
-├── servico-clinico/   # pacientes
-└── servico-leitos/    # leitos
-docker-compose.yml     # Postgres + os 3 serviços
+├── gateway/           # Spring Cloud Gateway + validação JWT/CORS (porta 8080)
+├── servico-clinico/   # Auth/JWT, pacientes, triagem Manchester/qSOFA/NEWS2, PEP, prescrição, alta
+├── servico-leitos/    # Leitos, alocações, transferência interna (RF-019), histórico e higienização
+└── servico-ia/        # Copiloto RAG, Sumário de Alta, Sanitizador PII, Circuit Breaker 2s e auditoria WORM
+frontend/              # React + TypeScript + Vite + Tailwind CSS (porta 3000 via Nginx / 5173 dev)
+docker-compose.yml     # Postgres 17 + 4 serviços Java + Front-end Nginx
 ```
 
-**Como rodar** (requer apenas Docker):
+---
+
+### Passo a Passo para Rodar o Projeto
+
+#### Pré-requisitos
+- **Docker** e **Docker Compose** (única exigência para rodar toda a stack e os testes do back-end).
+- *(Opcional)* **Node.js 20+** caso queira rodar o front-end fora do Docker em modo hot-reload.
+
+#### 1. Configurar variáveis de ambiente
+Na raiz do repositório, copie o arquivo de exemplo:
+
+```bash
+cp .env.example .env
+```
+
+> **Dica:** O `.env` padrão já vem pronto para subir localmente. Caso a porta `8080` ou `3000` esteja ocupada na sua máquina, ajuste `GATEWAY_PORT` ou `FRONTEND_PORT` no `.env` (ex.: `GATEWAY_PORT=8088`).
+
+#### 2. Configurar o provedor de IA (`servico-ia`, opcional)
+O `servico-ia` é agnóstico a modelo/ferramenta e usa o protocolo padrão OpenAI-compatible (`/v1/chat/completions`). Edite no `.env` conforme o provedor desejado:
+
+- **Ollama local (padrão):**
+  ```env
+  AI_PROVIDER=openai-compatible
+  AI_BASE_URL=http://host.docker.internal:11434/v1
+  AI_API_KEY=ollama
+  AI_MODEL=llama3.1:8b
+  ```
+- **OpenRouter (Gemini, Claude, GPT, Llama, etc.):**
+  ```env
+  AI_PROVIDER=openai-compatible
+  AI_BASE_URL=https://openrouter.ai/api/v1
+  AI_API_KEY=sk-or-v1-sua-chave-aqui
+  AI_MODEL=google/gemini-2.5-flash
+  ```
+- **Modo Mock / Offline:**
+  ```env
+  AI_PROVIDER=mock
+  ```
+
+> Se o provedor configurado estiver indisponível ou demorar mais que `AI_TIMEOUT_MS` (padrão `2000ms`), o **Circuit Breaker** comuta automaticamente para o **motor determinístico local** (Cockcroft-Gault, interações Categoria X/D e base RAG), sem travar o sistema.
+
+#### 3. Subir toda a aplicação via Docker (recomendado)
 
 ```bash
 docker compose up -d --build
-curl localhost:8080/api/leitos/leitos
 ```
 
-O Postgres fica exposto na porta `5433` (usuário/senha `vitalis`) para acesso por DBeaver/pgAdmin.
+Aguarde os healthchecks finalizarem e confirme com:
+
+```bash
+docker compose ps
+```
+
+Todos os 6 serviços (`postgres`, `servico-clinico`, `servico-leitos`, `servico-ia`, `gateway` e `frontend`) devem aparecer como `healthy` / `running`.
+
+- **Aplicação Web (Front-end):** `http://localhost:3000`
+- **API Gateway:** `http://localhost:8080` (ou a porta definida em `GATEWAY_PORT`)
+- **PostgreSQL 17:** `localhost:5433` (usuário/senha `vitalis`, bancos `vitalis_clinico`, `vitalis_leitos` e `vitalis_ia`)
+
+#### 4. *(Opcional)* Rodar o Front-end em modo desenvolvimento local (hot-reload)
+
+```bash
+docker compose up -d --build postgres servico-clinico servico-leitos servico-ia gateway
+cd frontend
+npm install
+npm run dev
+```
+
+Acesse `http://localhost:5173` (o Vite faz proxy automático de `/api` para `http://localhost:8080`).
+
+#### 5. Usuários de Demonstração (senha padrão: `Vitalis@2026`)
+
+As migrations criam automaticamente 5 usuários (1 por perfil), medicamentos, leitos e pacientes de exemplo:
+
+| Perfil | E-mail | Principais Telas / Ações |
+|---|---|---|
+| Administrador | `admin@vitalis.local` | Acesso total + métricas de governança de IA |
+| Recepcionista | `recepcao@vitalis.local` | Cadastro de pacientes, contatos de emergência e abertura de atendimentos |
+| Enfermeiro | `enfermeiro@vitalis.local` | Fila prioritária (RN-001) e triagem Manchester + qSOFA/NEWS2 |
+| Médico | `medico@vitalis.local` | PEP, evoluções, alergias, prescrição (RN-008), Copiloto IA (HITL) e Alta Médica (RF-012) |
+| Gestor de Leitos | `leitos@vitalis.local` | Mapa de leitos, alocação (RN-004), transferência interna (RF-019) e higienização (RN-010) |
+
+#### 6. Rodar os testes automatizados
+
+- **Back-end (via Docker, sem precisar instalar Java 21/Maven localmente):**
+  ```bash
+  docker run --rm -v "$PWD/backend:/src" -v vitalis-m2:/root/.m2 -w /src maven:3.9-eclipse-temurin-21 mvn test
+  ```
+- **Front-end (verificação de tipos TypeScript + build de produção):**
+  ```bash
+  cd frontend && npm run build
+  ```
+
+#### 7. Parar e limpar o ambiente
+
+```bash
+# Parar os containers mantendo os dados do banco
+docker compose down
+
+# Parar os containers e resetar os bancos de dados (reaplica migrations e seeds do zero)
+docker compose down -v
+```
