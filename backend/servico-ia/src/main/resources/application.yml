@@ -1,0 +1,35 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: servico-ia
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/vitalis_ia}
+    username: ${DB_USER:vitalis}
+    password: ${DB_PASSWORD:vitalis}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+vitalis:
+  jwt:
+    secret: ${JWT_SECRET:vitalis-dev-secret-key-256-bits-minimum-length-2026!}
+  ia:
+    provider: ${AI_PROVIDER:openai-compatible}
+    base-url: ${AI_BASE_URL:http://localhost:11434/v1}
+    api-key: ${AI_API_KEY:ollama}
+    model: ${AI_MODEL:llama3.1:8b}
+    timeout-ms: ${AI_TIMEOUT_MS:2000}
+    temperature: ${AI_TEMPERATURE:0.0}
+    top-p: ${AI_TOP_P:0.85}
+    extra-referer: ${AI_EXTRA_HEADERS_REFERER:https://vitalis.ucsal.br}
+    extra-title: ${AI_EXTRA_HEADERS_TITLE:Vitalis Hospitalar}
+    hmac-secret: ${AI_HMAC_SECRET:vitalis-pii-pseudonym-hmac-secret-2026!}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
