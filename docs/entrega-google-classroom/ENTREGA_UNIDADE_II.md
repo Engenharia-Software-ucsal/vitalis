@@ -17,6 +17,7 @@
 1. **`Vitalis_Unidade_II_Entrega_Completa.pdf`** — Documento PDF institucional consolidado contendo Capa UCSAL + Item 11 (Repositório) + Item 12 (Modelo C4 Níveis 1 a 4 diagramados) + Item 13 (Todas as 18 telas reais capturadas via Playwright) + Item 14 (Arquitetura e endpoints do Back-End).
 2. **`12_Modelo_C4_Vitalis.pdf`** — PDF dedicado exclusivamente ao **Item 12 (Modelo C4: Contexto, Contêineres, Componentes e Código)**, caso o ScrumMaster prefira anexar um PDF por item.
 3. **`13_Telas_FrontEnd_Vitalis.pdf`** — PDF dedicado exclusivamente ao **Item 13 (Telas do Front-End e Fluxos)** com as 18 capturas de tela comentadas.
+4. **`15_Tour_Completo_Vitalis.mp4`** — Vídeo completo (`1280x720`, ~1m10s) gravado automaticamente via Playwright percorrendo todas as 7 etapas do sistema com legendas explicativas em tela (pronto para anexar ou narrar por cima no Item 15).
 
 ---
 
