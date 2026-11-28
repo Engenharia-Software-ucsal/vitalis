@@ -1,8 +1,9 @@
 name: vitalis
 
 x-db-env: &db-env
-  DB_USER: ${POSTGRES_USER:-vitalis}
-  DB_PASSWORD: ${POSTGRES_PASSWORD:-vitalis}
+  DB_USER: ${DB_USER:-${POSTGRES_USER:-vitalis}}
+  DB_PASSWORD: ${DB_PASSWORD:-${POSTGRES_PASSWORD:-vitalis}}
+  DB_POOL_MAX: ${DB_POOL_MAX:-5}
 
 x-common-env: &common-env
   JWT_SECRET: ${JWT_SECRET:-vitalis-dev-secret-key-256-bits-minimum-length-2026!}
@@ -10,6 +11,7 @@ x-common-env: &common-env
 services:
   postgres:
     image: postgres:17
+    profiles: ["local-db"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-vitalis}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vitalis}
@@ -32,11 +34,8 @@ services:
         MODULE: servico-clinico
     environment:
       <<: [*db-env, *common-env]
-      DB_URL: jdbc:postgresql://postgres:5432/vitalis_clinico
+      DB_URL: jdbc:postgresql://${DB_HOST:-postgres}:${DB_PORT:-5432}/vitalis_clinico?sslmode=${DB_SSLMODE:-disable}
       LEITOS_URL: http://servico-leitos:8082
-    depends_on:
-      postgres:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8081/actuator/health || exit 1"]
       interval: 10s
@@ -51,11 +50,8 @@ services:
         MODULE: servico-leitos
     environment:
       <<: [*db-env, *common-env]
-      DB_URL: jdbc:postgresql://postgres:5432/vitalis_leitos
+      DB_URL: jdbc:postgresql://${DB_HOST:-postgres}:${DB_PORT:-5432}/vitalis_leitos?sslmode=${DB_SSLMODE:-disable}
       CLINICO_URL: http://servico-clinico:8081
-    depends_on:
-      postgres:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8082/actuator/health || exit 1"]
       interval: 10s
@@ -70,19 +66,16 @@ services:
         MODULE: servico-ia
     environment:
       <<: [*db-env, *common-env]
-      DB_URL: jdbc:postgresql://postgres:5432/vitalis_ia
+      DB_URL: jdbc:postgresql://${DB_HOST:-postgres}:${DB_PORT:-5432}/vitalis_ia?sslmode=${DB_SSLMODE:-disable}
       AI_PROVIDER: ${AI_PROVIDER:-openai-compatible}
-      AI_BASE_URL: ${AI_BASE_URL:-http://host.docker.internal:11434/v1}
-      AI_API_KEY: ${AI_API_KEY:-ollama}
-      AI_MODEL: ${AI_MODEL:-llama3.1:8b}
-      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-2000}
+      AI_BASE_URL: ${AI_BASE_URL:-https://openrouter.ai/api/v1}
+      AI_API_KEY: ${AI_API_KEY:-${OPENROUTER_API_KEY:-}}
+      AI_MODEL: ${AI_MODEL:-google/gemini-2.5-flash}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-8000}
       AI_EXTRA_HEADERS_REFERER: ${AI_EXTRA_HEADERS_REFERER:-https://vitalis.ucsal.br}
       AI_EXTRA_HEADERS_TITLE: ${AI_EXTRA_HEADERS_TITLE:-Vitalis Hospitalar}
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    depends_on:
-      postgres:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8083/actuator/health || exit 1"]
       interval: 10s

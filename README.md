@@ -79,26 +79,27 @@ cp .env.example .env
 #### 2. Configurar o provedor de IA (`servico-ia`, opcional)
 O `servico-ia` é agnóstico a modelo/ferramenta e usa o protocolo padrão OpenAI-compatible (`/v1/chat/completions`). Edite no `.env` conforme o provedor desejado:
 
-- **Ollama local (padrão):**
+- **OpenRouter (padrão — Gemini, Claude, GPT, Llama, etc.):**
+  ```env
+  AI_PROVIDER=openai-compatible
+  AI_BASE_URL=https://openrouter.ai/api/v1
+  AI_API_KEY=sk-or-v1-sua-chave-aqui
+  AI_MODEL=google/gemini-2.5-flash
+  AI_TIMEOUT_MS=8000
+  ```
+- **Ollama local:**
   ```env
   AI_PROVIDER=openai-compatible
   AI_BASE_URL=http://host.docker.internal:11434/v1
   AI_API_KEY=ollama
   AI_MODEL=llama3.1:8b
   ```
-- **OpenRouter (Gemini, Claude, GPT, Llama, etc.):**
-  ```env
-  AI_PROVIDER=openai-compatible
-  AI_BASE_URL=https://openrouter.ai/api/v1
-  AI_API_KEY=sk-or-v1-sua-chave-aqui
-  AI_MODEL=google/gemini-2.5-flash
-  ```
 - **Modo Mock / Offline:**
   ```env
   AI_PROVIDER=mock
   ```
 
-> Se o provedor configurado estiver indisponível ou demorar mais que `AI_TIMEOUT_MS` (padrão `2000ms`), o **Circuit Breaker** comuta automaticamente para o **motor determinístico local** (Cockcroft-Gault, interações Categoria X/D e base RAG), sem travar o sistema.
+> Se o provedor configurado estiver indisponível ou demorar mais que `AI_TIMEOUT_MS` (padrão `8000ms` para nuvem; ajustável para `2000ms` em testes estritos de RNF-002), o **Circuit Breaker** comuta automaticamente para o **motor determinístico local** (Cockcroft-Gault, interações Categoria X/D e base RAG), sem travar o sistema.
 
 #### 3. Subir toda a aplicação via Docker (recomendado)
 

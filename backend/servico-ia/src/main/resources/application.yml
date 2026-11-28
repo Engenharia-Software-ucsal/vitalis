@@ -8,6 +8,9 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5433/vitalis_ia}
     username: ${DB_USER:vitalis}
     password: ${DB_PASSWORD:vitalis}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:5}
+      minimum-idle: ${DB_POOL_MIN:1}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -18,10 +21,10 @@ vitalis:
     secret: ${JWT_SECRET:vitalis-dev-secret-key-256-bits-minimum-length-2026!}
   ia:
     provider: ${AI_PROVIDER:openai-compatible}
-    base-url: ${AI_BASE_URL:http://localhost:11434/v1}
-    api-key: ${AI_API_KEY:ollama}
-    model: ${AI_MODEL:llama3.1:8b}
-    timeout-ms: ${AI_TIMEOUT_MS:2000}
+    base-url: ${AI_BASE_URL:https://openrouter.ai/api/v1}
+    api-key: ${AI_API_KEY:${OPENROUTER_API_KEY:}}
+    model: ${AI_MODEL:google/gemini-2.5-flash}
+    timeout-ms: ${AI_TIMEOUT_MS:8000}
     temperature: ${AI_TEMPERATURE:0.0}
     top-p: ${AI_TOP_P:0.85}
     extra-referer: ${AI_EXTRA_HEADERS_REFERER:https://vitalis.ucsal.br}
